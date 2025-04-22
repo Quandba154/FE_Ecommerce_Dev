@@ -17,7 +17,7 @@ const DefaultPalette = (mode: Palette['mode'], skin: Skin): Palette => {
       return darkPaperBgColor
     } else if (mode === 'light') {
       return '#F8F7FA'
-    } else return '#25293C'
+    } else return '#19376D'
   }
 
   return {
