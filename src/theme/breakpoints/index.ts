@@ -1,10 +1,10 @@
 const breakpoints = () => ({
   values: {
-    xs: 0,
-    sm: 600,
-    md: 900,
-    lg: 1200,
-    xl: 1536
+    xs: 0,// mobile
+    sm: 600, // mobile trở xuống
+    md: 900, // tablet
+    lg: 1200, // laptop
+    xl: 1536 // desktop
   }
 })
 

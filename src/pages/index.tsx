@@ -1,8 +1,9 @@
 'use client'
-import { Typography, useTheme } from '@mui/material'
+import { Box, Typography, useTheme } from '@mui/material'
 import axios from 'axios'
 import Head from 'next/head'
 import { useEffect } from 'react'
+import CustomTextField from 'src/components/text-field'
 import { useSettings } from 'src/hooks/useSettings'
 
 export default function Home() {
@@ -18,8 +19,9 @@ export default function Home() {
         <meta name='viewport' content='width=device-width, initial-scale=1' />
         <link rel='icon' href='/favicon.ico' />
       </Head>
-      <h1>Hello world!</h1>
-      <Typography>Hello Word Update222</Typography>
+      <Box sx={{ margin: 6, width: '200px' }}>
+        <CustomTextField helperText='Please enter your name' id='demo-helper-text-aligned' label='Name' />
+      </Box>
     </>
   )
 }
