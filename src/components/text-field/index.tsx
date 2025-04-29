@@ -69,6 +69,7 @@ const TextFieldStyled = styled(TextField)<TextFieldProps>(({ theme }) => {
     },
     '& .MuiFormHelperText-root': {
       lineHeight: '1.154',
+      marginLeft: "2px",
       marginTop: theme.spacing(1, 0, 0),
       color: theme.palette.text.secondary,
       fontSize: theme.typography.body2.fontSize,
