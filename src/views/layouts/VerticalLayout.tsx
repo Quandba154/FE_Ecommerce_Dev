@@ -57,7 +57,7 @@ const useStyles = makeStyles((theme) => ({
             easing: theme.transitions.easing.sharp,
             duration: theme.transitions.duration.leavingScreen,
         }),
-        width: theme.spacing(7),
+        width: theme.spacing(3),
         [theme.breakpoints.up('sm')]: {
             width: theme.spacing(9),
         },
@@ -108,27 +108,14 @@ const VerticalLayout: NextPage<TProps> = ({ open, handleDrawerClose }) => {
             }}
             open={open}
         >
-
             <Box
-                sx={{
-                    position: 'relative',
-                    '&::after': {
-                        content: '""',
-                        position: 'absolute',
-                        left: 0,
-                        right: 0,
-                        bottom: -16, 
-                        height: '1px',
-                        backgroundColor: '#D3D3D3',
-                    },
-                }}
                 className={classes.toolbarIcon}
             >
                 <IconButton onClick={handleDrawerClose}>
                     <ChevronLeftIcon />
                 </IconButton>
             </Box>
-
+            <Divider />
             <ListVerticalLayout></ListVerticalLayout>
         </Drawer>
     );
