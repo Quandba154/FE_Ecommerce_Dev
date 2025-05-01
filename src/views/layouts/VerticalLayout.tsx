@@ -7,15 +7,13 @@ import clsx from 'clsx';
 // ** MUI Imports */
 import { makeStyles } from '@material-ui/core/styles';
 import Drawer from '@material-ui/core/Drawer';
-import List from '@material-ui/core/List';
 import Divider from '@material-ui/core/Divider';
 import IconButton from '@material-ui/core/IconButton';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import { Box } from '@mui/material';
-// ** Custom Components Imports */
-import { mainListItems, secondaryListItems } from './listItems';
 
-
+// ** ICONIFY Imports */
+import ListVerticalLayout from './ListVerticalLayout';
 
 
 const drawerWidth = 240;
@@ -25,6 +23,7 @@ const useStyles = makeStyles((theme) => ({
         display: 'flex',
     },
     toolbar: {
+
         paddingRight: 24, // keep right padding when drawer closed
     },
     toolbarIcon: {
@@ -46,7 +45,6 @@ const useStyles = makeStyles((theme) => ({
     drawerPaper: {
         position: 'relative',
         whiteSpace: 'nowrap',
-        // backgroundColor: theme.palette.primary.main,
         width: drawerWidth,
         transition: theme.transitions.create('width', {
             easing: theme.transitions.easing.sharp,
@@ -75,12 +73,15 @@ const useStyles = makeStyles((theme) => ({
         paddingBottom: theme.spacing(4),
     },
     paper: {
+
         padding: theme.spacing(2),
         display: 'flex',
         overflow: 'auto',
         flexDirection: 'column',
     },
+
     fixedHeight: {
+
         height: 240,
     },
 }));
@@ -97,23 +98,38 @@ type TProps = {
 const VerticalLayout: NextPage<TProps> = ({ open, handleDrawerClose }) => {
     const classes = useStyles();
 
+
     return (
         <Drawer
+
             variant="permanent"
             classes={{
                 paper: clsx(classes.drawerPaper, !open && classes.drawerPaperClose),
             }}
             open={open}
         >
-            <Box className={classes.toolbarIcon}>
+
+            <Box
+                sx={{
+                    position: 'relative',
+                    '&::after': {
+                        content: '""',
+                        position: 'absolute',
+                        left: 0,
+                        right: 0,
+                        bottom: -16, 
+                        height: '1px',
+                        backgroundColor: '#D3D3D3',
+                    },
+                }}
+                className={classes.toolbarIcon}
+            >
                 <IconButton onClick={handleDrawerClose}>
                     <ChevronLeftIcon />
                 </IconButton>
             </Box>
-            <Divider />
-            <List>{mainListItems}</List>
-            <Divider />
-            <List>{secondaryListItems}</List>
+
+            <ListVerticalLayout></ListVerticalLayout>
         </Drawer>
     );
 }

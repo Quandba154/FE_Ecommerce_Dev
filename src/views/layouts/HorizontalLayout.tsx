@@ -58,6 +58,7 @@ const useStyles = makeStyles((theme) => ({
         flexGrow: 1,
     },
     drawerPaper: {
+
         position: 'relative',
         whiteSpace: 'nowrap',
         width: drawerWidth,
@@ -67,6 +68,7 @@ const useStyles = makeStyles((theme) => ({
         }),
     },
     drawerPaperClose: {
+
         overflowX: 'hidden',
         transition: theme.transitions.create('width', {
             easing: theme.transitions.easing.sharp,
@@ -84,6 +86,7 @@ const useStyles = makeStyles((theme) => ({
         overflow: 'auto',
     },
     container: {
+
         paddingTop: theme.spacing(4),
         paddingBottom: theme.spacing(4),
     },
