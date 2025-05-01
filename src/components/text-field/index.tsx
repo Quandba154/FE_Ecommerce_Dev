@@ -4,7 +4,7 @@ import { after } from 'node:test'
 
 // ** Styled Component
 const TextFieldStyled = styled(TextField)<TextFieldProps>(({ theme }) => {
-  console.log('TextFieldStyled', { theme })
+  // console.log('TextFieldStyled', { theme })
 
   return {
     '& .MuiInputLabel-root': {
@@ -21,6 +21,9 @@ const TextFieldStyled = styled(TextField)<TextFieldProps>(({ theme }) => {
       transition: theme.transitions.create(['border-color', 'box-shadow'], {
         duration: theme.transitions.duration.shorter
       }),
+      '& .MuiInputBase-inputAdornedEnd': {
+        borderRadius: 8
+      },
       '&:before, &:after': {
         display: 'none'
       },
@@ -28,7 +31,8 @@ const TextFieldStyled = styled(TextField)<TextFieldProps>(({ theme }) => {
         color: 'red'
       },
       '& .MuiInputBase-input': {
-        padding: '8px 10px'
+        padding: '8px 10px',
+        borderRadius: 8,
       },
       '& .Mui-error': {
         borderColor: theme.palette.error.main

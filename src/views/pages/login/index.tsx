@@ -33,6 +33,9 @@ import loginLight from '/public/images/login-light.png'
 import GoogleSvg from '/public/svgs/google.svg'
 import facebookSvg from '/public/svgs/facebook.svg'
 
+// ** Hooks 
+import { useAuth } from 'src/hooks/useAuth'
+
 
 
 
@@ -48,6 +51,10 @@ const LoginPage: NextPage<TProps> = () => {
   // ** State
   const [showPassWord, setShowPassWord] = useState(false)
   const [isRemember, setIsRemember] = useState(true)
+
+  // ** Context 
+  const { login } = useAuth();
+
 
   // ** Theme
   const theme = useTheme();
@@ -79,6 +86,9 @@ const LoginPage: NextPage<TProps> = () => {
 
 
   const onSubmit = (data: { email: string; password: string }) => {
+    if (!Object.keys(errors)?.length) {
+      login({ ...data, rememberMe: isRemember })
+    }
     console.log('data', { data, errors })
   }
   return (
@@ -195,7 +205,7 @@ const LoginPage: NextPage<TProps> = () => {
                 <Typography >
                   {"Don't have an account?"}
                 </Typography>
-                <Link style={{ color: theme.palette.mode === "light" ? theme.palette.common.black : theme.palette.common.white }} href='/register'>
+                <Link style={{ color: theme.palette.primary.main }} href='/register'>
                   {"Sign Up"}
                 </Link>
               </Box>
