@@ -5,7 +5,7 @@ import { NextPage } from 'next';
 
 import clsx from 'clsx';
 // ** MUI Imports */
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles, useTheme } from '@material-ui/core/styles';
 import Drawer from '@material-ui/core/Drawer';
 import Divider from '@material-ui/core/Divider';
 import IconButton from '@material-ui/core/IconButton';
@@ -23,7 +23,6 @@ const useStyles = makeStyles((theme) => ({
         display: 'flex',
     },
     toolbar: {
-
         paddingRight: 24, // keep right padding when drawer closed
     },
     toolbarIcon: {
@@ -57,9 +56,9 @@ const useStyles = makeStyles((theme) => ({
             easing: theme.transitions.easing.sharp,
             duration: theme.transitions.duration.leavingScreen,
         }),
-        width: theme.spacing(3),
+        width: theme.spacing(18),
         [theme.breakpoints.up('sm')]: {
-            width: theme.spacing(9),
+            width: theme.spacing(18),
         },
     },
     appBarSpacer: theme.mixins.toolbar,
@@ -73,15 +72,12 @@ const useStyles = makeStyles((theme) => ({
         paddingBottom: theme.spacing(4),
     },
     paper: {
-
         padding: theme.spacing(2),
         display: 'flex',
         overflow: 'auto',
         flexDirection: 'column',
     },
-
     fixedHeight: {
-
         height: 240,
     },
 }));
@@ -97,11 +93,12 @@ type TProps = {
 
 const VerticalLayout: NextPage<TProps> = ({ open, handleDrawerClose }) => {
     const classes = useStyles();
+    const theme = useTheme();
 
 
     return (
         <Drawer
-
+            style={{ backgroundColor: theme.palette.background.paper }}
             variant="permanent"
             classes={{
                 paper: clsx(classes.drawerPaper, !open && classes.drawerPaperClose),
@@ -116,7 +113,7 @@ const VerticalLayout: NextPage<TProps> = ({ open, handleDrawerClose }) => {
                 </IconButton>
             </Box>
             <Divider />
-            <ListVerticalLayout></ListVerticalLayout>
+            <ListVerticalLayout open={open}></ListVerticalLayout>
         </Drawer>
     );
 }

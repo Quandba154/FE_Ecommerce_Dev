@@ -5,6 +5,7 @@ import Head from 'next/head'
 import { useEffect } from 'react'
 import CustomTextField from 'src/components/text-field'
 import { useSettings } from 'src/hooks/useSettings'
+import LayoutNotApp from 'src/views/layouts/LayoutNotApp'
 
 export default function Home() {
   const theme = useTheme()
@@ -19,9 +20,10 @@ export default function Home() {
         <meta name='viewport' content='width=device-width, initial-scale=1' />
         <link rel='icon' href='/favicon.ico' />
       </Head>
-      {/* <Box sx={{ margin: 6, width: '200px' }}>
-        <CustomTextField helperText='Please enter your name' id='demo-helper-text-aligned' label='Name' />
-      </Box> */}
     </>
   )
 }
+
+
+
+Home.getLayout = (page: React.ReactNode) => <LayoutNotApp>{page}</LayoutNotApp>
