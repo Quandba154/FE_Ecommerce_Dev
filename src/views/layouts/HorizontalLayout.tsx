@@ -3,7 +3,7 @@ import React from 'react';
 import clsx from 'clsx';
 
 // ** Material UI Imports
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles'; // Thêm useTheme
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
@@ -15,8 +15,6 @@ import { NextPage } from 'next';
 import IconifyIcon from "src/components/Icon"
 
 
-
-
 const drawerWidth = 240;
 
 const useStyles = makeStyles((theme) => ({
@@ -24,7 +22,8 @@ const useStyles = makeStyles((theme) => ({
         display: 'flex',
     },
     toolbar: {
-        paddingRight: 24, // keep right padding when drawer closed
+        margin: "0 20px",
+        paddingRight: "30px",
     },
     toolbarIcon: {
         display: 'flex',
@@ -35,6 +34,8 @@ const useStyles = makeStyles((theme) => ({
     },
     appBar: {
         zIndex: theme.zIndex.drawer + 1,
+        backgroundColor: "grey",
+        color: theme.palette.primary.main,
         transition: theme.transitions.create(['width', 'margin'], {
             easing: theme.transitions.easing.sharp,
             duration: theme.transitions.duration.leavingScreen,
@@ -58,7 +59,6 @@ const useStyles = makeStyles((theme) => ({
         flexGrow: 1,
     },
     drawerPaper: {
-
         position: 'relative',
         whiteSpace: 'nowrap',
         width: drawerWidth,
@@ -101,26 +101,30 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-
 type TProps = {
     open: boolean,
     handleDrawerOpen: () => void,
+    isHideMenu?: boolean;
 }
 
-const HorizontalLayout: NextPage<TProps> = ({ open, handleDrawerOpen }) => {
+const HorizontalLayout: NextPage<TProps> = ({ open, handleDrawerOpen, isHideMenu }) => {
     const classes = useStyles();
+
+
     return (
         <AppBar position="absolute" className={clsx(classes.appBar, open && classes.appBarShift)}>
             <Toolbar className={classes.toolbar}>
-                <IconButton
-                    edge="start"
-                    color="inherit"
-                    aria-label="open drawer"
-                    onClick={handleDrawerOpen}
-                    className={clsx(classes.menuButton, open && classes.menuButtonHidden)}
-                >
-                    <IconifyIcon icon="ic:round-menu" />
-                </IconButton>
+                {!isHideMenu && (
+                    <IconButton
+                        edge="start"
+                        color="inherit"
+                        aria-label="open drawer"
+                        onClick={handleDrawerOpen}
+                        className={clsx(classes.menuButton, open && classes.menuButtonHidden)}
+                    >
+                        <IconifyIcon icon="ic:round-menu" />
+                    </IconButton>
+                )}
                 <Typography component="h1" variant="h6" color="inherit" noWrap className={classes.title}>
                     Dashboard
                 </Typography>
@@ -130,7 +134,7 @@ const HorizontalLayout: NextPage<TProps> = ({ open, handleDrawerOpen }) => {
                     </Badge>
                 </IconButton>
             </Toolbar>
-        </AppBar>
+        </AppBar >
     );
 }
 

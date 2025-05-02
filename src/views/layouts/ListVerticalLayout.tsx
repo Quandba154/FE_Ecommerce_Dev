@@ -1,5 +1,5 @@
 //** React */
-import React, { Fragment, useState } from 'react';
+import React, { Fragment, useEffect, useState } from 'react';
 //** Next.js */
 import { NextPage } from 'next';
 // ** MUI Imports */
@@ -12,29 +12,36 @@ import { VerticalItem } from 'src/configs/layout';
 
 
 type TProps = {
-
+    open: boolean;
 }
 
-const RecursiveListItems = ({ items, level }: { items: any, level: number }) => {
-    const [openItems, setOpenItems] = useState<{ [Key: string]: boolean }>({})
+type TListItem = {
+    level: number;
+    openItems: { [key: string]: boolean };
+    items: any;
+    setOpenItems: React.Dispatch<React.SetStateAction<{ [key: string]: boolean }>>
+    disabled: boolean;
+}
 
+const RecursiveListItems: NextPage<TListItem> = ({ items, level, openItems, setOpenItems, disabled }) => {
 
     const handleClick = (title: string) => {
-        setOpenItems((prev) => ({
-            ...prev, [title]: !prev[title]
-        }))
+        if (!disabled) {
+            setOpenItems((prev) => ({
+                ...prev, [title]: !prev[title] // lấy tên key là giá trị của title  ví dun DashBoard  = true ,  chứ không phải "DashBoard"
+            }))
+        }
     };
     return (
         <>
             {items?.map((item: any) => {
-                console.log(">>>>", item.title, level);
-
+                // console.log(">>>>", item.title, level);
                 return (
                     <React.Fragment key={item.title}>
                         <ListItemButton
                             style={{
                                 display: "flex",
-                                padding: `8px 10px 8px ${level * 10}px`,
+                                padding: `8px 10px 8px ${level * (level === 1 ? 28 : 20)}px`,
                             }}
                             onClick={
                                 () => {
@@ -46,7 +53,7 @@ const RecursiveListItems = ({ items, level }: { items: any, level: number }) => 
                             <ListItemIcon>
                                 <IconifyIcon icon={item.icon} />
                             </ListItemIcon>
-                            <ListItemText primary={item?.title} />
+                            {!disabled && <ListItemText primary={item?.title} />}
                             {item?.childrens && item?.childrens.length > 0 ? (
                                 openItems[item.title] ? <IconifyIcon icon="eva:arrow-ios-upward-fill" /> : <IconifyIcon icon="eva:arrow-ios-downward-fill" />
                             ) : null}
@@ -56,7 +63,7 @@ const RecursiveListItems = ({ items, level }: { items: any, level: number }) => 
                             item?.childrens && item?.childrens.length > 0 && (
                                 <>
                                     <Collapse in={openItems[item.title]} timeout="auto" unmountOnExit>
-                                        <RecursiveListItems items={item.childrens} level={level + 1} />
+                                        <RecursiveListItems items={item.childrens} level={level + 1} openItems={openItems} setOpenItems={setOpenItems} disabled={disabled} />
                                     </Collapse>
                                 </>
                             )
@@ -68,20 +75,27 @@ const RecursiveListItems = ({ items, level }: { items: any, level: number }) => 
     )
 }
 
-const ListVerticalLayout: NextPage<TProps> = () => {
+const ListVerticalLayout: NextPage<TProps> = ({ open }) => {
 
-    const [openState, setOpenState] = React.useState(true);
+    const [openItems, setOpenItems] = useState<({ [key: string]: boolean })>({});
 
-    const handleClick = () => {
-        setOpenState(!openState);
+    useEffect(() => {
+        if (!open) {
+            setOpenItems({});
+        }
+    }, [open])
+    const handleToggleAll = () => {
+        setOpenItems({});
     };
+
+
     return (
         <List
             style={{ width: '100%', display: "flex", flexDirection: "column", maxWidth: 360, backgroundColor: 'background.paper' }}
             component="nav"
             aria-labelledby="nested-list-subheader"
         >
-            <RecursiveListItems items={VerticalItem} level={1} />
+            <RecursiveListItems disabled={!open} items={VerticalItem} level={1} openItems={openItems} setOpenItems={setOpenItems} />
         </List >
     )
 }
