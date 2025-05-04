@@ -62,7 +62,7 @@ if (themeConfig.routingLoader) {
 }
 
 const Guard = ({ children, authGuard, guestGuard }: GuardProps) => {
-  if (guestGuard) {
+   if (guestGuard) {
     return <GuestGuard fallback={<FallbackSpinner />}>{children}</GuestGuard>
   } else if (!guestGuard && !authGuard) {
     return <>{children}</>
@@ -81,9 +81,9 @@ export default function App(props: ExtendedAppProps) {
 
   const setConfig = Component.setConfig ?? undefined
 
-  const authGuard = Component.authGuard ?? true
+  const authGuard = Component.authGuard ?? true // page user đăng nhập rồi mới cho vào
 
-  const guestGuard = Component.guestGuard ?? false
+  const guestGuard = Component.guestGuard ?? false // page ko đăng nhập vẩn vào được 
 
   const aclAbilities = Component.acl ?? defaultACLObj
 

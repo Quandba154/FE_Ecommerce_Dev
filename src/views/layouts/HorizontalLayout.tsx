@@ -13,6 +13,7 @@ import Badge from '@material-ui/core/Badge';
 import { NextPage } from 'next';
 // ** iCONIFY Imports
 import IconifyIcon from "src/components/Icon"
+import UserDropdown from 'src/components/user-dropdown';
 
 
 const drawerWidth = 240;
@@ -128,11 +129,12 @@ const HorizontalLayout: NextPage<TProps> = ({ open, handleDrawerOpen, isHideMenu
                 <Typography component="h1" variant="h6" color="inherit" noWrap className={classes.title}>
                     Dashboard
                 </Typography>
-                <IconButton color="inherit">
+                <UserDropdown />
+                {/* <IconButton color="inherit">
                     <Badge badgeContent={4} color="secondary">
                         <IconifyIcon icon="mingcute:notification-line" />
                     </Badge>
-                </IconButton>
+                </IconButton> */}
             </Toolbar>
         </AppBar >
     );
