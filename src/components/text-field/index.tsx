@@ -28,7 +28,7 @@ const TextFieldStyled = styled(TextField)<TextFieldProps>(({ theme }) => {
         display: 'none'
       },
       '&:placeholder': {
-        color: 'red'
+        color: theme.palette.primary.main
       },
       '& .MuiInputBase-input': {
         padding: '8px 10px',

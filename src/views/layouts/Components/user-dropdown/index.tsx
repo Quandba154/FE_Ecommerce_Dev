@@ -8,7 +8,6 @@ import MenuItem from '@mui/material/MenuItem';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
-import Typography from '@mui/material/Typography';
 import Tooltip from '@mui/material/Tooltip';
 //**    Next */
 import Image from 'next/image';
@@ -16,6 +15,9 @@ import Image from 'next/image';
 import IconifyIcon from "src/components/Icon"
 // ** Hooks
 import { useAuth } from "src/hooks/useAuth";
+import { useTheme } from '@mui/material';
+import { useTranslation } from 'react-i18next';
+
 
 
 type TProps = {
@@ -37,10 +39,16 @@ const UserDropdown = (props: TProps) => {
         setAnchorEl(null);
     };
 
+    // ** Theme
+    const theme = useTheme();
+
+    //** Translation */
+    const { t } = useTranslation()
+
     return (
         <React.Fragment>
             <Box sx={{ display: 'flex', alignItems: 'center', textAlign: 'center' }}>
-                <Tooltip title="Account">
+                <Tooltip title={t("Account")}>
                     <IconButton
                         onClick={handleClick}
                         size="small"
@@ -100,38 +108,43 @@ const UserDropdown = (props: TProps) => {
                 transformOrigin={{ horizontal: 'right', vertical: 'top' }}
                 anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
             >
-                <MenuItem onClick={handleClose}>
-                    {/* {user?.firstName} {user?.middleName} {user?.lastName} */}
-                    {user?.email}
-                </MenuItem>
-                <MenuItem onClick={handleClose}>
-                    <Avatar /> Profile
-                </MenuItem>
-                <MenuItem onClick={handleClose}>
-                    <Avatar /> My account
-                </MenuItem>
-                <Divider />
-                <MenuItem onClick={handleClose}>
-                    <ListItemIcon>
-                        {/* <PersonAdd fontSize="small" /> */}
-                    </ListItemIcon>
-                    Add another account
-                </MenuItem>
-                <MenuItem onClick={handleClose}>
-                    <ListItemIcon>
-                        {/* <Settings fontSize="small" /> */}
-                    </ListItemIcon>
-                    Settings
-                </MenuItem>
-                <MenuItem onClick={logout}>
-                    <ListItemIcon>
-                        {/* <Logout fontSize="small" /> */}
-                    </ListItemIcon>
-                    Logout
-                </MenuItem>
+                <Box sx={{ backgroundColor: theme.palette.mode === "light" ? theme.palette.customColors.dark : theme.palette.customColors.dark }}>
+                    <MenuItem onClick={handleClose}>
+                        {/* {user?.firstName} {user?.middleName} {user?.lastName} */}
+                        {user?.email}
+                    </MenuItem>
+                    <MenuItem onClick={handleClose}>
+                        <Avatar /> Profile
+                    </MenuItem>
+                    <MenuItem onClick={handleClose}>
+                        <Avatar /> My account
+                    </MenuItem>
+                    <Divider />
+                    <MenuItem onClick={handleClose}>
+                        <ListItemIcon>
+                            {/* <PersonAdd fontSize="small" /> */}
+                        </ListItemIcon>
+                        Add another account
+                    </MenuItem>
+                    <MenuItem onClick={handleClose}>
+                        <ListItemIcon>
+                            {/* <Settings fontSize="small" /> */}
+                        </ListItemIcon>
+                        Settings
+                    </MenuItem>
+                    <MenuItem onClick={logout}>
+                        <ListItemIcon>
+                            {/* <Logout fontSize="small" /> */}
+                        </ListItemIcon>
+                        Logout
+                    </MenuItem>
+                </Box>
             </Menu>
-        </React.Fragment>
+        </React.Fragment >
     )
 }
 
 export default UserDropdown
+
+
+// sx={{ backgroundColor: theme.palette.mode === "light" ? theme.palette.grey[100] : theme.palette.grey[900] }}
