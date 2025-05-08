@@ -92,7 +92,7 @@ export default function App(props: ExtendedAppProps) {
 
   const authGuard = Component.authGuard ?? true // page user đăng nhập rồi mới cho vào
 
-  const guestGuard = Component.guestGuard ?? false // page ko đăng nhập vẩn vào được 
+  const guestGuard = Component.guestGuard ?? false // page không đăng nhập vẩn vào được
 
   const aclAbilities = Component.acl ?? defaultACLObj
 
