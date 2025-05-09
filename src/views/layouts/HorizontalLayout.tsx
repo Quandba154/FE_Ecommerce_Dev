@@ -14,8 +14,14 @@ import IconifyIcon from "src/components/Icon"
 import UserDropdown from 'src/views/layouts/Components/user-dropdown';
 // darkmode
 import ModeToggle from './Components/mode-toggle';
-import { AppBarProps, Badge, duration, easing, styled } from '@mui/material';
+import { AppBarProps, Badge, Button, duration, easing, styled } from '@mui/material';
 import LanguageDropdown from './Components/language-dropdown';
+// ** hook
+import { useAuth } from 'src/hooks/useAuth';
+//router
+import { useRouter } from 'next/router';
+// CONFIG ROUTE
+import { ROUTE_CONFIG } from 'src/configs/route';
 
 
 const drawerWidth = 240;
@@ -91,6 +97,10 @@ type TProps = {
 const HorizontalLayout: NextPage<TProps> = ({ open, handleDrawerOpen, isHideMenu }) => {
     const classes = useStyles();
 
+    const { user } = useAuth()
+
+    const router = useRouter();
+
 
     return (
         <AppBar position="absolute" className={clsx(classes.appBar, open && classes.appBarShift)}>
@@ -111,7 +121,13 @@ const HorizontalLayout: NextPage<TProps> = ({ open, handleDrawerOpen, isHideMenu
                 </Typography>
                 <LanguageDropdown></LanguageDropdown>
                 <ModeToggle></ModeToggle>
-                <UserDropdown />
+                {user ? (
+                    <UserDropdown />
+                ) : (
+                    <Button sx={{ ml: 2, width: "auto" }} variant='contained' color='primary' onClick={() => router.push(ROUTE_CONFIG.LOGIN)}>
+                        Sign In
+                    </Button>
+                )}
             </Toolbar>
         </AppBar >
     );

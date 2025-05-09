@@ -30,7 +30,7 @@ const GuestGuard = (props: GuestGuardProps) => {
     }
   }, [router.route])
 
-  if (authContext.loading) {  // có thông tin đăng nhập ròi mà chứ có authContext thì cứ loading
+  if (authContext.loading || (!authContext.loading && authContext.user !== null)) {  // có thông tin đăng nhập ròi mà chứ có authContext thì cứ loading
     return fallback
   }
 
