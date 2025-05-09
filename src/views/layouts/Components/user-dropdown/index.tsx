@@ -17,6 +17,8 @@ import IconifyIcon from "src/components/Icon"
 import { useAuth } from "src/hooks/useAuth";
 import { useTheme } from '@mui/material';
 import { useTranslation } from 'react-i18next';
+import { useRouter } from 'next/router';
+import { ROUTE_CONFIG } from 'src/configs/route';
 
 
 
@@ -31,6 +33,8 @@ const UserDropdown = (props: TProps) => {
 
     const open = Boolean(anchorEl);
 
+    const router = useRouter();
+
     const handleClick = (event: React.MouseEvent<HTMLElement>) => {
         setAnchorEl(event.currentTarget);
     };
@@ -38,6 +42,11 @@ const UserDropdown = (props: TProps) => {
     const handleClose = () => {
         setAnchorEl(null);
     };
+
+    const handleNavigateMyProfile = () => {
+        router.push(`/${ROUTE_CONFIG.MY_PROFILE}`)
+        handleClose()
+    }
 
     // ** Theme
     const theme = useTheme();
@@ -113,25 +122,10 @@ const UserDropdown = (props: TProps) => {
                         {/* {user?.firstName} {user?.middleName} {user?.lastName} */}
                         {user?.email}
                     </MenuItem>
-                    <MenuItem onClick={handleClose}>
-                        <Avatar /> Profile
-                    </MenuItem>
-                    <MenuItem onClick={handleClose}>
-                        <Avatar /> My account
+                    <MenuItem onClick={handleNavigateMyProfile}>
+                        <Avatar />{t("my_profile")}
                     </MenuItem>
                     <Divider />
-                    <MenuItem onClick={handleClose}>
-                        <ListItemIcon>
-                            {/* <PersonAdd fontSize="small" /> */}
-                        </ListItemIcon>
-                        Add another account
-                    </MenuItem>
-                    <MenuItem onClick={handleClose}>
-                        <ListItemIcon>
-                            {/* <Settings fontSize="small" /> */}
-                        </ListItemIcon>
-                        Settings
-                    </MenuItem>
                     <MenuItem onClick={logout}>
                         <ListItemIcon>
                             {/* <Logout fontSize="small" /> */}

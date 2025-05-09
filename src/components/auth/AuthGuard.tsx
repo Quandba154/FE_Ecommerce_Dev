@@ -28,7 +28,7 @@ const AuthGuard = (props: AuthGuardProps) => {
       return
     }
     if (authContext.user === null && !window.localStorage.getItem(ACCESS_TOKEN) && !window.localStorage.getItem(USER_DATA)) {
-      if (router.asPath !== "/") { // nếu hết hạn token thì login lại vẩn vào trang gần nhất
+      if (router.asPath !== "/" && router.asPath !== "/login"  ) { // nếu hết hạn token thì login lại vẩn vào trang gần nhất
         router.replace({
           pathname: "/login",
           query: { returnUrl: router.asPath } // ghi nhớ đg dẩn đoạn ch đăng nhập sau đăng nhập lấy cái này đăng nhập vào đg dẩn này
