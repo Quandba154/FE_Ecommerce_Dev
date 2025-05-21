@@ -22,7 +22,7 @@ import { yupResolver } from '@hookform/resolvers/yup'
 // ** REGEX
 import { EMAIL_REG, PASSWORD_REG } from 'src/configs/regex'
 // ** React
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 // ** Icon
 import Icon from 'src/components/Icon'
 // ** Images
@@ -30,6 +30,15 @@ import RegisterDark from '/public/images/register-dark.png'
 import RegisterLight from '/public/images/register-light.png'
 import GoogleSvg from '/public/svgs/google.svg'
 import facebookSvg from '/public/svgs/facebook.svg'
+// ** Redux_dispatch
+import { useDispatch, useSelector } from 'react-redux'
+import { AppDispatch, RootState } from 'src/stores'
+import { registerAuthAsync } from 'src/stores/apps/auth/action'
+import toast from 'react-hot-toast'
+import FallbackSpinner from 'src/components/fall-back'
+import { resetInitialState } from 'src/stores/apps/auth'
+import { useRouter } from 'next/router'
+import { ROUTE_CONFIG } from 'src/configs/route'
 
 
 type TProps = {}
@@ -44,6 +53,14 @@ const RegisterPage: NextPage<TProps> = () => {
   // ** State
   const [showPassWord, setShowPassWord] = useState(false)
   const [showConfirmPassWord, setShowConfirmPassWord] = useState(false)
+
+  // ** redux
+  const dispatch: AppDispatch = useDispatch()
+
+  //** router */
+  const router = useRouter()
+
+  const { isLoading, isError, isSuccess, message } = useSelector((state: RootState) => state.auth)
 
   // ** Theme
   const theme = useTheme();
@@ -77,13 +94,26 @@ const RegisterPage: NextPage<TProps> = () => {
     mode: 'onBlur',
     resolver: yupResolver(schema)
   })
-  //   console.log('errors', { errors })
 
   const onSubmit = (data: { email: string; password: string }) => {
-    console.log('data', { data, errors })
+    dispatch(registerAuthAsync({ email: data.email, password: data.password }))
   }
+
+  useEffect(() => {
+    if (message) {
+      if (isError) {
+        toast.error(message)
+      } else if (isSuccess) {
+        toast.success(message)
+        router.push(ROUTE_CONFIG.LOGIN)
+      }
+      dispatch(resetInitialState())
+    }
+  }, [isError, isSuccess, message])
+
   return (
     <>
+      {isLoading && <FallbackSpinner />}
       <Box sx={{ height: '100vh', width: '100vw', backgroundColor: theme.palette.background.paper, display: "flex", alignItems: "center", padding: "20px" }}>
         <Box display={{
           xs: "none",
