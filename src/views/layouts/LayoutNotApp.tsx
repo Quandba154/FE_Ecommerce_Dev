@@ -28,7 +28,7 @@ const LayoutNotApp: NextPage<TProps> = ({ children }) => {
     return (
         <Box sx={{ display: 'flex' }}>
             <CssBaseline />
-            <HorizontalLayout open={false} handleDrawerOpen={() => {}} isHideMenu />
+            <HorizontalLayout open={false} handleDrawerOpen={() => { }} isHideMenu />
             <Box
                 component="main"
                 sx={{
@@ -42,7 +42,7 @@ const LayoutNotApp: NextPage<TProps> = ({ children }) => {
                 }}
             >
                 <Toolbar />
-                <Container maxWidth="lg" sx={{ pt: 4, pb: 4 }}>
+                <Container sx={{ m: 4, width: "calc(100vw-32px)", maxWidth: "unset !important", overflow: "auto", maxHeight: `calc(100vh - ${theme.mixins.toolbar.minHeight} - 32px)`, padding: " 0 !important", borderRadius: "15px" }}>
                     {children || <Box />}
                 </Container>
             </Box>
