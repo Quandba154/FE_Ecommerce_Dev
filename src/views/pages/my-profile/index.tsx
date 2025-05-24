@@ -45,6 +45,7 @@ import { resetInitialState } from 'src/stores/apps/auth'
 import toast from 'react-hot-toast'
 import { Router } from 'next/router'
 import FallbackSpinner from 'src/components/fall-back'
+import Spinner from 'src/components/spinner'
 
 
 type TProps = {}
@@ -185,7 +186,7 @@ const MyProfilePage: NextPage<TProps> = () => {
   }
   return (
     <>
-      {loading || (isLoading && <FallbackSpinner />)}
+      {loading || (isLoading && <Spinner />)}
       <form onSubmit={handleSubmit(onSubmit)} autoComplete='off' noValidate >
         <Grid container  >
           <Grid container item md={6} xs={12} sx={{ backgroundColor: theme.palette.background.paper, borderRadius: "15px", py: 5, px: 4 }} >
