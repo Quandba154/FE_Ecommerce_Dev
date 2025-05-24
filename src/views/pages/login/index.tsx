@@ -1,4 +1,5 @@
-// "use client"
+"use client"
+
 import Image from 'next/image'
 import { NextPage } from 'next'
 import Link from 'next/link'
@@ -38,8 +39,6 @@ import { useAuth } from 'src/hooks/useAuth'
 
 
 
-
-
 type TProps = {}
 
 type TDefaultValues = {
@@ -54,7 +53,6 @@ const LoginPage: NextPage<TProps> = () => {
 
   // ** Context 
   const { login } = useAuth();
-
 
   // ** Theme
   const theme = useTheme();
@@ -244,6 +242,3 @@ const LoginPage: NextPage<TProps> = () => {
 }
 
 export default LoginPage
-
-
-///sdksml
