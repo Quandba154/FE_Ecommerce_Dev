@@ -36,7 +36,11 @@ import facebookSvg from '/public/svgs/facebook.svg'
 
 // ** Hooks 
 import { useAuth } from 'src/hooks/useAuth'
+import toast from 'react-hot-toast'
 
+// ** translation 
+import { t } from "i18next"
+import { useTranslation } from 'react-i18next';
 
 
 type TProps = {}
@@ -75,7 +79,8 @@ const LoginPage: NextPage<TProps> = () => {
   const {
     handleSubmit,
     control,
-    formState: { errors }
+    formState: { errors },
+    setError
   } = useForm({
     defaultValues,
     mode: 'onBlur',
@@ -85,10 +90,19 @@ const LoginPage: NextPage<TProps> = () => {
 
   const onSubmit = (data: { email: string; password: string }) => {
     if (!Object.keys(errors)?.length) {
-      login({ ...data, rememberMe: isRemember })
+      login(
+        { ...data, rememberMe: isRemember },
+        (err) => {
+          if (typeof err === 'object' && err !== null && 'response' in err && (err as any).response?.data?.typeError === 'INVALID') {
+            toast.error(t("the_email_or_password_is_incorrect"));
+          }
+        }
+      );
     }
-    console.log('data', { data, errors })
-  }
+    console.log("data", { data, errors });
+  };
+
+
   return (
     <>
       <Box sx={{ height: '100vh', width: '100vw', backgroundColor: theme.palette.background.paper, display: "flex", alignItems: "center", padding: "20px" }}>
@@ -113,7 +127,7 @@ const LoginPage: NextPage<TProps> = () => {
             }}
           >
             <Typography component='h1' variant='h5'>
-              Sign in
+              {t("Sign_In")}
             </Typography>
             <form onSubmit={handleSubmit(onSubmit)} autoComplete='off' noValidate>
               <Box sx={{ mt: 2, width: "300px" }}>
@@ -190,10 +204,10 @@ const LoginPage: NextPage<TProps> = () => {
                       onChange={e => setIsRemember(e.target.checked)}
                     />
                   }
-                  label='Remember me'
+                  label={t("Remember_me")}
                 />
                 <Typography variant='body2'>
-                  Forgot password?
+                  {t("Forgot_password?")}
                 </Typography>
               </Box>
               <Button sx={{ mb: 5 }} type='submit' fullWidth variant='contained' color='primary'>
@@ -201,13 +215,13 @@ const LoginPage: NextPage<TProps> = () => {
               </Button>
               <Box sx={{ display: 'flex', justifyContent: "center", alignItems: 'center', gap: "4px" }}>
                 <Typography >
-                  {"Don't have an account?"}
+                  {t("Don't have an account?")}
                 </Typography>
                 <Link style={{ color: theme.palette.primary.main }} href='/register'>
-                  {"Sign Up"}
+                  {t("Sign_up")}
                 </Link>
               </Box>
-              <Typography sx={{ textAlign: "center", mt: 2, mb: 2 }}>Or</Typography>
+              <Typography sx={{ textAlign: "center", mt: 2, mb: 2 }}>{t("Or")}</Typography>
               <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", gap: 10 }}>
                 <IconButton sx={{ color: theme.palette.error.main }}>
                   <Image

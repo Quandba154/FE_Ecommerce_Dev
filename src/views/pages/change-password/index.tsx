@@ -7,7 +7,6 @@ import {
   Box,
   Button,
   CssBaseline,
-  FormControlLabel,
   IconButton,
   InputAdornment,
   Typography,
@@ -33,16 +32,18 @@ import facebookSvg from '/public/svgs/facebook.svg'
 // ** Redux_dispatch
 import { useDispatch, useSelector } from 'react-redux'
 import { AppDispatch, RootState } from 'src/stores'
-import { registerAuthAsync } from 'src/stores/apps/auth/action'
-import toast from 'react-hot-toast'
+import { changePasswordMeAsync } from 'src/stores/apps/auth/action'
 import FallbackSpinner from 'src/components/fall-back'
 import { resetInitialState } from 'src/stores/apps/auth'
 import { useRouter } from 'next/router'
 import { ROUTE_CONFIG } from 'src/configs/route'
-
+// ** Other
+import toast from 'react-hot-toast'
 // ** translation 
 import { t } from "i18next"
 import { useTranslation } from 'react-i18next';
+import { useAuth } from 'src/hooks/useAuth'
+
 
 
 
@@ -50,15 +51,16 @@ import { useTranslation } from 'react-i18next';
 type TProps = {}
 
 type TDefaultValues = {
-  email: string,
-  password: string,
-  confirmPassword: string
+  currentPassword: string,
+  newPassword: string,
+  confirmNewPassword: string
 }
 
-const RegisterPage: NextPage<TProps> = () => {
+const ChangePasswordPage: NextPage<TProps> = () => {
   // ** State
-  const [showPassWord, setShowPassWord] = useState(false)
-  const [showConfirmPassWord, setShowConfirmPassWord] = useState(false)
+  const [showCurrentPassWord, setShowCurrentPassWord] = useState(false)
+  const [showNewPassWord, setNewShowPassWord] = useState(false)
+  const [showConfirmNewPassWord, setShowConfirmNewPassWord] = useState(false)
 
   // ** redux
   const dispatch: AppDispatch = useDispatch()
@@ -66,7 +68,9 @@ const RegisterPage: NextPage<TProps> = () => {
   //** router */
   const router = useRouter()
 
-  const { isLoading, isError, isSuccess, message } = useSelector((state: RootState) => state.auth)
+  const { logout } = useAuth();
+
+  const { isLoading, isErrorChangePassword, isSuccessChangePassword, messageChangePassword } = useSelector((state: RootState) => state.auth)
 
   // ** Theme
   const theme = useTheme();
@@ -74,22 +78,25 @@ const RegisterPage: NextPage<TProps> = () => {
   const schema = yup
     .object()
     .shape({
-      email: yup.string().required('Email is required').matches(EMAIL_REG, 'The fail email format'),
-      password: yup
+      currentPassword: yup
         .string()
         .required('Password is required')
         .matches(PASSWORD_REG, 'The password format is content characters , special characters, numbers'),
-      confirmPassword: yup
+      newPassword: yup
+        .string()
+        .required('Password is required')
+        .matches(PASSWORD_REG, 'The password format is content characters , special characters, numbers'),
+      confirmNewPassword: yup
         .string()
         .required('ConfirmPassword is required')
-        .matches(PASSWORD_REG, 'The password and confirm password must be the same').oneOf([yup.ref("password"), ""], "The confirm password must be the same password')")
+        .matches(PASSWORD_REG, 'The password and confirm password must be the same').oneOf([yup.ref("newPassword"), ""], "The confirm password must be the same password')")
     })
 
 
   const defaultValues: TDefaultValues = {
-    email: '',
-    password: '',
-    confirmPassword: ''
+    currentPassword: '',
+    newPassword: '',
+    confirmNewPassword: ''
   }
   const {
     handleSubmit,
@@ -101,26 +108,30 @@ const RegisterPage: NextPage<TProps> = () => {
     resolver: yupResolver(schema)
   })
 
-  const onSubmit = (data: { email: string; password: string }) => {
-    dispatch(registerAuthAsync({ email: data.email, password: data.password }))
+  const onSubmit = (data: { currentPassword: string; newPassword: string }) => {
+    if (!Object.keys(errors)?.length) {
+      dispatch(changePasswordMeAsync({ currentPassword: data.currentPassword, newPassword: data.newPassword }))
+    }
   }
 
   useEffect(() => {
-    if (message) {
-      if (isError) {
-        toast.error(message)
-      } else if (isSuccess) {
-        toast.success(message)
-        router.push(ROUTE_CONFIG.LOGIN)
+    if (messageChangePassword) {
+      if (isErrorChangePassword) {
+        toast.error(messageChangePassword)
+      } else if (isSuccessChangePassword) {
+        toast.success(messageChangePassword)
+        setTimeout(() => {
+          logout()
+        }, 500)
       }
       dispatch(resetInitialState())
     }
-  }, [isError, isSuccess, message])
+  }, [isErrorChangePassword, isSuccessChangePassword, messageChangePassword])
 
   return (
     <>
       {isLoading && <FallbackSpinner />}
-      <Box sx={{ height: '100vh', width: '100vw', backgroundColor: theme.palette.background.paper, display: "flex", alignItems: "center", padding: "20px" }}>
+      <Box sx={{ backgroundColor: theme.palette.background.paper, display: "flex", alignItems: "center", padding: "20px" }}>
         <Box display={{
           xs: "none",
           sm: "flex"
@@ -155,16 +166,34 @@ const RegisterPage: NextPage<TProps> = () => {
                     <CustomTextField
                       required
                       fullWidth
-                      label='Email'
-                      placeholder='Input email'
+                      label={t("Current_password")}
+                      placeholder={t("Enter_current_password")}
                       onChange={onChange}
                       onBlur={onBlur}
                       value={value}
-                      error={Boolean(errors?.email)}
-                      helperText={errors?.email ? errors?.email?.message : ''}
+                      error={Boolean(errors?.currentPassword)}
+                      helperText={errors?.currentPassword ? errors?.currentPassword?.message : ''}
+                      type={showCurrentPassWord ? 'text' : 'password'}
+                      InputProps={{
+                        endAdornment: (
+                          <InputAdornment position='end'>
+                            <IconButton
+                              edge='end'
+                              onClick={() => setShowCurrentPassWord(!showCurrentPassWord)}
+                              aria-label='toggle password visibility'
+                            >
+                              {showCurrentPassWord ? (
+                                <Icon icon='material-symbols:visibility-outline' />
+                              ) : (
+                                <Icon icon='material-symbols:visibility-off-outline-rounded' />
+                              )}
+                            </IconButton>
+                          </InputAdornment>
+                        )
+                      }}
                     />
                   )}
-                  name='email'
+                  name='currentPassword'
                 />
               </Box>
               <Box sx={{ mt: 2, width: "300px" }}>
@@ -177,23 +206,23 @@ const RegisterPage: NextPage<TProps> = () => {
                     <CustomTextField
                       required
                       fullWidth
-                      label='Password'
-                      placeholder='Input password'
+                      label={t("New_password")}
+                      placeholder={t("Enter_new_password")}
                       onChange={onChange}
                       onBlur={onBlur}
                       value={value}
-                      error={Boolean(errors?.password)}
-                      helperText={errors?.password ? errors?.password?.message : ''}
-                      type={showPassWord ? 'text' : 'password'}
+                      error={Boolean(errors?.newPassword)}
+                      helperText={errors?.newPassword ? errors?.newPassword?.message : ''}
+                      type={showNewPassWord ? 'text' : 'password'}
                       InputProps={{
                         endAdornment: (
                           <InputAdornment position='end'>
                             <IconButton
                               edge='end'
-                              onClick={() => setShowPassWord(!showPassWord)}
+                              onClick={() => setNewShowPassWord(!showNewPassWord)}
                               aria-label='toggle password visibility'
                             >
-                              {showPassWord ? (
+                              {showNewPassWord ? (
                                 <Icon icon='material-symbols:visibility-outline' />
                               ) : (
                                 <Icon icon='material-symbols:visibility-off-outline-rounded' />
@@ -204,7 +233,7 @@ const RegisterPage: NextPage<TProps> = () => {
                       }}
                     />
                   )}
-                  name='password'
+                  name='newPassword'
                 />
               </Box>
               <Box sx={{ mt: 2, width: "300px" }}>
@@ -217,23 +246,23 @@ const RegisterPage: NextPage<TProps> = () => {
                     <CustomTextField
                       required
                       fullWidth
-                      label='Confirm Password'
-                      placeholder='Input confirm password'
+                      label={t("Confirm_new_password")}
+                      placeholder={t("Enter_confirm_new_password")}
                       onChange={onChange}
                       onBlur={onBlur}
                       value={value}
-                      error={Boolean(errors?.confirmPassword)}
-                      helperText={errors?.confirmPassword ? errors?.confirmPassword?.message : ''}
-                      type={showConfirmPassWord ? 'text' : 'password'}
+                      error={Boolean(errors?.confirmNewPassword)}
+                      helperText={errors?.confirmNewPassword ? errors?.confirmNewPassword?.message : ''}
+                      type={showConfirmNewPassWord ? 'text' : 'password'}
                       InputProps={{
                         endAdornment: (
                           <InputAdornment position='end'>
                             <IconButton
                               edge='end'
-                              onClick={() => setShowConfirmPassWord(!showConfirmPassWord)}
+                              onClick={() => setShowConfirmNewPassWord(!showConfirmNewPassWord)}
                               aria-label='toggle password visibility'
                             >
-                              {showConfirmPassWord ? (
+                              {showConfirmNewPassWord ? (
                                 <Icon icon='material-symbols:visibility-outline' />
                               ) : (
                                 <Icon icon='material-symbols:visibility-off-outline-rounded' />
@@ -244,13 +273,13 @@ const RegisterPage: NextPage<TProps> = () => {
                       }}
                     />
                   )}
-                  name='confirmPassword'
+                  name='confirmNewPassword'
                 />
               </Box>
 
 
               <Button sx={{ mt: 5, mb: 5 }} type='submit' fullWidth variant='contained' color='primary'>
-                {t("Register")}
+                {t("Change_password")}
               </Button>
               <Box sx={{ display: 'flex', justifyContent: "center", alignItems: 'center', gap: "4px" }}>
                 <Typography >
@@ -260,7 +289,7 @@ const RegisterPage: NextPage<TProps> = () => {
                   {t("Sign_in")}
                 </Link>
               </Box>
-              <Typography sx={{ textAlign: "center", mt: 2, mb: 2 }}>{t("Or")}</Typography>
+              <Typography sx={{ textAlign: "center", mt: 2, mb: 2 }}>Or</Typography>
               <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", gap: 10 }}>
                 <IconButton sx={{ color: theme.palette.error.main }}>
                   <Image
@@ -294,6 +323,6 @@ const RegisterPage: NextPage<TProps> = () => {
   )
 }
 
-export default RegisterPage;
+export default ChangePasswordPage;
 
 

@@ -16,12 +16,15 @@ import IconifyIcon from "src/components/Icon"
 // ** Hooks
 import { useAuth } from "src/hooks/useAuth";
 import { Badge, Typography, useTheme } from '@mui/material';
-import { useTranslation } from 'react-i18next';
 import { useRouter } from 'next/router';
 import { ROUTE_CONFIG } from 'src/configs/route';
 import { styled } from '@mui/material/styles';
 // ** Utils
 import { toFullName } from 'src/utils';
+
+// ** translation 
+import { t } from "i18next"
+import { useTranslation } from 'react-i18next';
 
 
 
@@ -57,6 +60,9 @@ const StyledBadge = styled(Badge)(({ theme }) => ({
 }));
 
 const UserDropdown = (props: TProps) => {
+    //** Translation */
+    const { i18n } = useTranslation();
+
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
 
     const { user, logout } = useAuth();
@@ -79,11 +85,14 @@ const UserDropdown = (props: TProps) => {
         handleClose()
     }
 
+    const handleNavigateChangePassword = () => {
+        router.replace(ROUTE_CONFIG.CHANGE_PASSWORD)
+        handleClose()
+    }
+
     // ** Theme
     const theme = useTheme();
 
-    //** Translation */
-    const { t, i18n } = useTranslation()
 
     return (
         <React.Fragment>
@@ -186,13 +195,17 @@ const UserDropdown = (props: TProps) => {
                         {t("my_profile")}
                     </MenuItem>
                     <Divider />
+                    <MenuItem onClick={handleNavigateChangePassword}>
+                        <Avatar sx={{ backgroundColor: "transparent" }}>
+                            <IconifyIcon icon="material-symbols-light:logout" />
+                        </Avatar>
+                        {t("Change_password")}
+                    </MenuItem>
                     <MenuItem onClick={logout}>
                         <Avatar sx={{ backgroundColor: "transparent" }}>
                             <IconifyIcon icon="material-symbols-light:logout" />
                         </Avatar>
-                        <ListItemIcon>
-                        </ListItemIcon>
-                        Logout
+                        {t("Logout")}
                     </MenuItem>
                 </Box>
             </Menu>
