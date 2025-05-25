@@ -1,7 +1,6 @@
-// "use client"
-import Image from 'next/image'
+"use client"
+
 import { NextPage } from 'next'
-import Link from 'next/link'
 //** Mui
 import {
   Avatar,
@@ -247,8 +246,6 @@ const MyProfilePage: NextPage<TProps> = () => {
                     name='email'
                   />
                 </Grid>
-
-
                 <Grid item md={6} xs={12}>
                   <Controller
                     control={control}
@@ -315,7 +312,6 @@ const MyProfilePage: NextPage<TProps> = () => {
                 </Grid>
                 <Grid item md={6} xs={12}>
                   <Controller
-                    name='city'
                     control={control}
                     render={({ field: { onChange, onBlur, value } }) => (
                       <CustomTextField
@@ -328,6 +324,7 @@ const MyProfilePage: NextPage<TProps> = () => {
                         value={value}
                       />
                     )}
+                    name='city'
                   />
                 </Grid>
                 <Grid item md={6} xs={12}>

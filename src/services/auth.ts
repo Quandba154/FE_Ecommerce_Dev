@@ -2,7 +2,7 @@ import axios from 'axios'
 //** Config */
 import { CONFIG_API } from 'src/configs/api'
 //** Types */
-import { TLoginAuth, TRegisterAuth } from 'src/types/auth'
+import { TLoginAuth, TRegisterAuth, TChangePassword } from 'src/types/auth'
 // ** instanceAxios
 import instanceAxios from 'src/helpers/axios'
 
@@ -17,13 +17,8 @@ export const loginAuth = async (data: TLoginAuth) => {
 }
 
 export const logoutAuth = async () => {
-  try {
-    const res = await instanceAxios.post(`${CONFIG_API.AUTH.INDEX}/logout`)
-    return res.data
-  } catch (error) {
-    console.error('Error during login:', error)
-    throw error
-  }
+  const res = await axios.post(`${CONFIG_API.AUTH.INDEX}/logout`)
+  return res.data
 }
 
 export const registerAuth = async (data: TRegisterAuth) => {
@@ -44,6 +39,16 @@ export const updateAuthMe = async (data: any) => {
 export const getAuthMe = async () => {
   try {
     const res = await instanceAxios.get(`${CONFIG_API.AUTH.INDEX}/me`)
+    return res.data
+  } catch (error) {
+    console.error('Error during login:', error)
+    throw error
+  }
+}
+
+export const changePasswordMe = async (data: TChangePassword) => {
+  try {
+    const res = await instanceAxios.patch(`${CONFIG_API.AUTH.INDEX}/change-password`, data)
     return res.data
   } catch (error) {
     console.error('Error during login:', error)

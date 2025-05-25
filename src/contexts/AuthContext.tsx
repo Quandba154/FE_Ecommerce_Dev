@@ -21,6 +21,11 @@ import { CONFIG_API } from 'src/configs/api'
 import { clearLocalUserData, setLocalUserData } from 'src/helpers/storage'
 // ** instance axios
 import instanceAxios from 'src/helpers/axios'
+import toast from 'react-hot-toast'
+
+// ** translation 
+import { t } from "i18next"
+import { useTranslation } from 'react-i18next';
 
 // ** Defaults
 const defaultProvider: AuthValuesType = {
@@ -50,7 +55,6 @@ const AuthProvider = ({ children }: Props) => {
     const initAuth = async (): Promise<void> => {
       const storedToken = window.localStorage.getItem(authConfig.storageTokenKeyName)
       console.log("storedToken::", { storedToken });
-
       if (storedToken) {
         setLoading(true)
         await instanceAxios
@@ -76,13 +80,12 @@ const AuthProvider = ({ children }: Props) => {
   }, [])
 
   const handleLogin = (params: LoginParams, errorCallback?: ErrCallbackType) => {
-    setLoading(true)
     loginAuth({ email: params.email, password: params.password })
       .then(async response => {
-        setLoading(false)
         params.rememberMe
           ? setLocalUserData(JSON.stringify(response.data.user), response.data.access_token, response.data.refresh_token)
           : null
+        toast.success(t("Login_success"));
         const returnUrl = router.query.returnUrl
         setUser({ ...response.data.user })
         // params.rememberMe ? window.localStorage.setItem('userData', JSON.stringify(response.data.user)) : null
@@ -91,7 +94,6 @@ const AuthProvider = ({ children }: Props) => {
         router.replace(redirectURL as string)
       })
       .catch(err => {
-        setLoading(false)
         if (errorCallback) errorCallback(err)
       })
   }
