@@ -33,5 +33,6 @@
   "Enter_new_password": "Enter new password",
   "Confirm_new_password": "Confirm new password",
   "Enter_confirm_new_password": "Enter confirm new password",
-  "Or": "Or"
+  "Or": "Or",
+  "no_data": "No data available"
 }
