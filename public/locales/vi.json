@@ -33,5 +33,6 @@
   "Enter_new_password": "Nhập mật khẩu mới",
   "Confirm_new_password": "Xác nhận mật khẩu mới",
   "Enter_confirm_new_password": "Nhập xác nhận mật khẩu mới",
-  "Or": "Hoặc"
+  "Or": "Hoặc",
+  "no_data": "Không có dữ liệu"
 }

@@ -5,7 +5,7 @@ import { ReactNode, ReactElement, useEffect } from 'react'
 // ** Config
 import { ACCESS_TOKEN, USER_DATA } from 'src/configs/auth'
 // ** Helper
-import { clearLocalUserData } from 'src/helpers/storage'
+import { clearLocalUserData, getTemporaryToken } from 'src/helpers/storage'
 // ** Hook
 import { useAuth } from 'src/hooks/useAuth'
 
@@ -24,10 +24,11 @@ const AuthGuard = (props: AuthGuardProps) => {
   // console.log(">>>", router);
 
   useEffect(() => {
+    const { temporaryToken } = getTemporaryToken();
     if (!router.isReady) { // bằng false là chưa first render xong
       return
     }
-    if (authContext.user === null && !window.localStorage.getItem(ACCESS_TOKEN) && !window.localStorage.getItem(USER_DATA)) {
+    if (authContext.user === null && !window.localStorage.getItem(ACCESS_TOKEN) && !window.localStorage.getItem(USER_DATA) && !temporaryToken) {
       if (router.asPath !== "/" && router.asPath !== "/login") { // nếu hết hạn token thì login lại vẩn vào trang gần nhất
         router.replace({
           pathname: "/login",
@@ -40,6 +41,18 @@ const AuthGuard = (props: AuthGuardProps) => {
       clearLocalUserData() // sang trang mới login lại
     }
   }, [router.route])
+
+  useEffect(() => {
+    const handleUnload = () => {
+      clearLocalUserData(); // khi user null thì xóa localStorage
+      // if (authContext.user === null) {
+      // }
+      window.addEventListener('beforeunload', handleUnload);
+      return () => {
+        window.removeEventListener('beforeunload', handleUnload);
+      }
+    }
+  }, [])
 
   if (authContext.loading || authContext.user === null) {
     return fallback;

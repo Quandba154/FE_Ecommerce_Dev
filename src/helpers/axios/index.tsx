@@ -3,7 +3,7 @@ import axios from "axios";
 //** */ config 
 import { BASE_URL, CONFIG_API } from "src/configs/api";
 // helper
-import { clearLocalUserData, getLocalUserData } from "../storage";
+import { clearLocalUserData, clearTemporaryToken, getLocalUserData, getTemporaryToken, setLocalUserData, setTemporaryToken } from "../storage";
 // ** jwt
 import { jwtDecode } from "jwt-decode"
 import { FC } from "react";
@@ -31,20 +31,28 @@ const handleRedirectLogin = (router: NextRouter, setUser: (data: UserDataType | 
     }
     setUser(null)
     clearLocalUserData()
+    clearTemporaryToken()
 }
 
 const AxiosInterceptor: FC<TAxiosInterceptor> = ({ children }) => {
     const router = useRouter()
     const { accessToken, refreshToken } = getLocalUserData()
-    const { setUser } = useAuth()
+    const { temporaryToken } = getTemporaryToken()
+    const { setUser, user } = useAuth()
 
     instanceAxios.interceptors.request.use(async config => {// cái config là để khi chạy qua thì gán token vào luôn
         // console.log("config", { config });
 
-        if (accessToken) {
-            const decodeAccessToken: any = jwtDecode(accessToken)
+        if (accessToken || temporaryToken) {
+            let decodeAccessToken: any = {}
+            if (accessToken) {
+                decodeAccessToken = jwtDecode(accessToken)
+            } else if (temporaryToken) {
+                decodeAccessToken = jwtDecode(temporaryToken)
+            }
+
             if (decodeAccessToken?.exp < Date.now() / 1000) {
-                config.headers["Authorization"] = `Bearer ${accessToken}`
+                config.headers["Authorization"] = `Bearer ${accessToken ? accessToken : temporaryToken}`
             } else {
                 if (refreshToken) {
                     const decodeRefreshToken: any = jwtDecode(refreshToken)
@@ -57,6 +65,9 @@ const AxiosInterceptor: FC<TAxiosInterceptor> = ({ children }) => {
                             const newAccessToken = res?.data?.data?.access_token
                             if (newAccessToken) {
                                 config.headers["Authorization"] = `Bearer ${newAccessToken}`
+                                if (accessToken) {
+                                    setLocalUserData(JSON.stringify(user), newAccessToken, refreshToken)
+                                }
                             } else {
                                 handleRedirectLogin(router, setUser)
                             }
