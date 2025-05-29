@@ -24,12 +24,19 @@ type TCustomSelect = SelectProps & {
 
 const StyleSelect = styled(Select)(({ theme }) => ({
     "& .MuiSelect-select.MuiSelect-outlined.MuiInputBase-input": {
-        padding: "8px 8px 8px 10px !important",
+        padding: "4px 8px 8px 10px !important",
         height: "38px",
         boxSizing: "border-box",
     },
     "legend": {
         display: "none"
+    },
+    "svg" : {
+      bottom : "calc(50% - .6em) !important"
+    },
+    ".MuiOutlinedInput-notchedOutline": {
+        top: "-4px !important",
+        bottom: "4px !important"
     }
 }));
 
