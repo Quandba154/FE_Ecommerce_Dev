@@ -1,5 +1,18 @@
 export const ROUTE_CONFIG = {
   MY_PROFILE: '/my-profile',
   LOGIN: '/login',
-  CHANGE_PASSWORD: '/change-password'
+  CHANGE_PASSWORD: '/change-password',
+  SYSTEM: {
+    ROLE: '/system/role',
+    USER: '/system/user'
+  },
+  MANAGE_PRODUCT: {
+    PRODUCT: '/manager-product/products',
+    MANAGE_ORDER: '/manager-product/orders',
+    MANAGE_REVIEW: '/manager-product/reviews',
+    MANAGE_TYPE_PRODUCT: '/manager-product/type-product'
+  },
+  SETTINGS: {
+    PAYMENT_TYPE: '/settings/payment-type'
+  }
 }
