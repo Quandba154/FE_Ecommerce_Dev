@@ -51,7 +51,20 @@ const UserLayout: NextPage<TProps> = ({ children }) => {
                 }}
             >
                 <Toolbar />
+<<<<<<< Updated upstream
                 <Container maxWidth="lg" sx={{ pt: 4, pb: 4 }}>
+=======
+                <Container
+                    sx={{
+                        m: 4,
+                        width: `calc(100% - 32px)`,
+                        maxWidth: `calc(100% - 32px) !important`,
+                        overflow: "auto",
+                        maxHeight: `calc(100vh - ${theme.mixins.toolbar.minHeight}px - 32px)`,
+                        Height: `calc(100vh - ${theme.mixins.toolbar.minHeight}px - 32px)`,
+                        padding: " 0 !important", borderRadius: "15px"
+                    }}>
+>>>>>>> Stashed changes
                     {children || <Box />}
                 </Container>
             </Box>
