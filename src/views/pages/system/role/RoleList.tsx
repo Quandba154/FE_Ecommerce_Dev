@@ -65,10 +65,6 @@ type TProps = {}
 
 
 
-
-
-
-
 const RoleListPage: NextPage<TProps> = () => {
     // ** State
     const [page, setPage] = useState(PAGE_SIZE_OPTION[0])
@@ -89,7 +85,7 @@ const RoleListPage: NextPage<TProps> = () => {
     //** router */
     const router = useRouter()
 
-
+    // schema
     const schema = yup
         .object()
         .shape({
