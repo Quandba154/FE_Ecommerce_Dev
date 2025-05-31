@@ -1,6 +1,5 @@
 //** Import React and Next.js */
 import { NextPage } from 'next'
-import RoleListPage from 'src/views/pages/system/role/RoleList'
 
 // ** views
 
@@ -10,7 +9,7 @@ type TProps = {}
 const Index: NextPage<TProps> = () => {
     return (
         <>
-            <RoleListPage></RoleListPage>
+            <h1>DASHBOARD</h1>
         </>
     )
 }

@@ -14,5 +14,6 @@ export const ROUTE_CONFIG = {
   },
   SETTINGS: {
     PAYMENT_TYPE: '/settings/payment-type'
-  }
+  },
+  DASHBOARD: "/dashboard"
 }

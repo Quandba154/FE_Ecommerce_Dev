@@ -90,11 +90,11 @@ const useStyles = makeStyles((theme) => ({
 
 type TProps = {
     open: boolean,
-    handleDrawerOpen: () => void,
+    toggleDrawer: () => void,
     isHideMenu?: boolean;
 }
 
-const HorizontalLayout: NextPage<TProps> = ({ open, handleDrawerOpen, isHideMenu }) => {
+const HorizontalLayout: NextPage<TProps> = ({ open, toggleDrawer, isHideMenu }) => {
     const classes = useStyles();
 
     const { user } = useAuth()
@@ -110,7 +110,7 @@ const HorizontalLayout: NextPage<TProps> = ({ open, handleDrawerOpen, isHideMenu
                         edge="start"
                         color="inherit"
                         aria-label="open drawer"
-                        onClick={handleDrawerOpen}
+                        onClick={toggleDrawer}
                         className={clsx(classes.menuButton, open && classes.menuButtonHidden)}
                     >
                         <IconifyIcon icon="ic:round-menu" />

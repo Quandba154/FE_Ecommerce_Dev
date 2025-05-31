@@ -1,6 +1,7 @@
 'use client'
 import { useTheme } from '@mui/material'
 import Head from 'next/head'
+import CustomDataGrid from 'src/components/custom-data-grid'
 import { useSettings } from 'src/hooks/useSettings'
 import LayoutNotApp from 'src/views/layouts/LayoutNotApp'
 
@@ -22,10 +23,9 @@ export default function Home() {
 }
 
 
-
 Home.getLayout = (page: React.ReactNode) => <LayoutNotApp>{page}</LayoutNotApp>
 Home.guestGuard = false
 Home.authGuard = false
 
 
-// } else if (!guestGuard && !authGuard) {
+

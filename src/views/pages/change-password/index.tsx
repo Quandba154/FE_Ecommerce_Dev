@@ -32,9 +32,9 @@ import facebookSvg from '/public/svgs/facebook.svg'
 // ** Redux_dispatch
 import { useDispatch, useSelector } from 'react-redux'
 import { AppDispatch, RootState } from 'src/stores'
-import { changePasswordMeAsync } from 'src/stores/apps/auth/action'
+import { changePasswordMeAsync } from 'src/stores/auth/action'
 import FallbackSpinner from 'src/components/fall-back'
-import { resetInitialState } from 'src/stores/apps/auth'
+import { resetInitialState } from 'src/stores/auth'
 import { useRouter } from 'next/router'
 import { ROUTE_CONFIG } from 'src/configs/route'
 // ** Other

@@ -34,5 +34,14 @@
   "Confirm_new_password": "Xác nhận mật khẩu mới",
   "Enter_confirm_new_password": "Nhập xác nhận mật khẩu mới",
   "Or": "Hoặc",
-  "no_data": "Không có dữ liệu"
+  "no_data": "Không có dữ liệu",
+  "manage_system": "Quản trị hệ thống",
+  "is showing": "đang hiển thị",
+  "Number of lines displayed": "Số dòng hiển thị",
+  "Name": "Tên",
+  "Action": "Thao tác",
+  "Create": "Tạo",
+  "Edit": "Sửa",
+  "Delete": "Xoá",
+  "require_field": "Trường này bắt buộc"
 }

@@ -40,8 +40,8 @@ import { convertBase64, separationFullName, toFullName } from 'src/utils'
 // Redux
 import { useDispatch, useSelector } from 'react-redux'
 import { AppDispatch, RootState } from 'src/stores'
-import { updateAuthMeAsync } from 'src/stores/apps/auth/action'
-import { resetInitialState } from 'src/stores/apps/auth'
+import { updateAuthMeAsync } from 'src/stores/auth/action'
+import { resetInitialState } from 'src/stores/auth'
 // toast
 import toast from 'react-hot-toast'
 import { Router } from 'next/router'
