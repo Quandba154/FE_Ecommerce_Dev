@@ -1,7 +1,7 @@
 //* Axios
 import axios from "axios";
 //** */ config 
-import { BASE_URL, CONFIG_API } from "src/configs/api";
+import { BASE_URL, API_ENDPOINT } from "src/configs/api";
 // helper
 import { clearLocalUserData, clearTemporaryToken, getLocalUserData, getTemporaryToken, setLocalUserData, setTemporaryToken } from "../storage";
 // ** jwt
@@ -57,7 +57,7 @@ const AxiosInterceptor: FC<TAxiosInterceptor> = ({ children }) => {
                 if (refreshToken) {
                     const decodeRefreshToken: any = jwtDecode(refreshToken)
                     if (decodeRefreshToken?.exp > Date.now() / 1000) {
-                        await axios.post(`${CONFIG_API.AUTH.INDEX}/refresh-token`, {}, {
+                        await axios.post(`${API_ENDPOINT.AUTH.INDEX}/refresh-token`, {}, {
                             headers: {
                                 Authorization: `$Bearer ${refreshToken}`
                             }

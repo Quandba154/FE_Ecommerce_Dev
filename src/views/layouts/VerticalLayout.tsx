@@ -71,11 +71,11 @@ const useStyles = makeStyles((theme) => ({
 
 type TProps = {
     open: boolean,
-    handleDrawerClose: () => void;
+    toggleDrawer: () => void;
 }
 
 
-const VerticalLayout: NextPage<TProps> = ({ open, handleDrawerClose }) => {
+const VerticalLayout: NextPage<TProps> = ({ open, toggleDrawer }) => {
     const classes = useStyles();
     const theme = useTheme();
 
@@ -92,7 +92,7 @@ const VerticalLayout: NextPage<TProps> = ({ open, handleDrawerClose }) => {
             <Box
                 className={classes.toolbarIcon}
             >
-                <IconButton onClick={handleDrawerClose}>
+                <IconButton onClick={toggleDrawer}>
                     <ChevronLeftIcon />
                 </IconButton>
             </Box>

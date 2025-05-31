@@ -77,9 +77,9 @@ const RecursiveListItems: NextPage<TListItem> = ({ items, level, openItems, setO
                                 padding: `8px 10px 8px ${level * (level === 1 ? 28 : 20)}px`,
                                 margin: "1px 0",
                                 backgroundColor: ((activePath && item.path === activePath) || !!openItems[item.title]) ? `${theme.palette.primary.main} !important` : theme.palette.background.paper,
-                                borderBottom: `1px solid ${((activePath && item.path === activePath) || !!openItems[item.title]) ?
-                                    `${hexToRGBA(theme.palette.primary.main, 0.08)} !important` : `rgba(${theme.palette.customColors.main},0.78)
-                                `}`
+                                // borderBottom: `1px solid ${((activePath && item.path === activePath) || !!openItems[item.title]) ?
+                                //     `${hexToRGBA(theme.palette.primary.main, 0.08)} !important` : `rgba(${theme.palette.customColors.main},0.78)
+                                // `}`
                             }}
                             onClick={
                                 () => {

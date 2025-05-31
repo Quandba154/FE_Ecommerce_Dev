@@ -89,6 +89,10 @@ const UserDropdown = (props: TProps) => {
         router.replace(ROUTE_CONFIG.CHANGE_PASSWORD)
         handleClose()
     }
+    const handleNavigateManageSystem = () => {
+        router.replace(ROUTE_CONFIG.DASHBOARD)
+        handleClose()
+    }
 
     // ** Theme
     const theme = useTheme();
@@ -188,6 +192,12 @@ const UserDropdown = (props: TProps) => {
                         </Box>
                     </Box>
                     <Divider />
+                    <MenuItem onClick={handleNavigateManageSystem}>
+                        <Avatar>
+                            <IconifyIcon icon="arcticons:phone-manager" />
+                        </Avatar>
+                        {t("manage_system")}
+                    </MenuItem>
                     <MenuItem onClick={handleNavigateMyProfile}>
                         <Avatar>
                             <IconifyIcon icon="ph:user-thin" />
@@ -197,7 +207,7 @@ const UserDropdown = (props: TProps) => {
                     <Divider />
                     <MenuItem onClick={handleNavigateChangePassword}>
                         <Avatar sx={{ backgroundColor: "transparent" }}>
-                            <IconifyIcon icon="material-symbols-light:logout" />
+                            <IconifyIcon icon="arcticons:password" />
                         </Avatar>
                         {t("Change_password")}
                     </MenuItem>
