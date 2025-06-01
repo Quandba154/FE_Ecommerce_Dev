@@ -42,3 +42,13 @@ export const deleteRole = async (id: string) => {
     throw error
   }
 }
+
+export const getDetailsRole = async (id: string) => {
+  try {
+    const res = await instanceAxios.get(`${API_ENDPOINT.ROLE.INDEX}/${id}`)
+    return res.data
+  } catch (error) {
+    console.error('Error during login:', error)
+    throw error
+  }
+}

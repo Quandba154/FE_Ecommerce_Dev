@@ -3,7 +3,7 @@ import { Dispatch } from 'redux'
 import { createSlice } from '@reduxjs/toolkit'
 // ** Axios Imports
 import axios from 'axios'
-import { createRoleAsync, getAllRolesAsync } from './action'
+import { createRoleAsync, deleteRoleAsync, getAllRolesAsync, updateRoleAsync } from './action'
 
 interface DataParams {
   q: string
@@ -88,7 +88,7 @@ export const roleSlice = createSlice({
     builder.addCase(createRoleAsync.fulfilled, (state, action) => {
       // console.log('action', { action })
       state.isLoading = false
-      state.isSuccessCreateEdit = !!action.payload?.data._id
+      state.isSuccessCreateEdit = !!action.payload?.data?._id
       state.isErrorCreateEdit = !action.payload?.data?._id
       state.messageCreateEdit = action.payload?.message
       state.TypeError = action.payload?.typeError
@@ -101,6 +101,32 @@ export const roleSlice = createSlice({
     //   state.messageCreateEdit = action.payload?.data.message
     //   state.TypeError = action.payload?.data?.typeError
     // })
+
+    // **update role
+    builder.addCase(updateRoleAsync.pending, (state, action) => {
+      state.isLoading = true
+    })
+    builder.addCase(updateRoleAsync.fulfilled, (state, action) => {
+      // console.log('action', { action })
+      state.isLoading = false
+      state.isSuccessCreateEdit = !!action.payload?.data?._id
+      state.isErrorCreateEdit = !action.payload?.data?._id
+      state.messageCreateEdit = action.payload?.message
+      state.TypeError = action.payload?.typeError
+    })
+
+    // **delete role
+    builder.addCase(deleteRoleAsync.pending, (state, action) => {
+      state.isLoading = true
+    })
+    builder.addCase(deleteRoleAsync.fulfilled, (state, action) => {
+      // console.log('action', { action })
+      state.isLoading = false
+      state.isSuccessDelete = !!action.payload?.data?._id
+      state.isErrorDelete = !action.payload?.data?._id
+      state.messageDelete = action.payload?.message
+      state.TypeError = action.payload?.typeError
+    })
   }
 })
 

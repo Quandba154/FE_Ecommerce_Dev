@@ -28,7 +28,7 @@ export const updateRoleAsync = createAsyncThunk('role/update', async (data: TPar
   const response = await updateRole(data)
 
   // if (response?.data) {
-    return response
+  return response
   // }
 
   console.log('res', { response })
@@ -43,13 +43,13 @@ export const updateRoleAsync = createAsyncThunk('role/update', async (data: TPar
 export const deleteRoleAsync = createAsyncThunk('role/delete', async (id: string) => {
   const response = await deleteRole(id)
 
-  if (response?.data) {
-    return response
-  }
+  // if (response?.data) {
+  return response
+  // }
 
-  return {
-    data: null,
-    message: response?.response?.data?.message,
-    typeError: response?.response?.data?.typeError
-  }
+  // return {
+  //   data: null,
+  //   message: response?.response?.data?.message,
+  //   typeError: response?.response?.data?.typeError
+  // }
 })

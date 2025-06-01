@@ -43,5 +43,21 @@
   "Create": "Tạo",
   "Edit": "Sửa",
   "Delete": "Xoá",
-  "require_field": "Trường này bắt buộc"
+  "require_field": "Trường này bắt buộc",
+  "create-role-success": "Tạo nhóm vai trò thành công",
+  "update-role-success": "Cập nhật vai trò thành công",
+  "delete-role-success": "Xoá vai trò thành công",
+  "confirm": "Xác Nhận",
+  "cancel": "Huỷ Bỏ",
+  "title_delete_role": "Xác nhận xoá nhóm vai trò",
+  "confirm_delete_role": "Bạn có chắc xoá nhóm vai trò này?",
+  "System": "Hệ thống",
+  "Manage_product": "Quản lý sản phẩm",
+  "Lits_product": "Danh sách sản phẩm",
+  "List_order": "Danh sách đơn hàng",
+  "Type_product": "Loại sản phẩm",
+  "List_review": "Danh sách đánh giá",
+  "Setting": "Cài đặt",
+  "Payment_method": "Phương thức thanh toán",
+  "User" : "Người dùng"
 }
