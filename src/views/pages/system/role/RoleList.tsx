@@ -47,7 +47,7 @@ import { useTranslation } from 'react-i18next';
 import { useAuth } from 'src/hooks/useAuth'
 import { getAllRolesAsync } from 'src/stores/role/action'
 import CustomDataGrid from 'src/components/custom-data-grid'
-import { GridColDef } from '@mui/x-data-grid'
+import { GridColDef, GridSortModel } from '@mui/x-data-grid'
 import { PAGE_SIZE_OPTION } from 'src/configs/gridConfig'
 import CustomPagination from 'src/components/custom-pagination'
 import GridEdit from 'src/components/grid-edit'
@@ -74,6 +74,9 @@ const RoleListPage: NextPage<TProps> = () => {
         id: ""
     })
 
+    const [sortBy, setSortBy] = useState("created asc")
+    const [searchBy, setSearchBy] = useState("")
+
 
 
     // ** redux
@@ -92,14 +95,12 @@ const RoleListPage: NextPage<TProps> = () => {
 
         })
 
-
-
     // ** Theme
     const theme = useTheme();
 
     // ** Fetch api
     const handleGetListRoles = () => {
-        dispatch(getAllRolesAsync({ params: { limit: -1, page: -1, search: "" } }))
+        dispatch(getAllRolesAsync({ params: { limit: -1, page: -1, search: searchBy, order: sortBy } }))
     }
 
     // ** handle
@@ -110,6 +111,11 @@ const RoleListPage: NextPage<TProps> = () => {
             open: false,
             id: ""
         })
+    }
+
+    const handleSort = (sort: GridSortModel) => {
+        const sortOption = sort[0]
+        setSortBy(`${sortOption.field} ${sortOption.sort}`)
     }
 
 
@@ -147,7 +153,7 @@ const RoleListPage: NextPage<TProps> = () => {
 
     useEffect(() => {
         handleGetListRoles()
-    }, [])
+    }, [sortBy, searchBy])
 
 
     useEffect(() => {
@@ -180,7 +186,7 @@ const RoleListPage: NextPage<TProps> = () => {
                         <Grid item md={5} xs={12}>
                             <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", mb: 4 }}>
                                 <Box sx={{ width: "200px" }}>
-                                    <InputSearch></InputSearch>
+                                    <InputSearch value={searchBy} onChange={(value: string) => setSearchBy(value)} ></InputSearch>
                                 </Box>
                                 <GridCreate onClick={() => setOpenCreateEdit({
                                     open: true,
@@ -192,6 +198,9 @@ const RoleListPage: NextPage<TProps> = () => {
                                 columns={columns}
                                 pageSizeOptions={[5]}
                                 // checkboxSelection
+                                sortingMode='server'
+                                onSortModelChange={handleSort}
+                                sortingOrder={["desc", "asc"]}
                                 autoHeight
                                 getRowId={(row) => row._id}
                                 disableRowSelectionOnClick

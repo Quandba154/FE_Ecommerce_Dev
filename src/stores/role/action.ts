@@ -28,7 +28,7 @@ export const updateRoleAsync = createAsyncThunk('role/update', async (data: TPar
   const response = await updateRole(data)
 
   // if (response?.data) {
-    return response
+  return response
   // }
 
   console.log('res', { response })

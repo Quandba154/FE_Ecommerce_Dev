@@ -2,6 +2,7 @@ export type TParamGetAllRoles = {
   limit: number
   page: number
   search?: string
+  order?: string
 }
 
 export type TParamCreateRole = {
@@ -12,7 +13,6 @@ export type TParamEditRole = {
   name: string
   id: string
 }
-
 
 export type TParamDeleteRole = {
   name: string

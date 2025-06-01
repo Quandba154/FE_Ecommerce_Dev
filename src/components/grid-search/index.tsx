@@ -1,9 +1,13 @@
-import { styled, InputBase } from '@mui/material';
-import React from 'react';
+import { styled, InputBase, useTheme } from '@mui/material';
+import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import Iconfi from "src/components/Icon"
+import useDebounce from 'src/hooks/useDebounce';
 
-interface TInputSearch { }
+interface TInputSearch {
+    value: string,
+    onChange: (value: string) => void
+}
 
 const Search = styled('div')(({ theme }) => ({
     position: 'relative',
@@ -43,7 +47,26 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 
 
 const InputSearch = (props: TInputSearch) => {
+    // ** Props
+    const { value, onChange } = props
+
+    // ** State
+    const [search, setSearch] = useState(value)
+    const debounceSearch = useDebounce(search, 300)
+    // console.log("debounceSearch", { debounceSearch });
+    // console.log("search", { search });
+
+    useEffect(() => {
+        onChange(debounceSearch)
+    }, [debounceSearch])
+
+
+
+    // ** Translation
     const { t } = useTranslation()
+
+    // ** Hook
+    const theme = useTheme()
 
     return (
         <Search>
@@ -51,8 +74,12 @@ const InputSearch = (props: TInputSearch) => {
                 <Iconfi icon="material-symbols-light:search" />
             </SearchIconWrapper>
             <StyledInputBase
+                value={search}
                 placeholder="Search…"
                 inputProps={{ 'aria-label': 'search' }}
+                onChange={(e) => {
+                    setSearch(e.target.value)
+                }}
             />
         </Search>
     )
