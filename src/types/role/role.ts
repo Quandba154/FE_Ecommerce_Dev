@@ -13,7 +13,6 @@ export type TParamEditRole = {
   id: string
 }
 
-
 export type TParamDeleteRole = {
   name: string
   id: string

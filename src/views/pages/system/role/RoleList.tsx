@@ -1,60 +1,43 @@
 // "use client"
-import Image from 'next/image'
 import { NextPage } from 'next'
 import Link from 'next/link'
 //** Mui
 import {
     Box,
-    Button,
-    CssBaseline,
+    Card,
     Grid,
-    IconButton,
-    InputAdornment,
-    Tooltip,
-    Typography,
     useTheme
 } from '@mui/material'
-// ** Form
-import { Controller, useForm } from 'react-hook-form'
 // ** Components
 import CustomTextField from 'src/components/text-field'
-import * as yup from 'yup'
-import { yupResolver } from '@hookform/resolvers/yup'
-// ** REGEX
-import { EMAIL_REG, PASSWORD_REG } from 'src/configs/regex'
-// ** React
-import { useState, useEffect } from 'react'
-// ** Icon
-import Icon from 'src/components/Icon'
-// ** Images
-import RegisterDark from '/public/images/register-dark.png'
-import RegisterLight from '/public/images/register-light.png'
-import GoogleSvg from '/public/svgs/google.svg'
-import facebookSvg from '/public/svgs/facebook.svg'
-// ** Redux_dispatch
-import { useDispatch, useSelector } from 'react-redux'
-import { AppDispatch, RootState } from 'src/stores'
-import { changePasswordMeAsync } from 'src/stores/auth/action'
-import FallbackSpinner from 'src/components/fall-back'
-import { resetInitialState } from 'src/stores/role'
-import { useRouter } from 'next/router'
-import { ROUTE_CONFIG } from 'src/configs/route'
-// ** Other
-import toast from 'react-hot-toast'
-// ** translation 
-import { t } from "i18next"
-import { useTranslation } from 'react-i18next';
-import { useAuth } from 'src/hooks/useAuth'
-import { getAllRolesAsync } from 'src/stores/role/action'
-import CustomDataGrid from 'src/components/custom-data-grid'
-import { GridColDef } from '@mui/x-data-grid'
-import { PAGE_SIZE_OPTION } from 'src/configs/gridConfig'
 import CustomPagination from 'src/components/custom-pagination'
 import GridEdit from 'src/components/grid-edit'
 import GridDelete from 'src/components/grid-delete'
 import GridCreate from 'src/components/grid-create'
 import InputSearch from 'src/components/grid-search'
 import CreateEditRole from './component/CreateEditRole'
+import CustomDataGrid from 'src/components/custom-data-grid'
+import Spinner from 'src/components/spinner'
+
+import * as yup from 'yup'
+// ** React
+import { useState, useEffect } from 'react'
+// ** Icon
+import Icon from 'src/components/Icon'
+// ** Redux_dispatch
+import { useDispatch, useSelector } from 'react-redux'
+import { AppDispatch, RootState } from 'src/stores'
+import { resetInitialState } from 'src/stores/role'
+import { useRouter } from 'next/router'
+// ** Other
+import toast from 'react-hot-toast'
+// ** translation 
+import { t } from "i18next"
+// redux
+import { deleteRoleAsync, getAllRolesAsync } from 'src/stores/role/action'
+// others
+import { GridColDef } from '@mui/x-data-grid'
+import { PAGE_SIZE_OPTION } from 'src/configs/gridConfig'
 
 
 
@@ -62,11 +45,6 @@ import CreateEditRole from './component/CreateEditRole'
 
 
 type TProps = {}
-
-
-
-
-
 
 
 const RoleListPage: NextPage<TProps> = () => {
@@ -78,11 +56,14 @@ const RoleListPage: NextPage<TProps> = () => {
         id: ""
     })
 
+    console.log("open>", openCreateEdit);
+
+
 
 
     // ** redux
     const dispatch: AppDispatch = useDispatch()
-    const { roles, isSuccessCreateEdit, isErrorCreateEdit, isLoading, messageCreateEdit } = useSelector((state: RootState) => state.role)
+    const { roles, isSuccessCreateEdit, isErrorCreateEdit, isLoading, messageCreateEdit, isErrorDelete, isSuccessDelete, messageDelete } = useSelector((state: RootState) => state.role)
 
 
 
@@ -96,8 +77,6 @@ const RoleListPage: NextPage<TProps> = () => {
 
         })
 
-
-
     // ** Theme
     const theme = useTheme();
 
@@ -110,12 +89,11 @@ const RoleListPage: NextPage<TProps> = () => {
     const handleOnchangePagination = (page: number, pageSize: number) => { }
 
     const handleCloseCreateEdit = () => {
-        setOpenCreateEdit: ({
+        setOpenCreateEdit({
             open: false,
             id: ""
         })
     }
-
 
 
     const columns: GridColDef[] = [
@@ -130,11 +108,14 @@ const RoleListPage: NextPage<TProps> = () => {
             minWidth: 150,
             sortable: false,
             align: "left",
-            renderCell: () => {
+            renderCell: row => {
                 return (
                     <Box>
-                        <GridEdit onClick={() => { }}></GridEdit>
-                        <GridDelete onClick={() => { }}></GridDelete>
+                        <GridEdit onClick={() => setOpenCreateEdit({
+                            open: true,
+                            id: String(row.id)
+                        })}></GridEdit>
+                        <GridDelete onClick={() => dispatch(deleteRoleAsync(String(row.id)))}></GridDelete>
                     </Box >
                 )
             }
@@ -155,63 +136,88 @@ const RoleListPage: NextPage<TProps> = () => {
 
 
     useEffect(() => {
-        if (isErrorCreateEdit) {
-            toast.success(t("create-role-success"))
+        if (isSuccessCreateEdit) {
+            if (openCreateEdit.id) {
+                toast.success(t("update-role-success"))
+                console.log("quadao");
+
+            } else {
+                toast.success(t("create-role-success"))
+                console.log("quadao2");
+            }
             handleGetListRoles()
             handleCloseCreateEdit()
             dispatch(resetInitialState())
         } else if (isErrorCreateEdit && messageCreateEdit) {
             toast.error(t(messageCreateEdit))
+            dispatch(resetInitialState())
         }
+        handleGetListRoles()
     }, [isSuccessCreateEdit, isErrorCreateEdit, messageCreateEdit])
+
+
+    useEffect(() => {
+        if (isSuccessDelete) {
+            toast.success(t("delete-role-success"))
+            handleGetListRoles()
+            dispatch(resetInitialState())
+        } else if (isErrorDelete && messageDelete) {
+            toast.error(t(messageDelete))
+            dispatch(resetInitialState())
+        }
+        handleGetListRoles()
+    }, [isErrorDelete, isSuccessDelete, messageDelete])
 
 
     return (
         <>
             <CreateEditRole open={openCreateEdit.open} onClose={handleCloseCreateEdit} idRole={openCreateEdit.id} />
-            {isLoading && <FallbackSpinner />}
-            <Box sx={{ backgroundColor: theme.palette.background.paper, display: "flex", alignItems: "center", padding: "20px" }}>
-                <Box display={{
-                    xs: "none",
-                    sm: "flex"
-                }} sx={{
-                    justifyContent: 'center', alignItems: 'center', borderRadius: '40px',
-                    backgroundColor: theme.palette.customColors.bodyBg,
-                    height: "100%", minWidth: "50vw",
-                }}>
-
-                    <Grid container>
-                        <Grid item md={5} xs={12}>
-                            <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", mb: 4 }}>
-                                <Box sx={{ width: "200px" }}>
-                                    <InputSearch></InputSearch>
-                                </Box>
-                                <GridCreate onClick={() => setOpenCreateEdit({
-                                    open: true,
-                                    id: ""
-                                })} ></GridCreate>
-                            </Box>
-                            <CustomDataGrid
-                                rows={roles.data}
-                                columns={columns}
-                                pageSizeOptions={[5]}
-                                // checkboxSelection
-                                autoHeight
-                                getRowId={(row) => row._id}
-                                disableRowSelectionOnClick
-                                slots={{
-                                    pagination: PaginationComponent
-                                }}
-                                disableColumnFilter
-                                disableColumnMenu
-                            />
+            {isLoading && <Spinner />}
+            <Grid container >
+                <Box sx={{ width: '100%', backgroundColor: theme.palette.background.paper, display: "flex", alignItems: "center", padding: "20px" }}>
+                    <Box display={{
+                        xs: "none",
+                        sm: "flex"
+                    }} sx={{
+                        justifyContent: 'center', alignItems: 'center', borderRadius: '40px',
+                        backgroundColor: theme.palette.customColors.bodyBg,
+                        height: "100%", minWidth: "50vw", width: "100%"
+                    }}>
+                        <Grid container sx={{ height: "100%", width: "100%", }}>
+                            <Grid item md={5} xs={12}>
+                                <Card>
+                                    <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", mb: 2 }}>
+                                        <Box sx={{ width: "200px" }}>
+                                            <InputSearch></InputSearch>
+                                        </Box>
+                                        <GridCreate onClick={() => setOpenCreateEdit({
+                                            open: true,
+                                            id: ""
+                                        })} ></GridCreate>
+                                    </Box>
+                                    <CustomDataGrid
+                                        rows={roles.data}
+                                        columns={columns}
+                                        pageSizeOptions={[5]}
+                                        // checkboxSelection
+                                        autoHeight
+                                        getRowId={(row) => row._id}
+                                        disableRowSelectionOnClick
+                                        slots={{
+                                            pagination: PaginationComponent
+                                        }}
+                                        disableColumnFilter
+                                        disableColumnMenu
+                                    />
+                                </Card>
+                            </Grid>
+                            <Grid item md={7} xs={12}>
+                                list permissions
+                            </Grid>
                         </Grid>
-                        <Grid item md={5} xs={12}>
-                            list permissions
-                        </Grid>
-                    </Grid>
+                    </Box>
                 </Box>
-            </Box>
+            </Grid>
         </>
     )
 }

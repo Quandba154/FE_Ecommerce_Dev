@@ -52,7 +52,10 @@ const UserLayout: NextPage<TProps> = ({ children }) => {
                         m: 4,
                         width: `calc(100% - 32px)`,
                         maxWidth: `calc(100% - 32px) !important`,
-                        overflow: "auto", maxHeight: `calc(100vh - ${theme.mixins.toolbar.minHeight} - 32px)`, padding: " 0 !important", borderRadius: "15px"
+                        overflow: "auto",
+                        maxHeight: `calc(100vh - ${theme.mixins.toolbar.minHeight}px - 32px)`,
+                        Height: `calc(100vh - ${theme.mixins.toolbar.minHeight}px - 32px)`,
+                        padding: " 0 !important", borderRadius: "15px"
                     }}>
                     {children || <Box />}
                 </Container>

@@ -43,5 +43,8 @@
   "Create": "Tạo",
   "Edit": "Sửa",
   "Delete": "Xoá",
-  "require_field": "Trường này bắt buộc"
+  "require_field": "Trường này bắt buộc",
+  "create-role-success": "Tạo nhóm vai trò thành công",
+  "update-role-success": "Cập nhật vai trò thành công",
+  "delete-role-success": "Xoá vai trò thành công"
 }
