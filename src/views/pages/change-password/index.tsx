@@ -153,7 +153,7 @@ const ChangePasswordPage: NextPage<TProps> = () => {
             }}
           >
             <Typography component='h1' variant='h5'>
-              {t("Register")}
+              {t("Change_password")}
             </Typography>
             <form onSubmit={handleSubmit(onSubmit)} autoComplete='off' noValidate>
               <Box sx={{ mt: 2, width: "300px" }}>
@@ -281,40 +281,6 @@ const ChangePasswordPage: NextPage<TProps> = () => {
               <Button sx={{ mt: 5, mb: 5 }} type='submit' fullWidth variant='contained' color='primary'>
                 {t("Change_password")}
               </Button>
-              <Box sx={{ display: 'flex', justifyContent: "center", alignItems: 'center', gap: "4px" }}>
-                <Typography >
-                  {t("Do you have already account ?")}
-                </Typography>
-                <Link style={{ color: theme.palette.primary.main }} href='/login'>
-                  {t("Sign_in")}
-                </Link>
-              </Box>
-              <Typography sx={{ textAlign: "center", mt: 2, mb: 2 }}>Or</Typography>
-              <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", gap: 10 }}>
-                <IconButton sx={{ color: theme.palette.error.main }}>
-                  <Image
-                    src={facebookSvg}
-                    style={{
-                      width: "30px",
-                      height: "30px",
-                      filter: "brightness(0) saturate(100%) invert(48%) sepia(16%) saturate(2567%) hue-rotate(197deg) brightness(91%) contrast(91%)"
-                    }}
-                    alt="facebook"
-                  />
-                </IconButton>
-
-                <IconButton sx={{ color: theme.palette.error.main }}>
-                  <Image
-                    src={GoogleSvg}
-                    style={{
-                      width: "30px",
-                      height: "30px",
-                      filter: "brightness(0) saturate(100%) invert(17%) sepia(99%) saturate(7471%) hue-rotate(1deg) brightness(102%) contrast(107%)"
-                    }}
-                    alt="google"
-                  />
-                </IconButton>
-              </Box>
             </form>
           </Box>
         </Box>

@@ -43,5 +43,21 @@
   "Create": "Create",
   "Edit": "Edit",
   "Delete": "Delete",
-  "require_field": "The field is required"
+  "require_field": "The field is required",
+  "create-role-success": "Create role success",
+  "update-role-success": "Update role success",
+  "delete-role-success": "Delete role success",
+  "confirm": "Comfirm",
+  "cancel": "Cancel",
+  "title_delete_role": "Confirm delete role",
+  "confirm_delete_role": "Are you sure you want to delete this role group?",
+  "System": "System",
+  "Manage_product": "Manage Products",
+  "Lits_product": "Product List",
+  "List_order": "Order List",
+  "Type_product": "Product Categories",
+  "List_review": "Review List",
+  "Setting": "Settings",
+  "Payment_method": "Payment Methods",
+  "User": "Users"
 }

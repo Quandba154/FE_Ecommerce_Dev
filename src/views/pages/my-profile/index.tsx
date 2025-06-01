@@ -48,6 +48,7 @@ import { Router } from 'next/router'
 import FallbackSpinner from 'src/components/fall-back'
 import Spinner from 'src/components/spinner'
 import CustomSelect from 'src/components/custom-select'
+import { getAllRole } from 'src/services/role'
 
 
 type TProps = {}
@@ -68,7 +69,9 @@ const MyProfilePage: NextPage<TProps> = () => {
   const [loading, setLoading] = useState<boolean>(false)
   const [user, setUser] = useState<UserDataType | null>(null)
   const [avatar, setAvatar] = useState("")
-  const [roleId, setRoleId] = useState("")
+  // const [roleId, setRoleId] = useState("")
+  const [optionRoles, setOptionRoles] = useState<{ label: string, value: string }[]>([])
+
 
 
 
@@ -128,14 +131,14 @@ const MyProfilePage: NextPage<TProps> = () => {
         console.log("role222", data?.role?.name);
 
         if (data) {
-          setRoleId(data?.role?._id)
+          // setRoleId(data?.role?._id)
           setAvatar(data?.avatar)
           reset({
             email: data?.email,
             address: data?.address,
             city: data?.city,
             phoneNumber: data?.phoneNumber,
-            role: data?.role?.name,
+            role: data?.role?._id,
             fullName: toFullName(data?.lastName, data?.middleName, data?.firstName, i18n.language),
           })
         }
@@ -146,8 +149,19 @@ const MyProfilePage: NextPage<TProps> = () => {
         setLoading(false)
       })
   }
-  // console.log("usser>>", user?.role?.name);
 
+  const fetAllRoles = async () => {
+    setLoading(true)
+    await getAllRole({ params: { limit: -1, page: -1 } }).then((res) => {
+      const data = res?.data.roles
+      if (data) {
+        setOptionRoles(data?.map((item: { name: string; _id: string }) => ({ label: item.name, value: item._id })))
+      }
+      setLoading(false)
+    }).catch((e) => {
+      setLoading(false)
+    })
+  };
 
   useEffect(() => {
     fetchGetAuthMe();
@@ -165,6 +179,10 @@ const MyProfilePage: NextPage<TProps> = () => {
     }
   }, [isErrorUpdateMe, isSuccessUpdateMe, messageUpdateMe])
 
+  useEffect(() => {
+    fetAllRoles()
+  }, [])
+
   const onSubmit = (data: any) => {
     const { firstName, middleName, lastName } = separationFullName(data.fullName, i18n.language)
     dispatch(updateAuthMeAsync({
@@ -172,7 +190,7 @@ const MyProfilePage: NextPage<TProps> = () => {
       firstName: firstName,
       middleName: middleName,
       lastName: lastName,
-      role: roleId,
+      role: data.role,
       phoneNumber: data?.phoneNumber,
       avatar,
       address: data?.address,
@@ -270,9 +288,9 @@ const MyProfilePage: NextPage<TProps> = () => {
                           onChange={onChange}
                           onBlur={onBlur}
                           value={value}
-                          options={[]}
+                          options={optionRoles}
                           error={Boolean(errors?.role)}
-                          placeholder={t("enter_your_role")}
+                          // placeholder={t("enter_your_role")}
                         />
                         {errors?.role?.message && (
                           <FormHelperText

@@ -3,7 +3,7 @@ import React from 'react';
 
 
 interface TCustomModal extends ModalProps {
-    // onClose: () => void
+    onClose: () => void
 
 }
 
@@ -13,8 +13,11 @@ const StyleModal = styled(Modal)<ModalProps>(({ theme }) => ({
     // justifyContent: "center"
 }))
 
-const CustomModal = (props: TCustomModal) => {
-    const { children, open, onClose } = props
+const CustomModal = ({ open, onClose, children }: {
+    open: boolean,
+    onClose: () => void,
+    children: React.ReactNode
+}) => {
 
     return (
         <StyleModal
