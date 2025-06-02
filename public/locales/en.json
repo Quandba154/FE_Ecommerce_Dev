@@ -59,5 +59,7 @@
   "List_review": "Review List",
   "Setting": "Settings",
   "Payment_method": "Payment Methods",
-  "User": "Users"
+  "User": "Users",
+  "Data_exited_in_system": "Data already exists in the system",
+  "Name_role": "Name role"
 }

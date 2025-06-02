@@ -7,5 +7,21 @@ export const API_ENDPOINT = {
   },
   ROLE: {
     INDEX: `${BASE_URL}/roles`
+  },
+  USER: {
+    INDEX: `${BASE_URL}/users`
+  },
+  SETTINGS: {
+    PAYMENT_TYPE: {
+      INDEX: `${BASE_URL}/payment-type`
+    }
+  },
+  MANAGE_PRODUCT: {
+    PRODUCT_TYPE: {
+      INDEX: `${BASE_URL}/product-types`
+    },
+    PRODUCT: {
+      INDEX: `${BASE_URL}/products`
+    }
   }
 }

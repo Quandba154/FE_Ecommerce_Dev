@@ -52,6 +52,8 @@ import InputSearch from 'src/components/input-search'
 import CreateEditRole from './component/CreateEditRole'
 import Spinner from 'src/components/spinner'
 import ConfirmationDialog from 'src/components/confirmation-dialog'
+import { OBJECT_TYPE_ERROR_ROLE } from 'src/configs/role'
+import TablePermission from './component/TablePermission'
 
 
 
@@ -83,7 +85,7 @@ const RoleListPage: NextPage<TProps> = () => {
 
     // ** redux
     const dispatch: AppDispatch = useDispatch()
-    const { roles, isSuccessCreateEdit, isErrorCreateEdit, isLoading, messageCreateEdit, isErrorDelete, isSuccessDelete, messageDelete } = useSelector((state: RootState) => state.role)
+    const { roles, isSuccessCreateEdit, isErrorCreateEdit, isLoading, messageCreateEdit, isErrorDelete, isSuccessDelete, messageDelete, typeError } = useSelector((state: RootState) => state.role)
 
 
 
@@ -191,21 +193,27 @@ const RoleListPage: NextPage<TProps> = () => {
         if (isSuccessCreateEdit) {
             if (openCreateEdit.id) {
                 toast.success(t("update-role-success"))
-                console.log("quadao");
-
             } else {
                 toast.success(t("create-role-success"))
-                console.log("quadao2");
             }
             handleGetListRoles()
             handleCloseCreateEdit()
             dispatch(resetInitialState())
-        } else if (isErrorCreateEdit && messageCreateEdit) {
-            toast.error(t(messageCreateEdit))
+        } else if (isErrorCreateEdit && messageCreateEdit && typeError) {
+            const errorConfig = OBJECT_TYPE_ERROR_ROLE[typeError]
+            if (errorConfig) {
+                toast.error(t(errorConfig))
+            } else {
+                if (openCreateEdit.id) {
+                    toast.error(t("Update_role_error"))
+                } else {
+                    toast.error(t("Create_role_error"))
+                }
+            }
             dispatch(resetInitialState())
         }
         handleGetListRoles()
-    }, [isSuccessCreateEdit, isErrorCreateEdit, messageCreateEdit])
+    }, [isSuccessCreateEdit, isErrorCreateEdit, messageCreateEdit, typeError])
 
 
     useEffect(() => {
@@ -233,19 +241,19 @@ const RoleListPage: NextPage<TProps> = () => {
             />
             <CreateEditRole open={openCreateEdit.open} onClose={handleCloseCreateEdit} idRole={openCreateEdit.id} />
             {isLoading && <Spinner />}
-            <Box sx={{ backgroundColor: theme.palette.background.paper, display: "flex", alignItems: "center", padding: "20px" }}>
+            <Box sx={{ backgroundColor: theme.palette.background.paper, display: "flex", alignItems: "center", padding: "20px", width: "100%", height: "100% !important" }}>
                 <Box display={{
                     xs: "none",
                     sm: "flex"
                 }} sx={{
                     justifyContent: 'center', alignItems: 'center', borderRadius: '40px',
                     backgroundColor: theme.palette.customColors.bodyBg,
-                    height: "100%", minWidth: "50vw",
+                    height: "100% !important", width: "100%",
                 }}>
 
-                    <Grid container>
-                        <Grid item md={5} xs={12}>
-                            <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", mb: 4 }}>
+                    <Grid container sx={{ height: "100%", width: "100%" }} spacing={10}>
+                        <Grid item md={4} xs={12}>
+                            <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", mb: 2 }}>
                                 <Box sx={{ width: "200px" }}>
                                     <InputSearch value={searchBy} onChange={(value: string) => setSearchBy(value)} ></InputSearch>
                                 </Box>
@@ -254,26 +262,28 @@ const RoleListPage: NextPage<TProps> = () => {
                                     id: ""
                                 })} ></GridCreate>
                             </Box>
-                            <CustomDataGrid
-                                rows={roles.data}
-                                columns={columns}
-                                pageSizeOptions={[5]}
-                                // checkboxSelection
-                                sortingMode='server'
-                                onSortModelChange={handleSort}
-                                sortingOrder={["desc", "asc"]}
-                                autoHeight
-                                getRowId={(row) => row._id}
-                                disableRowSelectionOnClick
-                                // slots={{
-                                //     pagination: PaginationComponent
-                                // }}
-                                disableColumnFilter
-                                disableColumnMenu
-                            />
+                            <Box sx={{ maxHeight: "100%" }}>
+                                <CustomDataGrid
+                                    rows={roles.data}
+                                    columns={columns}
+                                    pageSizeOptions={[5]}
+                                    // checkboxSelection
+                                    sortingMode='server'
+                                    onSortModelChange={handleSort}
+                                    sortingOrder={["desc", "asc"]}
+                                    autoHeight
+                                    getRowId={(row) => row._id}
+                                    disableRowSelectionOnClick
+                                    // slots={{
+                                    //     pagination: PaginationComponent
+                                    // }}
+                                    disableColumnFilter
+                                    disableColumnMenu
+                                />
+                            </Box>
                         </Grid>
-                        <Grid item md={5} xs={12}>
-                            list permissions
+                        <Grid item md={8} xs={12} sx={{ maxHeight: "100%" }}>
+                            <TablePermission></TablePermission>
                         </Grid>
                     </Grid>
                 </Box>

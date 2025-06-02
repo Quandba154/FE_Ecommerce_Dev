@@ -137,7 +137,7 @@ const CreateEditRole = (props: TCreateEditRole) => {
                             />
                         </Box>
                         <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
-                            <Button sx={{ mt: 2, mb: 2, height: "40px", borderRadius: "10px !important", backgroundColor: "gray !important" }} type='submit' variant='contained' >
+                            <Button sx={{ color: "white !important", padding: "2px 8px !important", mt: 2, mb: 2, height: "40px", borderRadius: "10px !important", backgroundColor: "gray !important" }} type='submit' variant='contained' >
                                 {!idRole ? t("Create") : t("update")}
                             </Button>
                         </Box>

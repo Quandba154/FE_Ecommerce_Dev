@@ -27,9 +27,9 @@ export const updateRole = async (data: TParamEditRole) => {
   try {
     const res = await instanceAxios.put(`${API_ENDPOINT.ROLE.INDEX}/${id}`, rests)
     return res.data
-  } catch (error) {
-    console.error('Error during login:', error)
-    throw error
+  } catch (error: any) {
+    // console.error('Error during login:', error)
+    return error?.response?.data
   }
 }
 
@@ -37,9 +37,9 @@ export const deleteRole = async (id: string) => {
   try {
     const res = await instanceAxios.delete(`${API_ENDPOINT.ROLE.INDEX}/${id}`)
     return res.data
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error during login:', error)
-    throw error
+    return error?.response?.data
   }
 }
 
@@ -47,8 +47,8 @@ export const getDetailsRole = async (id: string) => {
   try {
     const res = await instanceAxios.get(`${API_ENDPOINT.ROLE.INDEX}/${id}`)
     return res.data
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error during login:', error)
-    throw error
+    return error?.response?.data
   }
 }
