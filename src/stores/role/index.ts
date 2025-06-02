@@ -22,7 +22,7 @@ const initialState = {
   isSuccess: false,
   isError: false,
   message: '',
-  TypeError: '',
+  typeError: '',
 
   // isSuccessUpdateMe: true,
   // isErrorUpdateMe: false,
@@ -54,7 +54,7 @@ export const roleSlice = createSlice({
       state.isSuccess = true
       state.isError = false
       state.message = ''
-      state.TypeError = ''
+      state.typeError = ''
       state.isSuccessCreateEdit = false
       state.isErrorCreateEdit = true
       state.messageCreateEdit = ''
@@ -91,7 +91,7 @@ export const roleSlice = createSlice({
       state.isSuccessCreateEdit = !!action.payload?.data?._id
       state.isErrorCreateEdit = !action.payload?.data?._id
       state.messageCreateEdit = action.payload?.message
-      state.TypeError = action.payload?.typeError
+      state.typeError = action.payload?.typeError
     })
     // builder.addCase(createRoleAsync.rejected, (state, action: any) => {
     //   state.isLoading = false
@@ -112,7 +112,7 @@ export const roleSlice = createSlice({
       state.isSuccessCreateEdit = !!action.payload?.data?._id
       state.isErrorCreateEdit = !action.payload?.data?._id
       state.messageCreateEdit = action.payload?.message
-      state.TypeError = action.payload?.typeError
+      state.typeError = action.payload?.typeError
     })
 
     // **delete role
@@ -125,7 +125,7 @@ export const roleSlice = createSlice({
       state.isSuccessDelete = !!action.payload?.data?._id
       state.isErrorDelete = !action.payload?.data?._id
       state.messageDelete = action.payload?.message
-      state.TypeError = action.payload?.typeError
+      state.typeError = action.payload?.typeError
     })
   }
 })

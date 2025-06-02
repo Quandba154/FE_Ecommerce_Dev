@@ -7,7 +7,7 @@ import List from '@material-ui/core/List';
 import { Box, Collapse, colors, ListItemButton, ListItemIcon, ListItemText, ListItemTextProps, styled, Tooltip, useTheme } from '@mui/material';
 // ** ICONIFY Imports */
 import IconifyIcon from "src/components/Icon"
-import { VerticalItem } from 'src/configs/layout';
+import { TVertical, VerticalItem } from 'src/configs/layout';
 import { useRouter } from 'next/router';
 import { hexToRGBA } from 'src/utils/hex-to-rgba';
 
@@ -63,12 +63,20 @@ const RecursiveListItems: NextPage<TListItem> = ({ items, level, openItems, setO
             router?.push(path)
         }
     }
-    console.log("activePath>>", activePath);
+    const isParentHaveChildActive = (item: TVertical): boolean => {
+        if (!item.childrens) {
+            return item.path === activePath
+        }
+        return item.childrens.some((item: TVertical) => isParentHaveChildActive(item))
+    }
 
     return (
         <>
             {items?.map((item: any) => {
-                // console.log(">>>>", item.title, level);
+                // console.log(">>>>", item);
+
+                const isParentActive = isParentHaveChildActive(item)
+
                 return (
                     <React.Fragment key={item.title}>
                         <ListItemButton
@@ -76,7 +84,8 @@ const RecursiveListItems: NextPage<TListItem> = ({ items, level, openItems, setO
                                 display: "flex",
                                 padding: `8px 10px 8px ${level * (level === 1 ? 28 : 20)}px`,
                                 margin: "1px 0",
-                                backgroundColor: ((activePath && item.path === activePath) || !!openItems[item.title]) ? `${theme.palette.primary.main} !important` : theme.palette.background.paper,
+                                backgroundColor: ((activePath && item.path === activePath) || !!openItems[item.title] || isParentActive)
+                                    ? `${theme.palette.primary.main} !important` : theme.palette.background.paper,
                                 // borderBottom: `1px solid ${((activePath && item.path === activePath) || !!openItems[item.title]) ?
                                 //     `${hexToRGBA(theme.palette.primary.main, 0.08)} !important` : `rgba(${theme.palette.customColors.main},0.78)
                                 // `}`
@@ -86,7 +95,9 @@ const RecursiveListItems: NextPage<TListItem> = ({ items, level, openItems, setO
                                     if (item.childrens) {
                                         handleClick(item.title)
                                     }
-                                    handleSelectItem(item.path)
+                                    if (item.path) {
+                                        handleSelectItem(item.path)
+                                    }
                                 }
                             }
                         >
@@ -99,7 +110,7 @@ const RecursiveListItems: NextPage<TListItem> = ({ items, level, openItems, setO
                                     height: "30px",
                                     width: "30px",
                                     backgroundColor:
-                                        (activePath && item.path === activePath) || !!openItems[item.title]
+                                        (activePath && item.path === activePath) || !!openItems[item.title] || isParentActive
                                             ? `${theme.palette.primary.main} !important`
                                             : theme.palette.background.paper
                                 }}>
@@ -107,7 +118,7 @@ const RecursiveListItems: NextPage<TListItem> = ({ items, level, openItems, setO
                                         icon={item.icon}
                                         style={{
                                             color:
-                                                (activePath && item.path === activePath) || !!openItems[item.title]
+                                                (activePath && item.path === activePath) || !!openItems[item.title] || isParentActive
                                                     ? `${theme.palette.customColors.lightPaperBg}`
                                                     : `rgba(${theme.palette.customColors.main},0.78)`
                                         }}
@@ -118,11 +129,10 @@ const RecursiveListItems: NextPage<TListItem> = ({ items, level, openItems, setO
                             {!disabled &&
                                 <Tooltip title={item?.title}>
                                     <StyleListItemText
-                                        active={Boolean((activePath && item.path === activePath) || !!openItems[item.title])}
+                                        active={Boolean((activePath && item.path === activePath) || !!openItems[item.title] || isParentActive)}
                                         primary={item?.title}
                                     />
                                 </Tooltip>}
-
                             {item?.childrens?.length > 0 && (
                                 <>
                                     {openItems[item.title] ? (
@@ -130,12 +140,14 @@ const RecursiveListItems: NextPage<TListItem> = ({ items, level, openItems, setO
                                             icon="ic:twotone-expand-less"
                                             style={{
                                                 transform: "rotate(180deg)",
-                                                color: !!openItems[item.title] ? `${theme.palette.primary.main}` : `rgba(${theme.palette.customColors.main},0.78)`,
-
+                                                color: !!openItems[item.title] || isParentActive ? `${theme.palette.primary.main}` : `rgba(${theme.palette.customColors.main},0.78)`,
                                             }}
                                         />
                                     ) : (
-                                        <IconifyIcon icon="eva:arrow-ios-downward-fill" />
+                                        <IconifyIcon icon="eva:arrow-ios-downward-fill" style={{
+                                            transform: "rotate(180deg)",
+                                            color:isParentActive ? `${theme.palette.primary.main}` : `rgba(${theme.palette.customColors.main},0.78)`,
+                                        }} />
                                     )}
                                 </>
                             )}
@@ -162,6 +174,9 @@ const ListVerticalLayout: NextPage<TProps> = ({ open }) => {
     const [openItems, setOpenItems] = useState<({ [key: string]: boolean })>({});
 
     const [activePath, setActivePath] = useState<null | string>("")
+
+    console.log("ac", { activePath });
+
 
     useEffect(() => {
         if (!open) {

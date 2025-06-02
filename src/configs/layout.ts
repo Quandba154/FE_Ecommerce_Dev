@@ -1,6 +1,17 @@
 import { useTranslation } from 'react-i18next'
 import { ROUTE_CONFIG } from './route'
 
+export type TVertical = {
+  title: string
+  path?: string
+  icon?: string
+  childrens?: {
+    title: string
+    path?: string
+    icon?: string
+  }[]
+}
+
 export const VerticalItem = () => {
   // ** Translation
   const { t } = useTranslation()
@@ -23,6 +34,7 @@ export const VerticalItem = () => {
         }
       ]
     },
+
     {
       title: t('Manage_product'),
       icon: 'eos-icons:products-outlined',
@@ -38,6 +50,13 @@ export const VerticalItem = () => {
           icon: 'material-sysbols-light:category-outline',
           path: ROUTE_CONFIG.MANAGE_PRODUCT.MANAGE_TYPE_PRODUCT
         },
+      ]
+    },
+    {
+      title: t('Manage_order'),
+      icon: 'carbon:order-details',
+      // path: '/',
+      childrens: [
         {
           title: t('List_order'),
           icon: 'lets-icons:order-light',
