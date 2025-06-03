@@ -1,4 +1,4 @@
-export const PERMISSIONS = {
+export const PERMISSIONS: any = {
   ADMIN: 'ADMIN.GRANTED',
   BASIC: 'BASIC.PUBLIC',
   DASHBOARD: 'DASHBOARD',
@@ -61,7 +61,16 @@ export const PERMISSIONS = {
 }
 
 export const LIST_DATA_PERMISSIONS: any = [
-  { id: 1, name: 'Manage_product', isParent: true },
+  {
+    id: 15,
+    name: 'Dashboard',
+    isParent: false,
+    value: 'DASHBOARD',
+    isHideCreate: true,
+    isHideUpdate: true,
+    isHideDelete: true
+  },
+  { id: 1, name: 'Manage_product', isParent: true, value: 'MANAGE_PRODUCT' },
   {
     id: 2,
     name: 'Product',
@@ -84,7 +93,7 @@ export const LIST_DATA_PERMISSIONS: any = [
     // update: PERMISSIONS.MANAGE_PRODUCT.PRODUCT_TYPE.UPDATE,
     // delete: PERMISSIONS.MANAGE_PRODUCT.PRODUCT_TYPE.DELETE,
   },
-  { id: 4, name: 'System', isParent: true },
+  { id: 4, name: 'System', isParent: true, value: 'SYSTEM' },
   {
     id: 5,
     name: 'User',
@@ -108,7 +117,7 @@ export const LIST_DATA_PERMISSIONS: any = [
     // delete: PERMISSIONS.SYSTEM.ROLE.DELETE,
     // view: PERMISSIONS.SYSTEM.ROLE.VIEW
   },
-  { id: 7, name: 'Manage_order', isParent: true },
+  { id: 7, name: 'Manage_order', isParent: true, value: 'MANAGE_ORDER' },
   {
     id: 8,
     name: 'Review',
@@ -131,7 +140,7 @@ export const LIST_DATA_PERMISSIONS: any = [
     // delete: PERMISSIONS.MANAGE_ORDER.ORDER.DELETE,
     // view: PERMISSIONS.MANAGE_ORDER.ORDER.VIEW
   },
-  { id: 10, name: 'Settings', isParent: true },
+  { id: 10, name: 'Settings', isParent: true, value: 'SETTING' },
   {
     id: 11,
     name: 'City',
@@ -166,3 +175,81 @@ export const LIST_DATA_PERMISSIONS: any = [
     isHideView: true
   }
 ]
+
+// export const LIST_DATA_PERMISSIONS: any = [
+//   { id: 1, name: 'Computer_Science', isParent: true },
+//   {
+//     id: 2,
+//     name: 'Data_Structures',
+//     isParent: false,
+//     value: 'DATA_STRUCTURES',
+//     parentValue: 'COMPUTER_SCIENCE',
+//     isHideView: true
+//   },
+//   {
+//     id: 3,
+//     name: 'Algorithms',
+//     isParent: false,
+//     value: 'ALGORITHMS',
+//     parentValue: 'COMPUTER_SCIENCE',
+//     isHideView: true
+//   },
+//   { id: 4, name: 'Business', isParent: true },
+//   {
+//     id: 5,
+//     name: 'Marketing',
+//     isParent: false,
+//     value: 'MARKETING',
+//     parentValue: 'BUSINESS',
+//     isHideView: true
+//   },
+//   {
+//     id: 6,
+//     name: 'Entrepreneurship',
+//     isParent: false,
+//     value: 'ENTREPRENEURSHIP',
+//     parentValue: 'BUSINESS'
+//   },
+//   { id: 7, name: 'Language_Learning', isParent: true },
+//   {
+//     id: 8,
+//     name: 'English_Grammar',
+//     isParent: false,
+//     value: 'ENGLISH_GRAMMAR',
+//     parentValue: 'LANGUAGE_LEARNING',
+//     isHideView: true,
+//     isHideCreate: true
+//   },
+//   {
+//     id: 9,
+//     name: 'IELTS_Preparation',
+//     isParent: false,
+//     value: 'IELTS_PREPARATION',
+//     parentValue: 'LANGUAGE_LEARNING'
+//   },
+//   { id: 10, name: 'Design', isParent: true },
+//   {
+//     id: 11,
+//     name: 'Graphic_Design',
+//     isParent: false,
+//     value: 'GRAPHIC_DESIGN',
+//     parentValue: 'DESIGN',
+//     isHideView: true
+//   },
+//   {
+//     id: 12,
+//     name: 'UI_UX_Design',
+//     isParent: false,
+//     value: 'UI_UX_DESIGN',
+//     parentValue: 'DESIGN',
+//     isHideView: true
+//   },
+//   {
+//     id: 13,
+//     name: '3D_Modeling',
+//     isParent: false,
+//     value: '3D_MODELING',
+//     parentValue: 'DESIGN',
+//     isHideView: true
+//   }
+// ]
