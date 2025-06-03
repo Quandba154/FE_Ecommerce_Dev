@@ -1,5 +1,5 @@
 // ** React
-import React, { useEffect, useState } from 'react';
+import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
 //
 import { Box, useTheme, Button, Typography, IconButton, Checkbox } from '@mui/material';
 
@@ -22,15 +22,16 @@ import { createRoleAsync, updateRoleAsync } from 'src/stores/role/action';
 import { getDetailsRole } from 'src/services/role';
 import CustomDataGrid from 'src/components/custom-data-grid';
 import { GridColDef, GridRenderCellParams } from '@mui/x-data-grid';
-import { LIST_DATA_PERMISSIONS } from 'src/configs/permission';
-import Row from 'antd/lib/Row';
+import { LIST_DATA_PERMISSIONS, PERMISSIONS } from 'src/configs/permission';
+import { getAllValueOfObject } from 'src/utils';
+
 
 
 
 interface TTablePermission {
-    // open: boolean,
-    // onClose: () => void,
-    // idRole?: string
+    setPermissionSelected: Dispatch<SetStateAction<string[]>>
+    permissionSelected: string[]
+    disabled: boolean
 }
 
 
@@ -42,15 +43,53 @@ const TablePermission = (props: TTablePermission) => {
     // ** State
     const [isLoading, setLoading] = useState(false)
 
+    //** Redux */
     const dispatch: AppDispatch = useDispatch();
 
     const { t } = useTranslation()
+
+    // ** Props 
+    const { permissionSelected, setPermissionSelected, disabled } = props
+
+    // ** handle 
+    const getValuePermission = (value: string, mode: string, parenValue?: string) => {
+        try {
+            return parenValue ? PERMISSIONS[parenValue]?.[value]?.[mode] : PERMISSIONS[value]
+        } catch (error) {
+            return ""
+        }
+    }
+
+    const handleOnChangeCheckBox = (value: string) => {
+        console.log("value", { value });
+
+        const isChecked = permissionSelected.includes(value)
+        if (isChecked) {
+            const filtered = permissionSelected.filter((item) => item !== value)
+            setPermissionSelected(filtered)
+        } else {
+            setPermissionSelected([...permissionSelected, value])
+        }
+    }
+
+    const handleCheckAllCheckBox = (value: string, parentValue?: string,) => {
+        const allValue = parentValue ? getAllValueOfObject(PERMISSIONS[parentValue][value]) : getAllValueOfObject(PERMISSIONS[value])
+
+        const isCheckAll = allValue.every((item) => permissionSelected.includes(item))
+        if (isCheckAll) {
+            const filtered = permissionSelected.filter((item) => !allValue.includes(item))
+            setPermissionSelected(filtered)
+        } else {
+            setPermissionSelected([...permissionSelected, ...allValue])
+        }
+
+    }
 
 
     const columns: GridColDef[] = [
         {
             field: 'all',
-            headerName: t('All'),
+            headerName: t(''),
             minWidth: 80,
             maxWidth: 80,
             sortable: false,
@@ -58,7 +97,13 @@ const TablePermission = (props: TTablePermission) => {
                 const { row } = params
                 return <>
                     {row.isParent && (
-                        <Checkbox value={row?.view} />
+                        <Checkbox value={row?.value} onChange={(e) => {
+                            if (row.isParent) {
+
+                            } else {
+                                handleCheckAllCheckBox(e.target.value, row.parentValue)
+                            }
+                        }} />
                     )}
                 </>
             }
@@ -67,13 +112,14 @@ const TablePermission = (props: TTablePermission) => {
             field: 'name',
             headerName: t('Name'),
             flex: 1,
+            minWidth: 200,
             sortable: false,
             renderCell: (params: GridRenderCellParams) => {
                 const { row } = params
                 return <Typography sx={{
                     color: row?.isParent ? theme.palette.primary.main : `rgba(${theme.palette.customColors.main} , 0.78s)`,
                     paddingLeft: row?.isParent ? "0" : "20px",
-                    textTransform : row?.isParent ? "uppercase" : "normal"
+                    textTransform: row?.isParent ? "uppercase" : "normal"
 
                 }}>
                     {t(row?.name)}
@@ -87,11 +133,18 @@ const TablePermission = (props: TTablePermission) => {
             maxWidth: 100,
             sortable: false,
             renderCell: (params: GridRenderCellParams) => {
-                console.log("params", params);
                 const { row } = params
+                const value = getValuePermission(row.value, "VIEW", row.parentValue)
                 return <>
-                    {!row.isHideView && !row.isParent && (
-                        <Checkbox value={row?.view} />
+                    {!row?.isHideView && !row.isParent && (
+                        <Checkbox
+                            disabled={disabled}
+                            value={value}
+                            onChange={e => {
+                                handleOnChangeCheckBox(e.target.value)
+                            }}
+                            checked={permissionSelected.includes(value)}
+                        />
                     )}
                 </>
             }
@@ -103,11 +156,19 @@ const TablePermission = (props: TTablePermission) => {
             maxWidth: 100,
             sortable: false,
             renderCell: (params: GridRenderCellParams) => {
-                console.log("params", params);
                 const { row } = params
+                const value = getValuePermission(row.value, "CREATE", row.parentValue)
+
                 return <>
-                    {!row.isHideCreate && !row.isParent && (
-                        <Checkbox value={row?.create} />
+                    {!row?.isHideCreate && !row.isParent && (
+                        <Checkbox
+                            disabled={disabled}
+                            value={value}
+                            onChange={e => {
+                                handleOnChangeCheckBox(e.target.value)
+                            }}
+                            checked={permissionSelected.includes(value)}
+                        />
                     )}
                 </>
             }
@@ -119,11 +180,19 @@ const TablePermission = (props: TTablePermission) => {
             maxWidth: 120,
             sortable: false,
             renderCell: (params: GridRenderCellParams) => {
-                console.log("params", params);
                 const { row } = params
+                const value = getValuePermission(row.value, "UPDATE", row.parentValue)
+
                 return <>
-                    {!row.isHideUpdate && !row.isParent && (
-                        <Checkbox value={row?.update} />
+                    {!row?.isHideUpdate && !row.isParent && (
+                        <Checkbox
+                            disabled={disabled}
+                            value={value}
+                            onChange={e => {
+                                handleOnChangeCheckBox(e.target.value)
+                            }}
+                            checked={permissionSelected.includes(value)}
+                        />
                     )}
                 </>
             }
@@ -131,15 +200,23 @@ const TablePermission = (props: TTablePermission) => {
         {
             field: 'delete',
             headerName: t('Delete'),
-            minWidth: 100,
-            maxWidth: 100,
+            minWidth: 80,
+            maxWidth: 80,
             sortable: false,
             renderCell: (params: GridRenderCellParams) => {
-                console.log("params", params);
                 const { row } = params
+                const value = getValuePermission(row.value, "DELETE", row.parentValue)
+
                 return <>
-                    {!row.isHideDelete && !row.isParent && (
-                        <Checkbox value={row?.delete} />
+                    {!row?.isHideDelete && !row.isParent && (
+                        <Checkbox
+                            disabled={disabled}
+                            value={value}
+                            onChange={e => {
+                                handleOnChangeCheckBox(e.target.value)
+                            }}
+                            checked={permissionSelected.includes(value)}
+                        />
                     )}
                 </>
             }
@@ -152,6 +229,7 @@ const TablePermission = (props: TTablePermission) => {
     return (
         <>
             {isLoading && <Spinner></Spinner>}
+
             <CustomDataGrid
                 rows={LIST_DATA_PERMISSIONS}
                 columns={columns}
@@ -161,7 +239,6 @@ const TablePermission = (props: TTablePermission) => {
                 disableColumnFilter
                 disableColumnMenu
             />
-
         </>
     )
 }

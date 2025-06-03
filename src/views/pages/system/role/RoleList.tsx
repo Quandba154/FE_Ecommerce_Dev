@@ -5,7 +5,7 @@ import Link from 'next/link'
 //** Mui
 import {
     Box,
-
+    Button,
     Grid,
     useTheme
 } from '@mui/material'
@@ -40,7 +40,7 @@ import toast from 'react-hot-toast'
 import { t } from "i18next"
 import { useTranslation } from 'react-i18next';
 import { useAuth } from 'src/hooks/useAuth'
-import { deleteRoleAsync, getAllRolesAsync } from 'src/stores/role/action'
+import { deleteRoleAsync, getAllRolesAsync, updateRoleAsync } from 'src/stores/role/action'
 import CustomDataGrid from 'src/components/custom-data-grid'
 import { GridColDef, GridSortModel } from '@mui/x-data-grid'
 import { PAGE_SIZE_OPTION } from 'src/configs/gridConfig'
@@ -54,6 +54,9 @@ import Spinner from 'src/components/spinner'
 import ConfirmationDialog from 'src/components/confirmation-dialog'
 import { OBJECT_TYPE_ERROR_ROLE } from 'src/configs/role'
 import TablePermission from './component/TablePermission'
+import { getDetailsRole } from 'src/services/role'
+import { PERMISSIONS } from 'src/configs/permission'
+import { getAllValueOfObject } from 'src/utils'
 
 
 
@@ -80,6 +83,15 @@ const RoleListPage: NextPage<TProps> = () => {
 
     const [sortBy, setSortBy] = useState("created asc")
     const [searchBy, setSearchBy] = useState("")
+    const [permissionSelected, setPermissionSelected] = useState<string[]>([])
+    const [selectedRow, setSelectedRow] = useState({
+        id: "",
+        name: ""
+    })
+    const [loading, setLoading] = useState(false)
+    const [isDisablePermission, setIsDisablePermission] = useState(false)
+
+
 
 
 
@@ -108,6 +120,26 @@ const RoleListPage: NextPage<TProps> = () => {
         dispatch(getAllRolesAsync({ params: { limit: -1, page: -1, search: searchBy, order: sortBy } }))
     }
 
+    const handleUpdateRole = () => {
+        dispatch(updateRoleAsync({ name: selectedRow.name, id: selectedRow.id, permissions: permissionSelected }))
+    }
+
+    console.log("per", { permissionSelected });
+
+
+    const handleCloseConfirmDeleteRole = () => {
+        setOpenDeleteRole({
+            open: false,
+            id: ""
+        })
+    }
+
+    const handleSort = (sort: GridSortModel) => {
+        const sortOption = sort[0]
+        setSortBy(`${sortOption.field} ${sortOption.sort}`)
+    }
+
+
     // ** handle
     const handleOnchangePagination = (page: number, pageSize: number) => { }
 
@@ -123,17 +155,6 @@ const RoleListPage: NextPage<TProps> = () => {
     }
 
 
-    const handleSort = (sort: GridSortModel) => {
-        const sortOption = sort[0]
-        setSortBy(`${sortOption.field} ${sortOption.sort}`)
-    }
-
-    const handleCloseConfirmDeleteRole = () => {
-        setOpenDeleteRole({
-            open: false,
-            id: ""
-        })
-    }
 
 
 
@@ -185,9 +206,30 @@ const RoleListPage: NextPage<TProps> = () => {
     //     )
     // }
 
-    useEffect(() => {
-        handleGetListRoles()
-    }, [sortBy, searchBy])
+    const handleGetDetailRoles = async (id: string) => {
+        setLoading(true)
+        await getDetailsRole(id).then((res) => {
+            if (res?.data) {
+                if (res?.data.permissions.includes(PERMISSIONS.ADMIN)) {
+                    setIsDisablePermission(true)
+                    setPermissionSelected(getAllValueOfObject(
+                        PERMISSIONS, [PERMISSIONS.ADMIN, PERMISSIONS.BASIC]
+                    ))
+                } else if (res?.data.permissions.includes(PERMISSIONS.BASIC)) {
+                    setIsDisablePermission(true)
+                    setPermissionSelected([PERMISSIONS.DASHBOARD])
+                } else {
+                    setIsDisablePermission(false)
+                    setPermissionSelected(res?.data?.permissions || [])
+                }
+            }
+            setLoading(false)
+        }).catch(e => {
+            setLoading(false)
+        })
+    }
+
+
 
     useEffect(() => {
         if (isSuccessCreateEdit) {
@@ -215,6 +257,16 @@ const RoleListPage: NextPage<TProps> = () => {
         handleGetListRoles()
     }, [isSuccessCreateEdit, isErrorCreateEdit, messageCreateEdit, typeError])
 
+    useEffect(() => {
+        handleGetListRoles()
+    }, [sortBy, searchBy])
+
+    useEffect(() => {
+        if (selectedRow.id) {
+            handleGetDetailRoles(selectedRow.id)
+        }
+    }, [selectedRow])
+
 
     useEffect(() => {
         if (isSuccessDelete) {
@@ -231,6 +283,7 @@ const RoleListPage: NextPage<TProps> = () => {
 
     return (
         <>
+            {loading && <Spinner></Spinner>}
             <ConfirmationDialog
                 open={openDeleteRole.open}
                 handleClose={handleCloseConfirmDeleteRole}
@@ -251,7 +304,7 @@ const RoleListPage: NextPage<TProps> = () => {
                     height: "100% !important", width: "100%",
                 }}>
 
-                    <Grid container sx={{ height: "100%", width: "100%" }} spacing={10}>
+                    <Grid container sx={{ height: "100%", width: "100%" }} spacing={5}>
                         <Grid item md={4} xs={12}>
                             <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", mb: 2 }}>
                                 <Box sx={{ width: "200px" }}>
@@ -274,20 +327,37 @@ const RoleListPage: NextPage<TProps> = () => {
                                     autoHeight
                                     getRowId={(row) => row._id}
                                     disableRowSelectionOnClick
-                                    // slots={{
-                                    //     pagination: PaginationComponent
-                                    // }}
+                                    onRowClick={(row) => {
+                                        console.log("rows", { row });
+                                        setSelectedRow({ id: String(row.id), name: row?.row?.name })
+                                    }}
                                     disableColumnFilter
                                     disableColumnMenu
                                 />
                             </Box>
                         </Grid>
-                        <Grid item md={8} xs={12} sx={{ maxHeight: "100%" }}>
-                            <TablePermission></TablePermission>
+                        <Grid item md={8} xs={12} sx={{ maxHeight: "100%" }} paddingLeft={{ md: "40px", xs: "0" }} paddingTop={{ md: "0", sx: "20px" }}>
+                            {selectedRow?.id && (
+                                <>
+                                    <Box sx={{ height: "calc(100% - 40px)" }}>
+                                        <TablePermission permissionSelected={permissionSelected} setPermissionSelected={setPermissionSelected} disabled={isDisablePermission} ></TablePermission>
+                                        <Box sx={{ width: "100%", display: "flex", justifyContent: "flex-end" }}>
+                                            <Button
+                                                sx={{ color: "white !important", padding: "2px 8px !important", mt: 2, mb: 2, height: "40px", borderRadius: "10px !important", backgroundColor: "gray !important" }}
+                                                variant='contained'
+                                                disabled={isDisablePermission}
+                                                onClick={handleUpdateRole}
+                                            >
+                                                {t("update")}
+                                            </Button>
+                                        </Box>
+                                    </Box>
+                                </>
+                            )}
                         </Grid>
                     </Grid>
                 </Box>
-            </Box>
+            </Box >
         </>
     )
 }

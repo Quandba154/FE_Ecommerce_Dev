@@ -12,6 +12,7 @@ export type TParamCreateRole = {
 export type TParamEditRole = {
   name: string
   id: string
+  permissions?: string[]
 }
 
 export type TParamDeleteRole = {
