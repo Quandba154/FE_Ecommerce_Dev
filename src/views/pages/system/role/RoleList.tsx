@@ -42,7 +42,7 @@ import { useTranslation } from 'react-i18next';
 import { useAuth } from 'src/hooks/useAuth'
 import { deleteRoleAsync, getAllRolesAsync, updateRoleAsync } from 'src/stores/role/action'
 import CustomDataGrid from 'src/components/custom-data-grid'
-import { GridColDef, GridSortModel } from '@mui/x-data-grid'
+import { GridColDef, GridRowClassNameParams, GridSortModel } from '@mui/x-data-grid'
 import { PAGE_SIZE_OPTION } from 'src/configs/gridConfig'
 import CustomPagination from 'src/components/custom-pagination'
 import GridEdit from 'src/components/grid-edit'
@@ -57,6 +57,7 @@ import TablePermission from './component/TablePermission'
 import { getDetailsRole } from 'src/services/role'
 import { PERMISSIONS } from 'src/configs/permission'
 import { getAllValueOfObject } from 'src/utils'
+import { hexToRGBA } from 'src/utils/hex-to-rgba'
 
 
 
@@ -233,10 +234,10 @@ const RoleListPage: NextPage<TProps> = () => {
 
     useEffect(() => {
         if (isSuccessCreateEdit) {
-            if (openCreateEdit.id) {
-                toast.success(t("update-role-success"))
-            } else {
+            if (!openCreateEdit.id) {
                 toast.success(t("create-role-success"))
+            } else {
+                toast.success(t("update-role-success"))
             }
             handleGetListRoles()
             handleCloseCreateEdit()
@@ -310,26 +311,42 @@ const RoleListPage: NextPage<TProps> = () => {
                                 <Box sx={{ width: "200px" }}>
                                     <InputSearch value={searchBy} onChange={(value: string) => setSearchBy(value)} ></InputSearch>
                                 </Box>
-                                <GridCreate onClick={() => setOpenCreateEdit({
-                                    open: true,
-                                    id: ""
-                                })} ></GridCreate>
+                                <GridCreate onClick={() => {
+                                    setOpenCreateEdit({
+                                        open: true,
+                                        id: ""
+                                    })
+                                }
+                                } ></GridCreate>
                             </Box>
                             <Box sx={{ maxHeight: "100%" }}>
                                 <CustomDataGrid
                                     rows={roles.data}
                                     columns={columns}
                                     pageSizeOptions={[5]}
-                                    // checkboxSelection
+                                    sx={{
+                                        ".row-selected": {
+                                            backgroundColor:
+                                                `${hexToRGBA(theme.palette.primary.main, 0.08)} !important`,
+                                            color: `${theme.palette.primary.main} !important`
+                                        }
+                                    }}
                                     sortingMode='server'
                                     onSortModelChange={handleSort}
                                     sortingOrder={["desc", "asc"]}
                                     autoHeight
                                     getRowId={(row) => row._id}
                                     disableRowSelectionOnClick
+                                    getRowClassName={(row: GridRowClassNameParams) => {
+                                        return row.id === selectedRow.id ? "row-selected" : ''
+                                    }}
                                     onRowClick={(row) => {
-                                        console.log("rows", { row });
+                                        // console.log("rows", { row });
                                         setSelectedRow({ id: String(row.id), name: row?.row?.name })
+                                        setOpenCreateEdit({
+                                            open: false,
+                                            id: String(row.id)
+                                        })
                                     }}
                                     disableColumnFilter
                                     disableColumnMenu

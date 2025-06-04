@@ -36,7 +36,6 @@ const StyleListItemText = styled(ListItemText)<TListItemText>(({ theme, active }
     ".MuiTypography-root.MuiTypography-body1.MuiListItemText-primary": {
         textOverflow: "ellipsis",
         overflow: "hidden",
-        // whiteSpace: "nowrap",
         display: "block",
         width: "100%",
         color: active ? `${theme.palette.primary.main} !important` : `rgba(${theme.palette.customColors.main},0.78)`,
@@ -73,8 +72,6 @@ const RecursiveListItems: NextPage<TListItem> = ({ items, level, openItems, setO
     return (
         <>
             {items?.map((item: any) => {
-                // console.log(">>>>", item);
-
                 const isParentActive = isParentHaveChildActive(item)
 
                 return (
@@ -146,7 +143,7 @@ const RecursiveListItems: NextPage<TListItem> = ({ items, level, openItems, setO
                                     ) : (
                                         <IconifyIcon icon="eva:arrow-ios-downward-fill" style={{
                                             transform: "rotate(180deg)",
-                                            color:isParentActive ? `${theme.palette.primary.main}` : `rgba(${theme.palette.customColors.main},0.78)`,
+                                            color: isParentActive ? `${theme.palette.primary.main}` : `rgba(${theme.palette.customColors.main},0.78)`,
                                         }} />
                                     )}
                                 </>

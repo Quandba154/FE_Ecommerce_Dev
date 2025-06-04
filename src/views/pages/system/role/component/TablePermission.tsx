@@ -1,27 +1,21 @@
 // ** React
-import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
+import React, { Dispatch, SetStateAction, useState } from 'react';
 //
-import { Box, useTheme, Button, Typography, IconButton, Checkbox } from '@mui/material';
+import { useTheme, Typography, IconButton, Checkbox } from '@mui/material';
 
-// ** form
-import { Controller, useForm } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers/yup';
-import * as yup from 'yup'
 // i18
 import { useTranslation } from 'react-i18next';
 // ** component
-import CustomModal from 'src/components/custom-modal';
 import Spinner from 'src/components/spinner';
 import Iconfi from "src/components/Icon"
-import CustomTextField from 'src/components/text-field';
 //** redux */
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from 'src/stores';
 import { createRoleAsync, updateRoleAsync } from 'src/stores/role/action';
 // ** Service
-import { getDetailsRole } from 'src/services/role';
 import CustomDataGrid from 'src/components/custom-data-grid';
 import { GridColDef, GridRenderCellParams } from '@mui/x-data-grid';
+//** Others */
 import { LIST_DATA_PERMISSIONS, PERMISSIONS } from 'src/configs/permission';
 import { getAllValueOfObject } from 'src/utils';
 
