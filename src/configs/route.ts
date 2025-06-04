@@ -8,12 +8,14 @@ export const ROUTE_CONFIG = {
   },
   MANAGE_PRODUCT: {
     PRODUCT: '/manager-product/products',
-    MANAGE_ORDER: '/manager-product/orders',
-    MANAGE_REVIEW: '/manager-product/reviews',
     MANAGE_TYPE_PRODUCT: '/manager-product/type-product'
+  },
+  MANAGE_ORDER: {
+    ORDER: '/manager-product/orders',
+    MANAGE_REVIEW: '/manager-product/reviews'
   },
   SETTINGS: {
     PAYMENT_TYPE: '/settings/payment-type'
   },
-  DASHBOARD: "/dashboard"
+  DASHBOARD: '/dashboard'
 }

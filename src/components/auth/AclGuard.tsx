@@ -9,6 +9,7 @@ import NotAuthorized from "src/pages/401"
 import { useAuth } from 'src/hooks/useAuth'
 import { useRouter } from 'next/router'
 import { AbilityContext } from '../acl/Can'
+import { PERMISSIONS } from 'src/configs/permission'
 
 
 interface AclGuardProps {
@@ -16,20 +17,29 @@ interface AclGuardProps {
   authGuard?: boolean
   guestGuard?: boolean
   aclAbilities: ACLObj
+  permission: string[]
 }
 
 const AclGuard = (props: AclGuardProps) => {
   // ** Props
-  const { aclAbilities, children, guestGuard = false, authGuard = true } = props
+  const { aclAbilities, children, guestGuard = false, authGuard = true, permission } = props
 
   const auth = useAuth()
-  const permissionUser = auth.user?.role?.permissions ?? []
+  // const permissionUser = auth.user?.role?.permissions
+  //   ? auth.user?.role?.permissions?.includes(PERMISSIONS.BASIC)
+  //     ? [PERMISSIONS.DASHBOARD]
+  //     : auth.user?.role?.permissions
+  //   : []
+
+  const permissionUser = ["SYSTEM.ROLE.VIEW"]
   const router = useRouter()
+
+  console.log("permissionUser", { permissionUser, permission });
 
   let ability: AppAbility
 
   if (auth.user && !ability) { // đã đăng nhập rồi và ko có khả năng
-    ability = buildAbilityFor(permissionUser, aclAbilities.subject)
+    ability = buildAbilityFor(permissionUser, permission)
   }
 
   // Đây là guest or ko yêu cầu guard or page error

@@ -1,5 +1,6 @@
 import { useTranslation } from 'react-i18next'
 import { ROUTE_CONFIG } from './route'
+import { PERMISSIONS } from './permission'
 
 export type TVertical = {
   title: string
@@ -25,12 +26,14 @@ export const VerticalItem = () => {
         {
           title: t('User'),
           icon: 'iconoir:group',
-          path: ROUTE_CONFIG.SYSTEM.USER
+          path: ROUTE_CONFIG.SYSTEM.USER,
+          permissions: PERMISSIONS.SYSTEM.USER.VIEW
         },
         {
           title: t('Role'),
           icon: 'icon-park-outline:permissions',
-          path: ROUTE_CONFIG.SYSTEM.ROLE
+          path: ROUTE_CONFIG.SYSTEM.ROLE,
+          permissions: PERMISSIONS.SYSTEM.USER.VIEW
         }
       ]
     },
@@ -49,7 +52,7 @@ export const VerticalItem = () => {
           title: t('Type_product'),
           icon: 'material-sysbols-light:category-outline',
           path: ROUTE_CONFIG.MANAGE_PRODUCT.MANAGE_TYPE_PRODUCT
-        },
+        }
       ]
     },
     {
@@ -60,12 +63,13 @@ export const VerticalItem = () => {
         {
           title: t('List_order'),
           icon: 'lets-icons:order-light',
-          path: ROUTE_CONFIG.MANAGE_PRODUCT.MANAGE_ORDER
+          path: ROUTE_CONFIG.MANAGE_ORDER.ORDER,
+          permissions: PERMISSIONS.MANAGE_ORDER.ORDER.VIEW
         },
         {
           title: t('List_review'),
           icon: 'carbon:review',
-          path: ROUTE_CONFIG.MANAGE_PRODUCT.MANAGE_REVIEW
+          path: ROUTE_CONFIG.MANAGE_ORDER.MANAGE_REVIEW
         }
       ]
     },

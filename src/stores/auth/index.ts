@@ -1,6 +1,6 @@
 // ** Redux Imports
 import { Dispatch } from 'redux'
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
+import { createSlice } from '@reduxjs/toolkit'
 // ** Axios Imports
 import axios from 'axios'
 import { changePasswordMeAsync, registerAuthAsync, updateAuthMeAsync } from './action'
@@ -55,8 +55,6 @@ export const authSlice = createSlice({
       state.isLoading = true
     })
     builder.addCase(registerAuthAsync.fulfilled, (state, action) => {
-      console.log('action', { action })
-
       state.isLoading = false
       state.isSuccess = !!action.payload?.data?.email
       state.isError = !action.payload?.data?.email
@@ -71,12 +69,11 @@ export const authSlice = createSlice({
       state.TypeError = ''
     })
 
-    // Update me
+    // Update Me
     builder.addCase(updateAuthMeAsync.pending, (state, action) => {
       state.isLoading = true
     })
     builder.addCase(updateAuthMeAsync.fulfilled, (state, action) => {
-      console.log('action', { action })
       state.isLoading = false
       state.isSuccessUpdateMe = !!action.payload?.data?.email
       state.isErrorUpdateMe = !action.payload?.data?.email
@@ -91,12 +88,11 @@ export const authSlice = createSlice({
       state.messageUpdateMe = ''
     })
 
-    // Change Password me
+    // Change Password Me
     builder.addCase(changePasswordMeAsync.pending, (state, action) => {
       state.isLoading = true
     })
     builder.addCase(changePasswordMeAsync.fulfilled, (state, action) => {
-      console.log('action', { action })
       state.isLoading = false
       state.isSuccessChangePassword = !!action.payload?.data
       state.isErrorChangePassword = !action.payload?.data

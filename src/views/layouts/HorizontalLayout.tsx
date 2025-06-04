@@ -2,7 +2,7 @@
 import React from 'react';
 import clsx from 'clsx';
 // ** Material UI Imports
-import { makeStyles } from '@material-ui/core/styles'; // Thêm useTheme
+import { makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
@@ -11,10 +11,12 @@ import IconButton from '@material-ui/core/IconButton';
 import { NextPage } from 'next';
 // ** iCONIFY Imports
 import IconifyIcon from "src/components/Icon"
-import UserDropdown from 'src/views/layouts/Components/user-dropdown';
 // darkmode
 import ModeToggle from './Components/mode-toggle';
-import { AppBarProps, Badge, Button, duration, easing, styled } from '@mui/material';
+import { Button } from '@mui/material';
+
+//*Component
+import UserDropdown from 'src/views/layouts/Components/user-dropdown';
 import LanguageDropdown from './Components/language-dropdown';
 // ** hook
 import { useAuth } from 'src/hooks/useAuth';
@@ -117,7 +119,7 @@ const HorizontalLayout: NextPage<TProps> = ({ open, toggleDrawer, isHideMenu }) 
                     </IconButton>
                 )}
                 <Typography component="h1" variant="h6" color="inherit" noWrap className={classes.title}>
-                    Dashboard
+                    EDUHUB
                 </Typography>
                 <LanguageDropdown></LanguageDropdown>
                 <ModeToggle></ModeToggle>

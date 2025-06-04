@@ -4,12 +4,12 @@ import React, { Fragment, useEffect, useState } from 'react';
 import { NextPage } from 'next';
 // ** MUI Imports */
 import List from '@material-ui/core/List';
-import { Box, Collapse, colors, ListItemButton, ListItemIcon, ListItemText, ListItemTextProps, styled, Tooltip, useTheme } from '@mui/material';
+import { Box, Collapse, ListItemButton, ListItemIcon, ListItemText, ListItemTextProps, styled, Tooltip, useTheme } from '@mui/material';
 // ** ICONIFY Imports */
 import IconifyIcon from "src/components/Icon"
 import { TVertical, VerticalItem } from 'src/configs/layout';
 import { useRouter } from 'next/router';
-import { hexToRGBA } from 'src/utils/hex-to-rgba';
+
 
 
 
@@ -77,6 +77,7 @@ const RecursiveListItems: NextPage<TListItem> = ({ items, level, openItems, setO
                 return (
                     <React.Fragment key={item.title}>
                         <ListItemButton
+
                             style={{
                                 display: "flex",
                                 padding: `8px 10px 8px ${level * (level === 1 ? 28 : 20)}px`,
@@ -97,6 +98,7 @@ const RecursiveListItems: NextPage<TListItem> = ({ items, level, openItems, setO
                                     }
                                 }
                             }
+
                         >
                             <ListItemIcon>
                                 <Box sx={{
@@ -172,19 +174,52 @@ const ListVerticalLayout: NextPage<TProps> = ({ open }) => {
 
     const [activePath, setActivePath] = useState<null | string>("")
 
-    console.log("ac", { activePath });
+    const findParentActivePath = (items: TVertical[], activePath: string) => {
+        // console.log("item", { items, activePath });
+        for (const item of items) {
+            if (item.path === activePath) {
+                return item.title
+            }
+            if (item.childrens && item.childrens.length > 0) {
+                const child: any = findParentActivePath(item.childrens, activePath)
+                if (child) {
+                    return item.title
+                }
+            }
+        }
+        return null
+    }
 
+    const router = useRouter()
+
+    // console.log("findParentActive", { findParentActive });
+
+
+    const theme = useTheme()
 
     useEffect(() => {
         if (!open) {
             setOpenItems({});
         }
     }, [open])
+
+    useEffect(() => {
+        if (router.asPath) {
+            const parentTitle = findParentActivePath(listVerticalItems, router.asPath)
+            if (parentTitle) {
+                setOpenItems({
+                    [parentTitle]: true
+                })
+            }
+            setActivePath(router.asPath)
+        }
+    }, [router.asPath])
+
     const handleToggleAll = () => {
         setOpenItems({});
     };
 
-    const listVerticalItem = VerticalItem()
+    const listVerticalItems = VerticalItem()
 
 
     return (
@@ -192,8 +227,9 @@ const ListVerticalLayout: NextPage<TProps> = ({ open }) => {
             style={{ width: '100%', display: "flex", flexDirection: "column", maxWidth: 360, backgroundColor: 'background.paper', padding: 0 }}
             component="nav"
             aria-labelledby="nested-list-subheader"
+
         >
-            <RecursiveListItems disabled={!open} items={listVerticalItem} level={1} openItems={openItems} setOpenItems={setOpenItems} activePath={activePath} setActivePath={setActivePath} />
+            <RecursiveListItems disabled={!open} items={listVerticalItems} level={1} openItems={openItems} setOpenItems={setOpenItems} activePath={activePath} setActivePath={setActivePath} />
         </List >
     )
 }
