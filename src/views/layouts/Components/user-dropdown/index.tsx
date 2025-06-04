@@ -67,6 +67,8 @@ const UserDropdown = (props: TProps) => {
 
     const { user, logout } = useAuth();
 
+    const permissionUser = user?.role?.permissions ?? []
+
     const open = Boolean(anchorEl);
 
     const router = useRouter();
@@ -192,12 +194,14 @@ const UserDropdown = (props: TProps) => {
                         </Box>
                     </Box>
                     <Divider />
-                    <MenuItem onClick={handleNavigateManageSystem}>
-                        <Avatar>
-                            <IconifyIcon icon="arcticons:phone-manager" />
-                        </Avatar>
-                        {t("manage_system")}
-                    </MenuItem>
+                    {permissionUser.length > 0 && (
+                        <MenuItem onClick={handleNavigateManageSystem}>
+                            <Avatar>
+                                <IconifyIcon icon="arcticons:phone-manager" />
+                            </Avatar>
+                            {t("manage_system")}
+                        </MenuItem>
+                    )}
                     <MenuItem onClick={handleNavigateMyProfile}>
                         <Avatar>
                             <IconifyIcon icon="ph:user-thin" />

@@ -20,8 +20,6 @@ const WrapperFileUpload = (props: IProps) => {
         maxSize: 10485760,
     });
 
-
-
     return (
         <div {...getRootProps({ className: 'dropzone' })}>
             <input {...getInputProps()} />

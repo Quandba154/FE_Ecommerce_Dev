@@ -1,7 +1,5 @@
 // "use client"
-import Image from 'next/image'
 import { NextPage } from 'next'
-import Link from 'next/link'
 //** Mui
 import {
     Box,
@@ -9,56 +7,51 @@ import {
     Grid,
     useTheme
 } from '@mui/material'
-// ** Form
-import { Controller, useForm } from 'react-hook-form'
-// ** Components
-import CustomTextField from 'src/components/text-field'
+import { GridColDef, GridRowClassNameParams, GridSortModel } from '@mui/x-data-grid'
+
+//*Yup
 import * as yup from 'yup'
-import { yupResolver } from '@hookform/resolvers/yup'
-// ** REGEX
-import { EMAIL_REG, PASSWORD_REG } from 'src/configs/regex'
+
 // ** React
 import { useState, useEffect } from 'react'
+
 // ** Icon
 import Iconfy from 'src/components/Icon'
-// ** Images
-import RegisterDark from '/public/images/register-dark.png'
-import RegisterLight from '/public/images/register-light.png'
-import GoogleSvg from '/public/svgs/google.svg'
-import facebookSvg from '/public/svgs/facebook.svg'
+
 // ** Redux_dispatch
 import { useDispatch, useSelector } from 'react-redux'
 import { AppDispatch, RootState } from 'src/stores'
-import { changePasswordMeAsync } from 'src/stores/auth/action'
-import FallbackSpinner from 'src/components/fall-back'
 import { resetInitialState } from 'src/stores/role'
 import { useRouter } from 'next/router'
-import { ROUTE_CONFIG } from 'src/configs/route'
-// ** Other
-import toast from 'react-hot-toast'
 // ** translation 
 import { t } from "i18next"
-import { useTranslation } from 'react-i18next';
-import { useAuth } from 'src/hooks/useAuth'
 import { deleteRoleAsync, getAllRolesAsync, updateRoleAsync } from 'src/stores/role/action'
+
+//** Component */
 import CustomDataGrid from 'src/components/custom-data-grid'
-import { GridColDef, GridRowClassNameParams, GridSortModel } from '@mui/x-data-grid'
-import { PAGE_SIZE_OPTION } from 'src/configs/gridConfig'
-import CustomPagination from 'src/components/custom-pagination'
+import ConfirmationDialog from 'src/components/confirmation-dialog'
+import TablePermission from './component/TablePermission'
 import GridEdit from 'src/components/grid-edit'
 import GridDelete from 'src/components/grid-delete'
 import GridCreate from 'src/components/grid-create'
 import InputSearch from 'src/components/input-search'
 import CreateEditRole from './component/CreateEditRole'
 import Spinner from 'src/components/spinner'
-import ConfirmationDialog from 'src/components/confirmation-dialog'
-import { OBJECT_TYPE_ERROR_ROLE } from 'src/configs/role'
-import TablePermission from './component/TablePermission'
+
+// **Service
 import { getDetailsRole } from 'src/services/role'
+
+// *Config
+import { PAGE_SIZE_OPTION } from 'src/configs/gridConfig'
+import { OBJECT_TYPE_ERROR_ROLE } from 'src/configs/role'
 import { PERMISSIONS } from 'src/configs/permission'
+
+// ** Utils
 import { getAllValueOfObject } from 'src/utils'
 import { hexToRGBA } from 'src/utils/hex-to-rgba'
 
+// ** Other
+import toast from 'react-hot-toast'
 
 
 
@@ -93,14 +86,9 @@ const RoleListPage: NextPage<TProps> = () => {
     const [isDisablePermission, setIsDisablePermission] = useState(false)
 
 
-
-
-
     // ** redux
     const dispatch: AppDispatch = useDispatch()
     const { roles, isSuccessCreateEdit, isErrorCreateEdit, isLoading, messageCreateEdit, isErrorDelete, isSuccessDelete, messageDelete, typeError } = useSelector((state: RootState) => state.role)
-
-
 
 
     //** router */
@@ -124,10 +112,7 @@ const RoleListPage: NextPage<TProps> = () => {
     const handleUpdateRole = () => {
         dispatch(updateRoleAsync({ name: selectedRow.name, id: selectedRow.id, permissions: permissionSelected }))
     }
-
-    console.log("per", { permissionSelected });
-
-
+    // console.log("per", { permissionSelected });
     const handleCloseConfirmDeleteRole = () => {
         setOpenDeleteRole({
             open: false,
@@ -139,7 +124,6 @@ const RoleListPage: NextPage<TProps> = () => {
         const sortOption = sort[0]
         setSortBy(`${sortOption.field} ${sortOption.sort}`)
     }
-
 
     // ** handle
     const handleOnchangePagination = (page: number, pageSize: number) => { }
@@ -155,10 +139,6 @@ const RoleListPage: NextPage<TProps> = () => {
         dispatch(deleteRoleAsync(openDeleteRole.id))
     }
 
-
-
-
-
     const columns: GridColDef[] = [
         {
             field: 'name',
@@ -173,8 +153,7 @@ const RoleListPage: NextPage<TProps> = () => {
             align: "left",
             renderCell: params => {
                 const { row } = params
-                console.log("row", { row });
-
+                // console.log("row", { row });
                 return (
                     <Box sx={{ width: "100%" }}>
                         {!row?.permissions?.some((per: string) => ["ADMIN.GRANTED", "BASIC.PUBLIC"]?.includes(per)) ? (

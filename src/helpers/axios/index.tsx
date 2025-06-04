@@ -40,7 +40,8 @@ const AxiosInterceptor: FC<TAxiosInterceptor> = ({ children }) => {
     const { temporaryToken } = getTemporaryToken()
     const { setUser, user } = useAuth()
 
-    instanceAxios.interceptors.request.use(async config => {// cái config là để khi chạy qua thì gán token vào luôn
+    instanceAxios.interceptors.request.use(async config => {
+        // cái config là để khi chạy qua thì gán token vào luôn
         // console.log("config", { config });
 
         if (accessToken || temporaryToken) {
@@ -89,7 +90,6 @@ const AxiosInterceptor: FC<TAxiosInterceptor> = ({ children }) => {
     })
 
     instanceAxios.interceptors.response.use(response => {
-        // console.log("response", { response });
         return response
     })
 
