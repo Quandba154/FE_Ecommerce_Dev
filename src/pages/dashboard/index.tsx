@@ -1,5 +1,6 @@
 //** Import React and Next.js */
 import { NextPage } from 'next'
+import { PERMISSIONS } from 'src/configs/permission'
 
 // ** views
 
@@ -14,8 +15,8 @@ const Index: NextPage<TProps> = () => {
     )
 }
 
+Index.permission = [PERMISSIONS.DASHBOARD]
 export default Index
 
 
-// MyProfile.getLayout = (page: React.ReactNode) => <LayoutNotApp>{page}</LayoutNotApp>
 
