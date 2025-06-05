@@ -16,7 +16,7 @@ const Index: NextPage<TProps> = () => {
     )
 }
 
-// Index.permission = [PERMISSIONS.SYSTEM.ROLE.VIEW]
+Index.permission = [PERMISSIONS.SYSTEM.ROLE.VIEW]
 export default Index
 
 // MyProfile.getLayout = (page: React.ReactNode) => <LayoutNotApp>{page}</LayoutNotApp>

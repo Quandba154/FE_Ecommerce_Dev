@@ -53,6 +53,9 @@ import { hexToRGBA } from 'src/utils/hex-to-rgba'
 // ** Other
 import toast from 'react-hot-toast'
 
+//** Hook */
+import { usePermission } from 'src/hooks/usePermission'
+
 
 
 
@@ -85,6 +88,9 @@ const RoleListPage: NextPage<TProps> = () => {
     const [loading, setLoading] = useState(false)
     const [isDisablePermission, setIsDisablePermission] = useState(false)
 
+    //* Permission
+    const { VIEW, UPDATE, DELETE, CREATE } = usePermission("SYSTEM.ROLE", ["CREATE", "VIEW", "UPDATE", "DELETE"])
+    // console.log("data>>", { data });
 
     // ** redux
     const dispatch: AppDispatch = useDispatch()
