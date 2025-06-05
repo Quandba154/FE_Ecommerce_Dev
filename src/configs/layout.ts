@@ -10,6 +10,7 @@ export type TVertical = {
     title: string
     path?: string
     icon?: string
+    permission?: string
   }[]
 }
 
@@ -19,9 +20,14 @@ export const VerticalItem = () => {
 
   return [
     {
+      title: t('Dashboard'),
+      icon: 'material-symbols-light:dashboard-outline',
+      path: ROUTE_CONFIG.DASHBOARD,
+      permission: PERMISSIONS.DASHBOARD
+    },
+    {
       title: t('System'),
       icon: 'eos-icons:file-system-outlined',
-      // path: '/',
       childrens: [
         {
           title: t('User'),
@@ -33,7 +39,7 @@ export const VerticalItem = () => {
           title: t('Role'),
           icon: 'icon-park-outline:permissions',
           path: ROUTE_CONFIG.SYSTEM.ROLE,
-          permissions: PERMISSIONS.SYSTEM.USER.VIEW
+          permissions: PERMISSIONS.SYSTEM.ROLE.VIEW
         }
       ]
     },
@@ -41,7 +47,6 @@ export const VerticalItem = () => {
     {
       title: t('Manage_product'),
       icon: 'eos-icons:products-outlined',
-      // path: '/',
       childrens: [
         {
           title: t('Lits_product'),

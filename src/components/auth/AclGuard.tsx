@@ -25,16 +25,16 @@ const AclGuard = (props: AclGuardProps) => {
   const { aclAbilities, children, guestGuard = false, authGuard = true, permission } = props
 
   const auth = useAuth()
-  // const permissionUser = auth.user?.role?.permissions
-  //   ? auth.user?.role?.permissions?.includes(PERMISSIONS.BASIC)
-  //     ? [PERMISSIONS.DASHBOARD]
-  //     : auth.user?.role?.permissions
-  //   : []
+  const permissionUser = auth.user?.role?.permissions
+    ? auth.user?.role?.permissions?.includes(PERMISSIONS.BASIC)
+      ? [PERMISSIONS.DASHBOARD]
+      : auth.user?.role?.permissions
+    : []
 
-  const permissionUser = ["SYSTEM.ROLE.VIEW"]
+  // const permissionUser = ["SYSTEM.ROLE.VIEW"]
   const router = useRouter()
 
-  console.log("permissionUser", { permissionUser, permission });
+  // console.log("permissionUser", { permissionUser, permission });
 
   let ability: AppAbility
 

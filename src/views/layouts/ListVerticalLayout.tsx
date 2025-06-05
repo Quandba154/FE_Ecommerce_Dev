@@ -1,5 +1,5 @@
 //** React */
-import React, { Fragment, useEffect, useState } from 'react';
+import React, { Fragment, useEffect, useState, useMemo } from 'react';
 //** Next.js */
 import { NextPage } from 'next';
 // ** MUI Imports */
@@ -7,8 +7,15 @@ import List from '@material-ui/core/List';
 import { Box, Collapse, ListItemButton, ListItemIcon, ListItemText, ListItemTextProps, styled, Tooltip, useTheme } from '@mui/material';
 // ** ICONIFY Imports */
 import IconifyIcon from "src/components/Icon"
+
+//**Config */
 import { TVertical, VerticalItem } from 'src/configs/layout';
 import { useRouter } from 'next/router';
+import { PERMISSIONS } from 'src/configs/permission';
+import { hexToRGBA } from 'src/utils/hex-to-rgba';
+
+//* Hook
+import { useAuth } from 'src/hooks/useAuth';
 
 
 
@@ -83,10 +90,8 @@ const RecursiveListItems: NextPage<TListItem> = ({ items, level, openItems, setO
                                 padding: `8px 10px 8px ${level * (level === 1 ? 28 : 20)}px`,
                                 margin: "1px 0",
                                 backgroundColor: ((activePath && item.path === activePath) || !!openItems[item.title] || isParentActive)
-                                    ? `${theme.palette.primary.main} !important` : theme.palette.background.paper,
-                                // borderBottom: `1px solid ${((activePath && item.path === activePath) || !!openItems[item.title]) ?
-                                //     `${hexToRGBA(theme.palette.primary.main, 0.08)} !important` : `rgba(${theme.palette.customColors.main},0.78)
-                                // `}`
+                                    ? `${hexToRGBA(theme.palette.primary.main, 0.08)} !important` : theme.palette.background.paper,
+
                             }}
                             onClick={
                                 () => {
@@ -111,7 +116,7 @@ const RecursiveListItems: NextPage<TListItem> = ({ items, level, openItems, setO
                                     backgroundColor:
                                         (activePath && item.path === activePath) || !!openItems[item.title] || isParentActive
                                             ? `${theme.palette.primary.main} !important`
-                                            : theme.palette.background.paper
+                                            : theme.palette.background.paper,
                                 }}>
                                     <IconifyIcon
                                         icon={item.icon}
@@ -174,6 +179,23 @@ const ListVerticalLayout: NextPage<TProps> = ({ open }) => {
 
     const [activePath, setActivePath] = useState<null | string>("")
 
+    const { user } = useAuth()
+
+    const permissionUser = user?.role?.permissions
+        ? user?.role?.permissions?.includes(PERMISSIONS.BASIC)
+            ? [PERMISSIONS.DASHBOARD]
+            : user?.role?.permissions
+        : []
+
+
+    // const permissionUser = [""]
+
+    const listVerticalItems = VerticalItem()
+
+    const hasPermission = (item: any, permissionUser: string[]) => {
+        return permissionUser.includes(item.permission) || !item.permission
+    }
+
     const findParentActivePath = (items: TVertical[], activePath: string) => {
         // console.log("item", { items, activePath });
         for (const item of items) {
@@ -192,7 +214,24 @@ const ListVerticalLayout: NextPage<TProps> = ({ open }) => {
 
     const router = useRouter()
 
-    // console.log("findParentActive", { findParentActive });
+    const formatMenuByPermission = (menu: any[], permissionUser: string[]) => {
+        if (menu) {
+            return menu.filter((item) => {
+                if (hasPermission(item, permissionUser)) {
+                    if (item.childrens && item.childrens.length > 0) {
+                        item.childrens = formatMenuByPermission(item.childrens, permissionUser)
+                    }
+                    if (!item?.childrens?.length && !item.path) {
+                        return false
+                    }
+
+                    return true
+                }
+                return false
+            })
+        }
+        return []
+    }
 
 
     const theme = useTheme()
@@ -203,9 +242,17 @@ const ListVerticalLayout: NextPage<TProps> = ({ open }) => {
         }
     }, [open])
 
+    const memoFormatMenu = useMemo(() => {
+        if (permissionUser.includes(PERMISSIONS.ADMIN)) {
+            return listVerticalItems
+        }
+        return formatMenuByPermission(listVerticalItems, permissionUser)
+    }, [listVerticalItems, permissionUser])
+
+
     useEffect(() => {
         if (router.asPath) {
-            const parentTitle = findParentActivePath(listVerticalItems, router.asPath)
+            const parentTitle = findParentActivePath(memoFormatMenu, router.asPath)
             if (parentTitle) {
                 setOpenItems({
                     [parentTitle]: true
@@ -219,7 +266,7 @@ const ListVerticalLayout: NextPage<TProps> = ({ open }) => {
         setOpenItems({});
     };
 
-    const listVerticalItems = VerticalItem()
+
 
 
     return (
@@ -229,7 +276,7 @@ const ListVerticalLayout: NextPage<TProps> = ({ open }) => {
             aria-labelledby="nested-list-subheader"
 
         >
-            <RecursiveListItems disabled={!open} items={listVerticalItems} level={1} openItems={openItems} setOpenItems={setOpenItems} activePath={activePath} setActivePath={setActivePath} />
+            <RecursiveListItems disabled={!open} items={memoFormatMenu} level={1} openItems={openItems} setOpenItems={setOpenItems} activePath={activePath} setActivePath={setActivePath} />
         </List >
     )
 }
