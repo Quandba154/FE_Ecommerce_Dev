@@ -194,7 +194,7 @@ const UserDropdown = (props: TProps) => {
                         </Box>
                     </Box>
                     <Divider />
-                    {permissionUser.length > 0 && (
+                    {permissionUser?.length > 0 && (
                         <MenuItem onClick={handleNavigateManageSystem}>
                             <Avatar>
                                 <IconifyIcon icon="arcticons:phone-manager" />

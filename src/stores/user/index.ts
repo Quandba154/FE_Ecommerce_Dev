@@ -1,74 +1,109 @@
 // ** Redux Imports
-import { Dispatch } from 'redux'
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
+import { createSlice } from '@reduxjs/toolkit'
 
-// ** Axios Imports
-import axios from 'axios'
+//.** Action
+import { createUserAsync, deleteUserAsync, getAllUsersAsync, serviceName, updateUserAsync } from './action'
 
-interface DataParams {
-  q: string
-  role: string
-  status: string
-  currentPlan: string
-}
+const initialState = {
+  isLoading: false,
+  isSuccess: false,
+  isError: false,
+  message: '',
+  typeError: '',
 
-interface Redux {
-  getState: any
-  dispatch: Dispatch<any>
-}
+  // isSuccessUpdateMe: true,
+  // isErrorUpdateMe: false,
+  // messageUpdateMe: '',
+  // isSuccessChangePassword: true,
+  // isErrorChangePassword: false,
+  // messageChangePassword: '',
 
-// ** Fetch Users
-export const fetchData = createAsyncThunk('appUsers/fetchData', async (params: DataParams) => {
-  const response = await axios.get('/apps/users/list', {
-    params
-  })
+  isSuccessCreateEdit: false,
+  isErrorCreateEdit: false,
+  messageCreateEdit: '',
 
-  return response.data
-})
+  isSuccessDelete: false,
+  isErrorDelete: false,
+  messageDelete: '',
 
-// ** Add User
-export const addUser = createAsyncThunk(
-  'appUsers/addUser',
-  async (data: { [key: string]: number | string }, { getState, dispatch }: Redux) => {
-    const response = await axios.post('/apps/users/add-user', {
-      data
-    })
-    dispatch(fetchData(getState().user.params))
-
-    return response.data
-  }
-)
-
-// ** Delete User
-export const deleteUser = createAsyncThunk(
-  'appUsers/deleteUser',
-  async (id: number | string, { getState, dispatch }: Redux) => {
-    const response = await axios.delete('/apps/users/delete', {
-      data: id
-    })
-    dispatch(fetchData(getState().user.params))
-
-    return response.data
-  }
-)
-
-export const appUsersSlice = createSlice({
-  name: 'appUsers',
-  initialState: {
+  users: {
     data: [],
-    total: 1,
-    params: {},
-    allData: []
+    total: 0
+  }
+}
+
+export const userSlice = createSlice({
+  name: serviceName,
+  initialState,
+  reducers: {
+    resetInitialState: state => {
+      state.isLoading = false
+      state.isSuccess = true
+      state.isError = false
+      state.message = ''
+      state.typeError = ''
+      state.isSuccessCreateEdit = false
+      state.isErrorCreateEdit = true
+      state.messageCreateEdit = ''
+      state.isSuccessDelete = false
+      state.isErrorDelete = true
+      state.messageDelete = ''
+    }
   },
-  reducers: {},
   extraReducers: builder => {
-    builder.addCase(fetchData.fulfilled, (state, action) => {
-      state.data = action.payload.users
-      state.total = action.payload.total
-      state.params = action.payload.params
-      state.allData = action.payload.allData
+    // **get all users
+    builder.addCase(getAllUsersAsync.pending, (state, action) => {
+      state.isLoading = true
+    })
+    builder.addCase(getAllUsersAsync.fulfilled, (state, action) => {
+      console.log('action', { action })
+      state.isLoading = false
+      state.users.data = action.payload.data.users
+      state.users.total = action.payload.data.totalCount
+    })
+    builder.addCase(getAllUsersAsync.rejected, (state, action) => {
+      state.isLoading = false
+      state.users.data = []
+      state.users.total = 0
+    })
+
+    // **create user
+    builder.addCase(createUserAsync.pending, (state, action) => {
+      state.isLoading = true
+    })
+    builder.addCase(createUserAsync.fulfilled, (state, action) => {
+      state.isLoading = false
+      state.isSuccessCreateEdit = !!action.payload?.data?._id
+      state.isErrorCreateEdit = !action.payload?.data?._id
+      state.messageCreateEdit = action.payload?.message
+      state.typeError = action.payload?.typeError
+    })
+
+    // **update user
+    builder.addCase(updateUserAsync.pending, (state, action) => {
+      state.isLoading = true
+    })
+    builder.addCase(updateUserAsync.fulfilled, (state, action) => {
+      state.isLoading = false
+      state.isSuccessCreateEdit = !!action.payload?.data?._id
+      state.isErrorCreateEdit = !action.payload?.data?._id
+      state.messageCreateEdit = action.payload?.message
+      state.typeError = action.payload?.typeError
+    })
+
+    // **delete user
+    builder.addCase(deleteUserAsync.pending, (state, action) => {
+      state.isLoading = true
+    })
+    builder.addCase(deleteUserAsync.fulfilled, (state, action) => {
+      state.isLoading = false
+      state.isSuccessDelete = !!action.payload?.data?._id
+      state.isErrorDelete = !action.payload?.data?._id
+      state.messageDelete = action.payload?.message
+      state.typeError = action.payload?.typeError
     })
   }
 })
 
-export default appUsersSlice.reducer
+export const { resetInitialState } = userSlice.actions
+export default userSlice.reducer

@@ -187,9 +187,6 @@ const ListVerticalLayout: NextPage<TProps> = ({ open }) => {
             : user?.role?.permissions
         : []
 
-
-    // const permissionUser = [""]
-
     const listVerticalItems = VerticalItem()
 
     const hasPermission = (item: any, permissionUser: string[]) => {
