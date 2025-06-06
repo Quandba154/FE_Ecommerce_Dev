@@ -164,16 +164,20 @@ const RoleListPage: NextPage<TProps> = () => {
                     <Box sx={{ width: "100%" }}>
                         {!row?.permissions?.some((per: string) => ["ADMIN.GRANTED", "BASIC.PUBLIC"]?.includes(per)) ? (
                             <>
-                                <GridEdit onClick={() => setOpenCreateEdit({
-                                    open: true,
-                                    id: String(params.id)
-                                })}></GridEdit>
-                                <GridDelete onClick={() =>
-                                    setOpenDeleteRole({
+                                <GridEdit
+                                    disabled={!UPDATE}
+                                    onClick={() => setOpenCreateEdit({
                                         open: true,
                                         id: String(params.id)
-                                    })
-                                } ></GridDelete>
+                                    })}></GridEdit>
+                                <GridDelete
+                                    disabled={!DELETE}
+                                    onClick={() =>
+                                        setOpenDeleteRole({
+                                            open: true,
+                                            id: String(params.id)
+                                        })
+                                    } ></GridDelete>
                             </>
                         ) : (
                             <Iconfy icon="material-symbols-light:lock-outline" fontSize={30} />
@@ -292,17 +296,19 @@ const RoleListPage: NextPage<TProps> = () => {
 
                     <Grid container sx={{ height: "100%", width: "100%" }} spacing={5}>
                         <Grid item md={4} xs={12}>
-                            <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", mb: 2 }}>
+                            <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", mb: 4 }}>
                                 <Box sx={{ width: "200px" }}>
                                     <InputSearch value={searchBy} onChange={(value: string) => setSearchBy(value)} ></InputSearch>
                                 </Box>
-                                <GridCreate onClick={() => {
-                                    setOpenCreateEdit({
-                                        open: true,
-                                        id: ""
-                                    })
-                                }
-                                } ></GridCreate>
+                                <GridCreate
+                                    disabled={!CREATE}
+                                    onClick={() => {
+                                        setOpenCreateEdit({
+                                            open: true,
+                                            id: ""
+                                        })
+                                    }
+                                    } ></GridCreate>
                             </Box>
                             <Box sx={{ maxHeight: "100%" }}>
                                 <CustomDataGrid
@@ -326,7 +332,6 @@ const RoleListPage: NextPage<TProps> = () => {
                                         return row.id === selectedRow.id ? "row-selected" : ''
                                     }}
                                     onRowClick={(row) => {
-                                        // console.log("rows", { row });
                                         setSelectedRow({ id: String(row.id), name: row?.row?.name })
                                         setOpenCreateEdit({
                                             open: false,

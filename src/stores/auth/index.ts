@@ -3,19 +3,7 @@ import { Dispatch } from 'redux'
 import { createSlice } from '@reduxjs/toolkit'
 // ** Axios Imports
 import axios from 'axios'
-import { changePasswordMeAsync, registerAuthAsync, updateAuthMeAsync } from './action'
-
-interface DataParams {
-  q: string
-  role: string
-  status: string
-  currentPlan: string
-}
-
-interface Redux {
-  getState: any
-  dispatch: Dispatch<any>
-}
+import { changePasswordMeAsync, registerAuthAsync, serviceName, updateAuthMeAsync } from './action'
 
 const initialState = {
   isLoading: false,
@@ -32,7 +20,7 @@ const initialState = {
 }
 
 export const authSlice = createSlice({
-  name: 'auth', // action
+  name: serviceName,
   initialState,
   reducers: {
     resetInitialState: state => {
