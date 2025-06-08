@@ -4,7 +4,7 @@ import { TParamCreateUser, TParamEditUser, TParamGetAllUsers } from 'src/types/u
 
 export const getAllUsers = async (data: { params: TParamGetAllUsers }) => {
   try {
-    const res = await instanceAxios.get(`${API_ENDPOINT.ROLE.INDEX}`, data)
+    const res = await instanceAxios.get(`${API_ENDPOINT.USER.INDEX}`, data)
     return res.data
   } catch (error) {
     console.error('Error during login:', error)

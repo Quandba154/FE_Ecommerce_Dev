@@ -168,7 +168,7 @@ const RoleListPage: NextPage<TProps> = () => {
                                     disabled={!UPDATE}
                                     onClick={() => setOpenCreateEdit({
                                         open: true,
-                                        id: String(params.id)
+                                        id: String(params.row._id)
                                     })}></GridEdit>
                                 <GridDelete
                                     disabled={!DELETE}

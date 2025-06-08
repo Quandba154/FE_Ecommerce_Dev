@@ -22,25 +22,28 @@ import Iconfy from 'src/components/Icon'
 // ** Redux_dispatch
 import { useDispatch, useSelector } from 'react-redux'
 import { AppDispatch, RootState } from 'src/stores'
+import { deleteUserAsync, getAllUsersAsync, updateUserAsync } from 'src/stores/user/action'
 import { resetInitialState } from 'src/stores/role'
 import { useRouter } from 'next/router'
+
 // ** translation 
 import i18next, { t } from "i18next"
-import { deleteRoleAsync, getAllRolesAsync, updateRoleAsync } from 'src/stores/role/action'
 
 //** Component */
 import CustomDataGrid from 'src/components/custom-data-grid'
 import ConfirmationDialog from 'src/components/confirmation-dialog'
-// import TablePermission from './component/TablePermission'
+
 import GridEdit from 'src/components/grid-edit'
 import GridDelete from 'src/components/grid-delete'
 import GridCreate from 'src/components/grid-create'
 import InputSearch from 'src/components/input-search'
-import CreateEditRole from './component/CreateEditRole'
+import CreateEditUser from './component/CreateEditUser'
+import CustomPagination from 'src/components/custom-pagination'
 import Spinner from 'src/components/spinner'
 
 // **Service
-import { getDetailsRole } from 'src/services/role'
+import { getDetailsUser } from 'src/services/user'
+
 
 // *Config
 import { PAGE_SIZE_OPTION } from 'src/configs/gridConfig'
@@ -56,10 +59,7 @@ import toast from 'react-hot-toast'
 
 //** Hook */
 import { usePermission } from 'src/hooks/usePermission'
-import TablePermission from '../role/component/TablePermission'
-import CustomPagination from 'src/components/custom-pagination'
-import { deleteUserAsync, getAllUsersAsync, updateUserAsync } from 'src/stores/user/action'
-import { getDetailsUser } from 'src/services/user'
+
 
 
 
@@ -77,6 +77,8 @@ const UserListPage: NextPage<TProps> = () => {
         open: false,
         id: ""
     })
+
+    console.log('Current modal state:', openCreateEdit)
 
     const [openDeleteUser, setOpenDeleteUser] = useState({
         open: false,
@@ -102,6 +104,7 @@ const UserListPage: NextPage<TProps> = () => {
     // ** redux
     const dispatch: AppDispatch = useDispatch()
     const { users, isSuccessCreateEdit, isErrorCreateEdit, isLoading, messageCreateEdit, isErrorDelete, isSuccessDelete, messageDelete, typeError } = useSelector((state: RootState) => state.user)
+    console.log('Users data from Redux:', users)
 
 
     //** router */
@@ -119,12 +122,10 @@ const UserListPage: NextPage<TProps> = () => {
 
     // ** Fetch api
     const handleGetListUsers = () => {
-        dispatch(getAllUsersAsync({ params: { limit: -1, page: -1, search: searchBy, order: sortBy } }))
+        console.log('Fetching users with params:', { limit: pageSize, page, search: searchBy, order: sortBy })
+        dispatch(getAllUsersAsync({ params: { limit: pageSize, page, search: searchBy, order: sortBy } }))
     }
 
-    const handleUpdateUser = () => {
-        dispatch(updateUserAsync({ name: selectedRow.name, id: selectedRow.id, permissions: permissionSelected }))
-    }
 
     const handleCloseConfirmDeleteUser = () => {
         setOpenDeleteUser({
@@ -139,12 +140,25 @@ const UserListPage: NextPage<TProps> = () => {
     }
 
     // ** handle
-    const handleOnchangePagination = (page: number, pageSize: number) => { }
+    const handleOnchangePagination = (page: number, pageSize: number) => {
+        setPage(page)
+        setPageSize(pageSize)
+        handleGetListUsers()
+    }
 
     const handleCloseCreateEdit = () => {
+        console.log('Closing modal')
         setOpenCreateEdit({
             open: false,
             id: ""
+        })
+    }
+
+    const handleOpenEdit = (id: string) => {
+        console.log('Opening edit modal for user:', id)
+        setOpenCreateEdit({
+            open: true,
+            id: id
         })
     }
 
@@ -169,7 +183,8 @@ const UserListPage: NextPage<TProps> = () => {
             headerName: t('Email'),
             flex: 1,
             minWidth: 200,
-            renderCell: (params) => {
+            maxWidth: 200,
+            renderCell: params => {
                 const { row } = params
                 return <Typography>{row.email}</Typography>
             }
@@ -180,9 +195,9 @@ const UserListPage: NextPage<TProps> = () => {
             flex: 1,
             minWidth: 200,
             maxWidth: 200,
-            renderCell: (params) => {
+            renderCell: params => {
                 const { row } = params
-                return <Typography>{row.role}</Typography>
+                return <Typography>{row.role?.name || ''}</Typography>
             }
         },
         {
@@ -191,9 +206,20 @@ const UserListPage: NextPage<TProps> = () => {
             flex: 1,
             minWidth: 200,
             maxWidth: 200,
-            renderCell: (params) => {
+            renderCell: params => {
                 const { row } = params
                 return <Typography>{row.phone_number}</Typography>
+            }
+        },
+        {
+            field: 'city',
+            headerName: t('City'),
+            flex: 1,
+            minWidth: 200,
+            maxWidth: 200,
+            renderCell: params => {
+                const { row } = params
+                return <Typography>{row.city}</Typography>
             }
         },
         {
@@ -208,10 +234,11 @@ const UserListPage: NextPage<TProps> = () => {
                     <>
                         <GridEdit
                             disabled={!UPDATE}
-                            onClick={() => setOpenCreateEdit({
-                                open: true,
-                                id: String(params.id)
-                            })}></GridEdit>
+                            onClick={() => {
+                                console.log('Edit button clicked')
+                                console.log('Row data:', params.row)
+                                handleOpenEdit(String(params.id))
+                            }}></GridEdit>
                         <GridDelete
                             disabled={!DELETE}
                             onClick={() =>
@@ -320,7 +347,7 @@ const UserListPage: NextPage<TProps> = () => {
                 title={t("title_delete_user")}
                 description={t("confirm_delete_user")}
             />
-            <CreateEditRole open={openCreateEdit.open} onClose={handleCloseCreateEdit} idRole={openCreateEdit.id} />
+            <CreateEditUser open={openCreateEdit.open} onClose={handleCloseCreateEdit} idUser={openCreateEdit.id} />
             {isLoading && <Spinner />}
             <Box sx={{
                 display: "flex",
