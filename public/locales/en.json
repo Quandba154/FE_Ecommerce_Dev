@@ -61,5 +61,7 @@
   "Payment_method": "Payment Methods",
   "User": "Users",
   "Data_exited_in_system": "Data already exists in the system",
-  "Name_role": "Name role"
+  "Name_role": "Name role",
+  "create_user": "Create user",
+  "update_user": "Update user"
 }

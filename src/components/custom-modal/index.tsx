@@ -18,6 +18,7 @@ const CustomModal = ({ open, onClose, children }: {
     onClose: () => void,
     children: React.ReactNode
 }) => {
+    console.log('CustomModal rendered with props:', { open, onClose })
 
     return (
         <StyleModal
@@ -27,7 +28,9 @@ const CustomModal = ({ open, onClose, children }: {
         >
             <Box sx={{ maxHeight: "100vh", overflow: "auto" }}>
                 <Box sx={{
-                    height: "100%", width: "100%", minHeight: "100vh",
+                    height: "100%",
+                    width: "100%",
+                    minHeight: "100vh",
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center"

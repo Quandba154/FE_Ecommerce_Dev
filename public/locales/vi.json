@@ -66,5 +66,10 @@
   "Create_role_error": "Tạo nhóm vai trò thất bại",
   "Update_role_success": "Cập nhật nhóm vai trò thành công",
   "Delete_role_success": "Xoá nhóm vai trò thành công",
-  "Manage_order": "Quản trị đơn hàng"
+  "Manage_order": "Quản trị đơn hàng",
+  "create_user": "tạo user",
+  "update_user": "chỉnh sửa user",
+  "Active": "Đang hoạt động",
+  "Block": "Tạm khoá",
+  "create-user-success" : "Tạo người thành công"
 }
