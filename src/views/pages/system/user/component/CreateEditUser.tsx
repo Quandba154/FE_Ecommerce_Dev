@@ -1,7 +1,7 @@
 // ** React
 import React, { useEffect, useState } from 'react';
 //
-import { Box, useTheme, Button, Typography, IconButton, Grid, Avatar, InputLabel, FormHelperText, Switch, InputAdornment } from '@mui/material';
+import { Box, useTheme, Button, Typography, IconButton, Grid, Avatar, InputLabel, FormHelperText, Switch } from '@mui/material';
 import FormControlLabel from '@mui/material/FormControlLabel';
 
 // ** form
@@ -52,27 +52,19 @@ type TDefaultValues = {
     role: string,
     phoneNumber: string,
     address: string,
-    // avatar: string,
     status?: number,
     // city ?: string
 }
 
 
 const CreateEditUser = (props: TCreateEditUser) => {
-
-
-
     // ** State
     const [isLoading, setLoading] = useState(false)
     const [avatar, setAvatar] = useState("")
     const [optionRoles, setOptionRoles] = useState<{ label: string, value: string }[]>([])
     const [showPassWord, setShowPassWord] = useState(false)
 
-
-
-
     const dispatch: AppDispatch = useDispatch();
-
 
     //**Hook */
     const { user } = useAuth()
@@ -87,7 +79,7 @@ const CreateEditUser = (props: TCreateEditUser) => {
             email: yup.string().required('Email is required').matches(EMAIL_REG, 'The fail email format'),
             password: yup
                 .string()
-                .required('Password is required')
+                .nonNullable('Password is required')
                 .matches(PASSWORD_REG, 'The password format is content characters , special characters, numbers'),
             fullName: yup.string().required('Email is required'),
             phoneNumber: yup.string().required('Phone number is required').min(8, 'Phone number must be at least 8 digits').max(15, 'Phone number must be at most 15 digits'),

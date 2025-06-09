@@ -396,16 +396,6 @@ const UserListPage: NextPage<TProps> = () => {
                             slots={{
                                 pagination: PaginationComponent
                             }}
-                            getRowClassName={(row: GridRowClassNameParams) => {
-                                return row.id === selectedRow.id ? "row-selected" : ''
-                            }}
-                            onRowClick={(row) => {
-                                setSelectedRow({ id: String(row.id), name: row?.row?.name })
-                                setOpenCreateEdit({
-                                    open: true,
-                                    id: String(row.id)
-                                })
-                            }}
                             disableColumnFilter
                             disableColumnMenu
                         />
