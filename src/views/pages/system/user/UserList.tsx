@@ -9,12 +9,13 @@ import {
     useTheme
 } from '@mui/material'
 import { GridColDef, GridRowClassNameParams, GridSortModel } from '@mui/x-data-grid'
+import { GridRowSelectionModel } from '@mui/x-data-grid'
 
 //*Yup
 import * as yup from 'yup'
 
 // ** React
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 
 // ** Icon
 import Iconfy from 'src/components/Icon'
@@ -22,7 +23,7 @@ import Iconfy from 'src/components/Icon'
 // ** Redux_dispatch
 import { useDispatch, useSelector } from 'react-redux'
 import { AppDispatch, RootState } from 'src/stores'
-import { deleteUserAsync, getAllUsersAsync, updateUserAsync } from 'src/stores/user/action'
+import { deleteMultipleUserAsync, deleteUserAsync, getAllUsersAsync, updateUserAsync } from 'src/stores/user/action'
 import { resetInitialState } from 'src/stores/role'
 import { useRouter } from 'next/router'
 
@@ -42,7 +43,7 @@ import CustomPagination from 'src/components/custom-pagination'
 import Spinner from 'src/components/spinner'
 
 // **Service
-import { getDetailsUser } from 'src/services/user'
+import { deleteMultipleUser, getDetailsUser } from 'src/services/user'
 
 
 // *Config
@@ -59,6 +60,7 @@ import toast from 'react-hot-toast'
 
 //** Hook */
 import { usePermission } from 'src/hooks/usePermission'
+import TableHeader from 'src/components/table-header'
 
 
 
@@ -66,6 +68,8 @@ import { usePermission } from 'src/hooks/usePermission'
 
 
 type TProps = {}
+
+type TSelectedRow = { id: string, role: { name: string, permission: string[] } }
 
 
 
@@ -84,16 +88,18 @@ const UserListPage: NextPage<TProps> = () => {
         id: ""
     })
 
+    const [openDeleteMultipleUser, setOpenDeleteMultipleUser] = useState(false)
+
     const [sortBy, setSortBy] = useState("created asc")
     const [searchBy, setSearchBy] = useState("")
     const [permissionSelected, setPermissionSelected] = useState<string[]>([])
-    const [selectedRow, setSelectedRow] = useState({
-        id: "",
-        name: ""
-    })
     const [loading, setLoading] = useState(false)
     const [pageSize, setPageSize] = useState(PAGE_SIZE_OPTION[0])
     const [page, setPage] = useState(1)
+
+    const [selectedRow, setSelectedRow] = useState<TSelectedRow[]>([])
+
+
 
 
     //* Permission
@@ -102,7 +108,8 @@ const UserListPage: NextPage<TProps> = () => {
 
     // ** redux
     const dispatch: AppDispatch = useDispatch()
-    const { users, isSuccessCreateEdit, isErrorCreateEdit, isLoading, messageCreateEdit, isErrorDelete, isSuccessDelete, messageDelete, typeError } = useSelector((state: RootState) => state.user)
+    const { users, isSuccessCreateEdit, isErrorCreateEdit, isLoading, messageCreateEdit, isErrorDelete, isSuccessDelete, messageDelete, typeError
+        , isSuccessMultipleDelete, isErrorMultipleDelete, messageMultipleDelete } = useSelector((state: RootState) => state.user)
 
 
     //** router */
@@ -131,35 +138,55 @@ const UserListPage: NextPage<TProps> = () => {
         })
     }
 
+    const handleCloseConfirmDeleteMultipleUser = () => {
+        setOpenDeleteMultipleUser(false)
+    }
+
     const handleSort = (sort: GridSortModel) => {
         const sortOption = sort[0]
         setSortBy(`${sortOption.field} ${sortOption.sort}`)
     }
 
-    // ** handle
-    const handleOnchangePagination = (page: number, pageSize: number) => {
-        setPage(page)
-        setPageSize(pageSize)
-        handleGetListUsers()
-    }
-
     const handleCloseCreateEdit = () => {
-        console.log('Closing modal')
         setOpenCreateEdit({
             open: false,
             id: ""
         })
     }
 
-    const handleOpenEdit = (id: string) => {
-        setOpenCreateEdit({
-            open: true,
-            id: id
-        })
+    // ** handle
+    const handleOnchangePagination = (page: number, pageSize: number) => {
+        // setPage(page)
+        // setPageSize(pageSize)
+        // handleGetListUsers()
     }
+
+
+    // const handleOpenEdit = (id: string) => {
+    //     setOpenCreateEdit({
+    //         open: true,
+    //         id: id
+    //     })
+    // }
 
     const handleDeleteUser = () => {
         dispatch(deleteUserAsync(openDeleteUser.id))
+    }
+
+    const handleDeleteMultipleUser = () => {
+        dispatch(deleteMultipleUserAsync({
+            userIds: selectedRow?.map((item: TSelectedRow) => item.id)
+        }))
+    }
+
+    const handleAction = (action: string) => {
+        switch (action) {
+            case "delete": {
+                setOpenDeleteMultipleUser(true)
+                console.log("delete", { selectedRow });
+                break;
+            }
+        }
     }
 
     const columns: GridColDef[] = [
@@ -204,7 +231,7 @@ const UserListPage: NextPage<TProps> = () => {
             maxWidth: 200,
             renderCell: params => {
                 const { row } = params
-                return <Typography>{row.phone_number}</Typography>
+                return <Typography>{row.phoneNumber}</Typography>
             }
         },
         {
@@ -231,9 +258,10 @@ const UserListPage: NextPage<TProps> = () => {
                         <GridEdit
                             disabled={!UPDATE}
                             onClick={() => {
-                                console.log('Edit button clicked')
-                                console.log('Row data:', params.row)
-                                handleOpenEdit(String(params.id))
+                                setOpenCreateEdit({
+                                    open: true,
+                                    id: String(params.id)
+                                })
                             }}></GridEdit>
                         <GridDelete
                             disabled={!DELETE}
@@ -257,29 +285,14 @@ const UserListPage: NextPage<TProps> = () => {
         )
     }
 
-    const handleGetDetailUsers = async (id: string) => {
-        setLoading(true)
-        await getDetailsUser(id).then((res) => {
-            if (res?.data) {
-                // if (res?.data.permissions.includes(PERMISSIONS.ADMIN)) {
-                //     setIsDisablePermission(true)
-                //     setPermissionSelected(getAllValueOfObject(
-                //         PERMISSIONS, [PERMISSIONS.ADMIN, PERMISSIONS.BASIC]
-                //     ))
-                // } else if (res?.data.permissions.includes(PERMISSIONS.BASIC)) {
-                //     setIsDisablePermission(true)
-                //     setPermissionSelected([PERMISSIONS.DASHBOARD])
-                // } else {
-                //     setIsDisablePermission(false)
-                //     setPermissionSelected(res?.data?.permissions || [])
-                // }
-            }
-            setLoading(false)
-        }).catch(e => {
-            setLoading(false)
-        })
-    }
+    const memoDisabledDeleteUser = useMemo(() => {
+        return selectedRow.some((item: TSelectedRow) => item?.role?.permission?.includes(PERMISSIONS.ADMIN))
+    }, [selectedRow])
 
+
+    useEffect(() => {
+        handleGetListUsers()
+    }, [sortBy, searchBy])
 
 
     useEffect(() => {
@@ -308,29 +321,33 @@ const UserListPage: NextPage<TProps> = () => {
         handleGetListUsers()
     }, [isSuccessCreateEdit, isErrorCreateEdit, messageCreateEdit, typeError])
 
-    useEffect(() => {
-        handleGetListUsers()
-    }, [sortBy, searchBy])
-
-    useEffect(() => {
-        if (selectedRow.id) {
-            handleGetDetailUsers(selectedRow.id)
-        }
-    }, [selectedRow])
-
 
     useEffect(() => {
         if (isSuccessDelete) {
             toast.success(t("delete-user-success"))
             handleGetListUsers()
             dispatch(resetInitialState())
-            handleDeleteUser()
+            handleCloseConfirmDeleteUser()
         } else if (isErrorDelete && messageDelete) {
             toast.error(t(messageDelete))
             dispatch(resetInitialState())
         }
         handleGetListUsers()
     }, [isErrorDelete, isSuccessDelete, messageDelete])
+
+    useEffect(() => {
+        if (isSuccessMultipleDelete) {
+            toast.success(t("delete-multiple-user-success"))
+            handleGetListUsers()
+            dispatch(resetInitialState())
+            handleCloseConfirmDeleteMultipleUser()
+            setSelectedRow([])
+        } else if (isErrorMultipleDelete && messageMultipleDelete) {
+            toast.error(t("Delete_multiple_user_error"))
+            dispatch(resetInitialState())
+        }
+        handleGetListUsers()
+    }, [isErrorMultipleDelete, isSuccessMultipleDelete, messageMultipleDelete])
 
     return (
         <>
@@ -342,6 +359,14 @@ const UserListPage: NextPage<TProps> = () => {
                 handleConfirm={handleDeleteUser}
                 title={t("title_delete_user")}
                 description={t("confirm_delete_user")}
+            />
+            <ConfirmationDialog
+                open={openDeleteMultipleUser}
+                handleClose={handleCloseConfirmDeleteMultipleUser}
+                handleCancel={handleCloseConfirmDeleteMultipleUser}
+                handleConfirm={handleDeleteMultipleUser}
+                title={t("title_delete_multiple_user")}
+                description={t("confirm_delete_multiple_user")}
             />
             <CreateEditUser open={openCreateEdit.open} onClose={handleCloseCreateEdit} idUser={openCreateEdit.id} />
             {isLoading && <Spinner />}
@@ -362,20 +387,31 @@ const UserListPage: NextPage<TProps> = () => {
                 }}>
 
                     <Grid container sx={{ height: "100%", width: "100%" }} >
-                        <Box sx={{ display: "flex", alignItems: "center", justifyContent: "flex-end", gap: 4, mb: 4, width: "100%" }}>
-                            <Box sx={{ width: "200px" }}>
-                                <InputSearch value={searchBy} onChange={(value: string) => setSearchBy(value)} ></InputSearch>
+                        {!selectedRow?.length && (
+                            <Box sx={{ display: "flex", alignItems: "center", justifyContent: "flex-end", gap: 4, mb: 4, width: "100%" }}>
+                                <Box sx={{ width: "200px" }}>
+                                    <InputSearch value={searchBy} onChange={(value: string) => setSearchBy(value)} ></InputSearch>
+                                </Box>
+                                <GridCreate
+                                    disabled={!CREATE}
+                                    onClick={() => {
+                                        setOpenCreateEdit({
+                                            open: true,
+                                            id: ""
+                                        })
+                                    }
+                                    } ></GridCreate>
                             </Box>
-                            <GridCreate
-                                disabled={!CREATE}
-                                onClick={() => {
-                                    setOpenCreateEdit({
-                                        open: true,
-                                        id: ""
-                                    })
-                                }
-                                } ></GridCreate>
-                        </Box>
+                        )}
+
+                        {selectedRow?.length > 0 && (
+                            <TableHeader
+                                numRow={selectedRow?.length}
+                                onClear={() => setSelectedRow([])}
+                                actions={[{ label: t("Xoá"), value: "delete", disabled: memoDisabledDeleteUser }]}
+                                handleAction={handleAction}
+                            />
+                        )}
                         <CustomDataGrid
                             rows={users?.data ?? []}
                             columns={columns}
@@ -387,6 +423,7 @@ const UserListPage: NextPage<TProps> = () => {
                                     color: `${theme.palette.primary.main} !important`
                                 }
                             }}
+                            checkboxSelection={true}
                             sortingMode='server'
                             onSortModelChange={handleSort}
                             sortingOrder={["desc", "asc"]}
@@ -395,6 +432,17 @@ const UserListPage: NextPage<TProps> = () => {
                             disableRowSelectionOnClick
                             slots={{
                                 pagination: PaginationComponent
+                            }}
+                            rowSelectionModel={selectedRow?.map((item) => item.id)}
+                            onRowSelectionModelChange={(row: GridRowSelectionModel) => {
+                                const formatData: any = row.map(id => {
+                                    const findRow: any = users?.data?.find((item: any) => item._id === id)
+                                    if (findRow) {
+                                        return { id: findRow?._id, role: findRow?.role }
+
+                                    }
+                                })
+                                setSelectedRow(formatData)
                             }}
                             disableColumnFilter
                             disableColumnMenu

@@ -82,7 +82,7 @@ const CreateEditUser = (props: TCreateEditUser) => {
                 .nonNullable('Password is required')
                 .matches(PASSWORD_REG, 'The password format is content characters , special characters, numbers'),
             fullName: yup.string().required('Email is required'),
-            phoneNumber: yup.string().required('Phone number is required').min(8, 'Phone number must be at least 8 digits').max(15, 'Phone number must be at most 15 digits'),
+            phoneNumber: yup.string().required('Phone number is required').min(9, 'Phone number must be at least 8 digits').max(15, 'Phone number must be at most 15 digits'),
             role: yup.string().required('Role is required'),
             // avatar: yup.string().required(),
             // city : yup.string().nonNullable(),
@@ -125,29 +125,29 @@ const CreateEditUser = (props: TCreateEditUser) => {
             const { firstName, middleName, lastName } = separationFullName(data.fullName, i18n.language)
             if (idUser) {
                 dispatch(updateUserAsync({
+                    id: idUser,
+                    password: data.password ? data?.password : "",
                     firstName,
                     middleName,
                     lastName,
-                    password: data.password ? data?.password : "",
-                    // status: data?.status,
-                    phoneNumber: data.phoneNumber,
-                    role: data?.role,
+                    status: data?.status,
                     email: data?.email,
-                    // city :data?.city
+                    role: data?.role,
+                    phoneNumber: data?.phoneNumber,
                     address: data?.address,
                     avatar: avatar,
-                    id: idUser
                 }))
+                // city :data?.city
             } else {
                 dispatch(createUserAsync({
+                    password: data.password ? data?.password : "",
                     firstName,
                     middleName,
                     lastName,
-                    password: data.password ? data?.password : "",
-                    // status: data?.status,
-                    phoneNumber: data.phoneNumber,
-                    role: data?.role,
+                    status: data?.status,
                     email: data?.email,
+                    role: data?.role,
+                    phoneNumber: data.phoneNumber,
                     // city :data?.city
                     address: data?.address,
                     avatar: avatar
@@ -162,7 +162,7 @@ const CreateEditUser = (props: TCreateEditUser) => {
         setLoading(true)
         await getDetailsUser(id).then((res) => {
             const data = res.data
-            console.log("daaaa", { data });
+            // console.log("daaaa", { data });
 
             if (data) {
                 reset({
@@ -500,7 +500,6 @@ const CreateEditUser = (props: TCreateEditUser) => {
                                                     name='phoneNumber'
                                                 />
                                             </Grid>
-
                                         </Grid>
                                     </Box>
                                 </Grid>

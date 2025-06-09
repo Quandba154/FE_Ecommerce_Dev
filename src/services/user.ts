@@ -1,6 +1,6 @@
 import { API_ENDPOINT } from 'src/configs/api'
 import instanceAxios from 'src/helpers/axios'
-import { TParamCreateUser, TParamEditUser, TParamGetAllUsers } from 'src/types/user/user'
+import { TParamCreateUser, TParamDeleteMultipleUser, TParamEditUser, TParamGetAllUsers } from 'src/types/user/user'
 
 export const getAllUsers = async (data: { params: TParamGetAllUsers }) => {
   try {
@@ -17,7 +17,6 @@ export const createUser = async (data: TParamCreateUser) => {
     const res = await instanceAxios.post(`${API_ENDPOINT.USER.INDEX}`, data)
     return res.data
   } catch (error: any) {
-    console.error('Error during login:', error)
     return error?.response?.data
   }
 }
@@ -33,7 +32,6 @@ export const deleteUser = async (id: string) => {
     const res = await instanceAxios.delete(`${API_ENDPOINT.USER.INDEX}/${id}`)
     return res.data
   } catch (error: any) {
-    console.error('Error during login:', error)
     return error?.response?.data
   }
 }
@@ -43,7 +41,22 @@ export const getDetailsUser = async (id: string) => {
     const res = await instanceAxios.get(`${API_ENDPOINT.USER.INDEX}/${id}`)
     return res.data
   } catch (error: any) {
-    console.error('Error during login:', error)
+    return error?.response?.data
+  }
+}
+
+export const deleteMultipleUser = async (data: TParamDeleteMultipleUser) => {
+  try {
+    const res = await instanceAxios.delete(`${API_ENDPOINT.USER.INDEX}/delete-many`, { data })
+    if (res?.data?.status === 'Success') {
+      return {
+        data: []
+      }
+    }
+    return {
+      data: null
+    }
+  } catch (error: any) {
     return error?.response?.data
   }
 }
