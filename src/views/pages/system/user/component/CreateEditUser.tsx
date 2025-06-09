@@ -1,7 +1,7 @@
 // ** React
 import React, { useEffect, useState } from 'react';
 //
-import { Box, useTheme, Button, Typography, IconButton, Grid, Avatar, InputLabel, FormHelperText, Switch } from '@mui/material';
+import { Box, useTheme, Button, Typography, IconButton, Grid, Avatar, InputLabel, FormHelperText, Switch, InputAdornment } from '@mui/material';
 import FormControlLabel from '@mui/material/FormControlLabel';
 
 // ** form
@@ -119,8 +119,6 @@ const CreateEditUser = (props: TCreateEditUser) => {
     }
 
     const onSubmit = (data: any) => {
-        console.log('Form data:', data);
-        console.log('Form errors:', errors);
         if (!Object.keys(errors)?.length) {
             const { firstName, middleName, lastName } = separationFullName(data.fullName, i18n.language)
             if (idUser) {
@@ -136,8 +134,8 @@ const CreateEditUser = (props: TCreateEditUser) => {
                     phoneNumber: data?.phoneNumber,
                     address: data?.address,
                     avatar: avatar,
+                    // city :data?.city
                 }))
-                // city :data?.city
             } else {
                 dispatch(createUserAsync({
                     password: data.password ? data?.password : "",
@@ -201,7 +199,9 @@ const CreateEditUser = (props: TCreateEditUser) => {
             reset({
                 ...defaultValues
             })
-        } else if (idUser) {
+            setAvatar("")
+            setShowPassWord(false)
+        } else if (idUser && open) {
             fetchDetailUser(idUser)
         }
     }, [open, idUser])
@@ -301,7 +301,11 @@ const CreateEditUser = (props: TCreateEditUser) => {
                                                                         : `rgba(${theme.palette.customColors.main}, 0.42)`,
                                                                 }}
                                                             >
-                                                                {t("Role")}
+                                                                {t("Role")} <span style={{
+                                                                    color: errors?.role
+                                                                        ? theme.palette.error.main
+                                                                        : `rgba(${theme.palette.customColors.main}, 0.42)`,
+                                                                }}>*</span>
                                                             </InputLabel>
                                                             <CustomSelect
                                                                 fullWidth
@@ -328,7 +332,7 @@ const CreateEditUser = (props: TCreateEditUser) => {
                                                     )}
                                                 />
                                             </Grid>
-                                            {/* <Grid item md={6} xs={12}>
+                                            <Grid item md={6} xs={12}>
                                                 <Controller
                                                     control={control}
                                                     rules={{
@@ -367,7 +371,7 @@ const CreateEditUser = (props: TCreateEditUser) => {
                                                     )}
                                                     name='password'
                                                 />
-                                            </Grid> */}
+                                            </Grid>
                                             {idUser && <Grid item md={6} xs={12}>
                                                 <Controller
                                                     control={control}
@@ -401,6 +405,7 @@ const CreateEditUser = (props: TCreateEditUser) => {
                                                     control={control}
                                                     render={({ field: { onChange, onBlur, value } }) => (
                                                         <CustomTextField
+                                                            required
                                                             fullWidth
                                                             label={t("full_name")}
                                                             placeholder={t('enter_your_full_name')}

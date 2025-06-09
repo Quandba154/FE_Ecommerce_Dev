@@ -71,6 +71,7 @@
   "update_user": "chỉnh sửa user",
   "Active": "Đang hoạt động",
   "Block": "Tạm khoá",
+  "FullName": "Họ và tên",
   "create-user-success": "Tạo người thành công",
   "confirm_delete_user": "Xoá người dùng thành công",
   "Delete_multiple_user_error": "Xoá nhiều người người dùng thất bài",
