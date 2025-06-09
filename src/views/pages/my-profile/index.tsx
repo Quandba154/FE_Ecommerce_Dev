@@ -64,7 +64,7 @@ type TDefaultValues = {
 
 const MyProfilePage: NextPage<TProps> = () => {
   // ** hooks
-  // const { user } = useAuth();
+  // const { setUser } = useAuth();
 
   const [loading, setLoading] = useState<boolean>(false)
   const [user, setUser] = useState<UserDataType | null>(null)
@@ -133,7 +133,6 @@ const MyProfilePage: NextPage<TProps> = () => {
         // console.log("role222", data?.role?.name);
 
         if (data) {
-          // setRoleId(data?.role?._id)
           setIsDisableRole(!data?.role?.permissions?.length)
           setAvatar(data?.avatar)
           reset({
@@ -144,8 +143,9 @@ const MyProfilePage: NextPage<TProps> = () => {
             role: data?.role?._id,
             fullName: toFullName(data?.lastName, data?.middleName, data?.firstName, i18n.language),
           })
+          setAvatar(data?.avatar)
+          setUser({ ...data })
         }
-        setUser({ ...response.data.data })
       })
       .catch(() => {
         // setUser(null)

@@ -21,9 +21,9 @@ import WrapperFileUpload from 'src/components/wrap-file-upload';
 //** redux */
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from 'src/stores';
-import { createUserAsync, updateUserAsync } from 'src/stores/user/action';
+import { createPaymentTypeAsync, updatePaymentTypeAsync } from 'src/stores/payment-type/action';
 // ** Service
-import { getDetailsUser } from 'src/services/user';
+import { getDetailsPaymentType } from 'src/services/payment-type';
 import { EMAIL_REG, PASSWORD_REG } from 'src/configs/regex';
 import { getAllRole } from 'src/services/role';
 
@@ -39,47 +39,33 @@ import { convertBase64, separationFullName, toFullName } from 'src/utils';
 
 
 
-interface TCreateEditUser {
+interface TCreateEditPaymentType {
     open: boolean,
     onClose: () => void,
-    idUser?: string
+    idPaymentType?: string
 }
 
 type TDefaultValues = {
-    password: string,
-    fullName: string,
-    email: string,
-    role: string,
-    phoneNumber: string,
-    address: string,
-    // avatar: string,
-    status?: number,
-    // city ?: string
+    name: string
 }
 
 
-const CreateEditUser = (props: TCreateEditUser) => {
-
-
+const CreateEditPaymentType = (props: TCreateEditPaymentType) => {
 
     // ** State
     const [isLoading, setLoading] = useState(false)
-    const [avatar, setAvatar] = useState("")
-    const [optionRoles, setOptionRoles] = useState<{ label: string, value: string }[]>([])
-    const [showPassWord, setShowPassWord] = useState(false)
+
+    const { open, onClose, idPaymentType } = props
 
 
-
-
+    // ** Redux
     const dispatch: AppDispatch = useDispatch();
-
 
     //**Hook */
     const { user } = useAuth()
-
     const theme = useTheme()
-
     const { t, i18n } = useTranslation()
+
 
     const schema = yup
         .object()
@@ -94,20 +80,13 @@ const CreateEditUser = (props: TCreateEditUser) => {
             role: yup.string().required('Role is required'),
             // avatar: yup.string().required(),
             // city : yup.string().nonNullable(),
-            address: yup.string().notRequired(),
-            status: yup.number().notRequired(),
+            address: yup.string().nonNullable(),
+            status: yup.number().nonNullable(),
         })
 
 
     const defaultValues: TDefaultValues = {
-        password: "",
-        fullName: "",
-        email: "",
-        role: "",
-        phoneNumber: "",
-        address: "",
-        status: 1,
-        // city : ""
+
     }
 
     const {
@@ -127,38 +106,24 @@ const CreateEditUser = (props: TCreateEditUser) => {
     }
 
     const onSubmit = (data: any) => {
-        console.log('Form data:', data);
-        console.log('Form errors:', errors);
+        console.log("dâtra", { data });
+
         if (!Object.keys(errors)?.length) {
             const { firstName, middleName, lastName } = separationFullName(data.fullName, i18n.language)
             if (idUser) {
-                dispatch(updateUserAsync({
-                    firstName,
-                    middleName,
-                    lastName,
-                    password: data.password ? data?.password : "",
-                    // status: data?.status,
-                    phoneNumber: data.phoneNumber,
-                    role: data?.role,
-                    email: data?.email,
-                    // city :data?.city
-                    address: data?.address,
-                    avatar: avatar,
-                    id: idUser
-                }))
+                // dispatch(updateUserAsync({ name: data?.name, id: idUser }))
             } else {
                 dispatch(createUserAsync({
                     firstName,
                     middleName,
                     lastName,
-                    password: data.password ? data?.password : "",
-                    // status: data?.status,
+                    password: data.password,
                     phoneNumber: data.phoneNumber,
                     role: data?.role,
                     email: data?.email,
-                    // city :data?.city
                     address: data?.address,
-                    avatar: avatar
+                    // status: data?.status,
+                    // city :data?.city
                 }))
             }
         }
@@ -170,38 +135,36 @@ const CreateEditUser = (props: TCreateEditUser) => {
         setLoading(true)
         await getDetailsUser(id).then((res) => {
             const data = res.data
-            console.log("daaaa", { data });
-
             if (data) {
                 reset({
                     fullName: toFullName(data?.lastName, data?.middleName, data?.firstName, i18n.language),
                     password: data.password,
                     phoneNumber: data.phoneNumber,
-                    role: data?.role._id,
+                    role: data?.role,
                     email: data?.email,
-                    // city :data?.city,
                     address: data?.address,
-                    status: data?.status,
+                    // status: data?.status,
+                    // city :data?.city
                 })
             }
-            setAvatar(data?.avatar)
             setLoading(false)
         }).catch(e => {
             setLoading(false)
         })
     }
 
-    const fetAllRoles = async () => {
+    const fetchDetailPaymentType = async (id: string) => {
         setLoading(true)
-        await getAllRole({ params: { limit: -1, page: -1 } }).then((res) => {
-            const data = res?.data.roles
-            if (data) {
-                setOptionRoles(data?.map((item: { name: string; _id: string }) => ({ label: item.name, value: item._id })))
-            }
-            setLoading(false)
-        }).catch((e) => {
-            setLoading(false)
-        })
+        await getDetailsPaymentType(id)
+            .then((res) => {
+                const data = res.data
+                if (data) {
+                    name: data?.name
+                }
+                setLoading(false)
+            }).catch(e => {
+                setLoading(false)
+            })
     };
 
     useEffect(() => {
@@ -209,14 +172,11 @@ const CreateEditUser = (props: TCreateEditUser) => {
             reset({
                 ...defaultValues
             })
-        } else if (idUser) {
-            fetchDetailUser(idUser)
+        } else if (idPaymentType) {
+            fetchDetailPaymentType(idPaymentType)
         }
-    }, [open, idUser])
+    }, [open, idPaymentType])
 
-    useEffect(() => {
-        fetAllRoles()
-    }, [])
 
     return (
         <>
@@ -227,16 +187,15 @@ const CreateEditUser = (props: TCreateEditUser) => {
                     maxWidth={{ md: "80vw", xs: "80vw" }}
                 >
                     <Box sx={{ display: "flex", justifyContent: "center", position: "relative", paddingBottom: "20px" }}>
-                        <Typography variant='h4' sx={{ fontWeight: 600 }}>{idUser ? "Chỉnh sửa nhóm vai trò" : "Tạo nhóm vái trò"}</Typography>
+                        <Typography variant='h4' sx={{ fontWeight: 600 }}>{idPaymentType ? "Edit Payment type" : "Create payment type"}</Typography>
                         <IconButton sx={{ position: "absolute", top: "-4px", right: "-10px" }} onClick={onClose} >
                             <Iconfi icon="material-symbols-light:close" fontSize={"30px"} />
                         </IconButton>
                     </Box>
                     <form onSubmit={handleSubmit(onSubmit)} autoComplete='off' noValidate>
                         <Box sx={{ backgroundColor: theme.palette.background.paper, borderRadius: "15px", py: 5, px: 4 }}  >
-                            <Grid container
-                                spacing={5}>
-                                <Grid container item md={6} xs={12}>
+                            <Grid container>
+                                <Grid container item  md={6} xs={12}>
                                     <Box sx={{ height: "100%", width: "100%" }}>
                                         <Grid container spacing={4}>
                                             <Grid item md={12} xs={12} >
@@ -336,7 +295,7 @@ const CreateEditUser = (props: TCreateEditUser) => {
                                                     )}
                                                 />
                                             </Grid>
-                                            {/* <Grid item md={6} xs={12}>
+                                            <Grid item md={6} xs={12}>
                                                 <Controller
                                                     control={control}
                                                     rules={{
@@ -375,7 +334,7 @@ const CreateEditUser = (props: TCreateEditUser) => {
                                                     )}
                                                     name='password'
                                                 />
-                                            </Grid> */}
+                                            </Grid>
                                             {idUser && <Grid item md={6} xs={12}>
                                                 <Controller
                                                     control={control}
@@ -526,4 +485,4 @@ const CreateEditUser = (props: TCreateEditUser) => {
     )
 
 }
-export default CreateEditUser
+export default CreateEditPaymentType

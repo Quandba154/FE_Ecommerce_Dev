@@ -18,7 +18,6 @@ const CustomModal = ({ open, onClose, children }: {
     onClose: () => void,
     children: React.ReactNode
 }) => {
-    console.log('CustomModal rendered with props:', { open, onClose })
 
     return (
         <StyleModal

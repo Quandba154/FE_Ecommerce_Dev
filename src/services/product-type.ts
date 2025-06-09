@@ -6,7 +6,7 @@ import {
   TParamsEditProductType,
   TParamsGetProductTypes
 } from 'src/types/product-type'
-import { string } from 'yup'
+
 
 export const getAllProductTypes = async (data: { params: TParamsGetProductTypes }) => {
   try {

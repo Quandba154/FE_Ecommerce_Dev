@@ -29,7 +29,7 @@ export const usePermission = (key: string, actions: TActions[]) => {
     return result
   }
   const userPermission = user?.role?.permissions
-//   const userPermission = ["SYSTEM.ROLE.CREATE"]
+  //   const userPermission = ["SYSTEM.ROLE.CREATE"]
 
   const [permission, setPermission] = useState(defaultValues)
 

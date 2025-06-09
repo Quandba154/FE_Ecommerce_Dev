@@ -1,5 +1,5 @@
 // React 
-import React from 'react';
+import React, { useEffect } from 'react';
 // ** Mui Imports
 import Box from '@mui/material/Box';
 import Avatar from '@mui/material/Avatar';
@@ -25,6 +25,8 @@ import { toFullName } from 'src/utils';
 // ** translation 
 import { t } from "i18next"
 import { useTranslation } from 'react-i18next';
+import { useSelector } from 'react-redux';
+import { RootState } from 'src/stores';
 
 
 
@@ -65,7 +67,9 @@ const UserDropdown = (props: TProps) => {
 
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
 
-    const { user, logout } = useAuth();
+    const { user, setUser ,logout } = useAuth();
+
+    const { userData } = useSelector((state: RootState) => state.auth)
 
     const permissionUser = user?.role?.permissions ?? []
 
@@ -98,6 +102,12 @@ const UserDropdown = (props: TProps) => {
 
     // ** Theme
     const theme = useTheme();
+
+    useEffect(() => {
+        if (userData) {
+            setUser({ ...userData })
+        }
+    }, [userData])
 
 
     return (
@@ -190,7 +200,7 @@ const UserDropdown = (props: TProps) => {
                         </StyledBadge>
                         <Box sx={{ display: 'flex', flexDirection: 'column' }}>
                             <Typography component="span">{toFullName(user?.lastName || "", user?.middleName || "", user?.firstName || "", i18n.language)}</Typography>
-                            <Typography component="span">{user?.role.name}</Typography>
+                            <Typography component="span">{user?.role?.name}</Typography>
                         </Box>
                     </Box>
                     <Divider />
