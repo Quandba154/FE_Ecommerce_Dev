@@ -24,12 +24,8 @@ export const createUser = async (data: TParamCreateUser) => {
 
 export const updateUser = async (data: TParamEditUser) => {
   const { id, ...rests } = data
-  try {
-    const res = await instanceAxios.put(`${API_ENDPOINT.USER.INDEX}/${id}`, rests)
-    return res.data
-  } catch (error: any) {
-    return error?.response?.data
-  }
+  const res = await instanceAxios.put(`${API_ENDPOINT.USER.INDEX}/${id}`, rests)
+  return res.data
 }
 
 export const deleteUser = async (id: string) => {

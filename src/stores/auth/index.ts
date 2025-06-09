@@ -4,10 +4,26 @@ import { createSlice } from '@reduxjs/toolkit'
 // ** Axios Imports
 import axios from 'axios'
 import { changePasswordMeAsync, registerAuthAsync, serviceName, updateAuthMeAsync } from './action'
+import { UserDataType } from 'src/contexts/types'
 
-const initialState = {
+type TInitialData = {
+  isLoading: boolean
+  isSuccess: boolean
+  isError: boolean
+  message: string
+  TypeError: string
+  isSuccessUpdateMe: boolean
+  isErrorUpdateMe: boolean
+  messageUpdateMe: string
+  isSuccessChangePassword: boolean
+  isErrorChangePassword: boolean
+  messageChangePassword: string
+  userData: UserDataType | null
+}
+
+const initialState: TInitialData = {
   isLoading: false,
-  isSuccess: false,
+  isSuccess: true,
   isError: false,
   message: '',
   TypeError: '',
@@ -16,7 +32,8 @@ const initialState = {
   messageUpdateMe: '',
   isSuccessChangePassword: true,
   isErrorChangePassword: false,
-  messageChangePassword: ''
+  messageChangePassword: '',
+  userData: null
 }
 
 export const authSlice = createSlice({
@@ -26,7 +43,7 @@ export const authSlice = createSlice({
     resetInitialState: state => {
       state.isLoading = false
       state.isSuccess = true
-      state.isError = false
+      state.isError = true
       state.message = ''
       state.TypeError = ''
       state.isSuccessUpdateMe = false
@@ -35,6 +52,7 @@ export const authSlice = createSlice({
       state.isSuccessChangePassword = false
       state.isErrorChangePassword = true
       state.messageChangePassword = ''
+      // state.useData = {}
     }
   },
   extraReducers: builder => {
@@ -67,6 +85,7 @@ export const authSlice = createSlice({
       state.isErrorUpdateMe = !action.payload?.data?.email
       state.messageUpdateMe = action.payload?.message
       state.TypeError = action.payload?.typeError
+      state.userData = action.payload
     })
     builder.addCase(updateAuthMeAsync.rejected, (state, action) => {
       state.isLoading = false
@@ -74,6 +93,7 @@ export const authSlice = createSlice({
       state.isSuccessUpdateMe = false
       state.isErrorUpdateMe = false
       state.messageUpdateMe = ''
+      state.userData = null
     })
 
     // Change Password Me

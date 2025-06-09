@@ -78,7 +78,6 @@ const UserListPage: NextPage<TProps> = () => {
         id: ""
     })
 
-    console.log('Current modal state:', openCreateEdit)
 
     const [openDeleteUser, setOpenDeleteUser] = useState({
         open: false,
@@ -104,7 +103,6 @@ const UserListPage: NextPage<TProps> = () => {
     // ** redux
     const dispatch: AppDispatch = useDispatch()
     const { users, isSuccessCreateEdit, isErrorCreateEdit, isLoading, messageCreateEdit, isErrorDelete, isSuccessDelete, messageDelete, typeError } = useSelector((state: RootState) => state.user)
-    console.log('Users data from Redux:', users)
 
 
     //** router */
@@ -122,7 +120,6 @@ const UserListPage: NextPage<TProps> = () => {
 
     // ** Fetch api
     const handleGetListUsers = () => {
-        console.log('Fetching users with params:', { limit: pageSize, page, search: searchBy, order: sortBy })
         dispatch(getAllUsersAsync({ params: { limit: pageSize, page, search: searchBy, order: sortBy } }))
     }
 
@@ -155,7 +152,6 @@ const UserListPage: NextPage<TProps> = () => {
     }
 
     const handleOpenEdit = (id: string) => {
-        console.log('Opening edit modal for user:', id)
         setOpenCreateEdit({
             open: true,
             id: id
@@ -406,7 +402,7 @@ const UserListPage: NextPage<TProps> = () => {
                             onRowClick={(row) => {
                                 setSelectedRow({ id: String(row.id), name: row?.row?.name })
                                 setOpenCreateEdit({
-                                    open: false,
+                                    open: true,
                                     id: String(row.id)
                                 })
                             }}

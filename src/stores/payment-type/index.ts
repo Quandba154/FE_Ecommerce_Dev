@@ -3,13 +3,13 @@ import { createSlice } from '@reduxjs/toolkit'
 
 // ** Actions
 import {
-  getAllProductTypeAsync,
-  createProductTypeAsync,
-  updateProductTypeAsync,
-  deleteProductTypeAsync,
-  deleteMultipleProductTypeAsync,
+  getAllPaymentTypeAsync,
+  createPaymentTypeAsync,
+  updatePaymentTypeAsync,
+  deletePaymentTypeAsync,
+  deleteMultiplePaymentTypeAsync,
   serviceName
-} from 'src/stores/product-type/action'
+} from 'src/stores/payment-type/action'
 
 const initialState = {
   isLoading: false,
@@ -55,68 +55,68 @@ export const productTypeSlice = createSlice({
   },
   extraReducers: builder => {
     // Get all product types
-    builder.addCase(getAllProductTypeAsync.pending, state => {
+    builder.addCase(getAllPaymentTypeAsync.pending, state => {
       state.isLoading = true
     })
-    builder.addCase(getAllProductTypeAsync.fulfilled, (state, action) => {
+    builder.addCase(getAllPaymentTypeAsync.fulfilled, (state, action) => {
       state.isLoading = false
       state.productTypes.data = action.payload?.data?.productTypes || []
       state.productTypes.total = action.payload?.data?.totalCount || 0
     })
-    builder.addCase(getAllProductTypeAsync.rejected, state => {
+    builder.addCase(getAllPaymentTypeAsync.rejected, state => {
       state.isLoading = false
       state.productTypes.data = []
       state.productTypes.total = 0
     })
 
     // Create product type
-    builder.addCase(createProductTypeAsync.pending, state => {
+    builder.addCase(createPaymentTypeAsync.pending, state => {
       state.isLoading = true
     })
-    builder.addCase(createProductTypeAsync.fulfilled, (state, action) => {
-      // const isSuccess = !!action.payload?.data?._id
+    builder.addCase(createPaymentTypeAsync.fulfilled, (state, action) => {
+      const isSuccess = !!action.payload?.data?._id
       state.isLoading = false
-      state.isSuccessCreateEdit = action.payload?.data?._id
-      state.isErrorCreateEdit = !action.payload?.data?._id
+      state.isSuccessCreateEdit = isSuccess
+      state.isErrorCreateEdit = !isSuccess
       state.messageErrorCreateEdit = action.payload?.message || ''
       state.typeError = action.payload?.typeError || ''
     })
 
     // Update product type
-    builder.addCase(updateProductTypeAsync.pending, state => {
+    builder.addCase(updatePaymentTypeAsync.pending, state => {
       state.isLoading = true
     })
-    builder.addCase(updateProductTypeAsync.fulfilled, (state, action) => {
-      // const isSuccess = !!action.payload?.data?._id
+    builder.addCase(updatePaymentTypeAsync.fulfilled, (state, action) => {
+      const isSuccess = !!action.payload?.data?._id
       state.isLoading = false
-      state.isSuccessCreateEdit = !!action.payload?.data?._id
-      state.isErrorCreateEdit = !action.payload?.data?._id
+      state.isSuccessCreateEdit = isSuccess
+      state.isErrorCreateEdit = !isSuccess
       state.messageErrorCreateEdit = action.payload?.message || ''
       state.typeError = action.payload?.typeError || ''
     })
 
     // Delete product type
-    builder.addCase(deleteProductTypeAsync.pending, state => {
+    builder.addCase(deletePaymentTypeAsync.pending, state => {
       state.isLoading = true
     })
-    builder.addCase(deleteProductTypeAsync.fulfilled, (state, action) => {
-      // const isSuccess = !!action.payload?.data?._id
+    builder.addCase(deletePaymentTypeAsync.fulfilled, (state, action) => {
+      const isSuccess = !!action.payload?.data?._id
       state.isLoading = false
-      state.isSuccessDelete = !!action.payload?.data?._id
-      state.isErrorDelete = !action.payload?.data?._id
+      state.isSuccessDelete = isSuccess
+      state.isErrorDelete = !isSuccess
       state.messageErrorDelete = action.payload?.message || ''
       state.typeError = action.payload?.typeError || ''
     })
 
     // Delete multiple product types
-    builder.addCase(deleteMultipleProductTypeAsync.pending, state => {
+    builder.addCase(deleteMultiplePaymentTypeAsync.pending, state => {
       state.isLoading = true
     })
-    builder.addCase(deleteMultipleProductTypeAsync.fulfilled, (state, action) => {
-      // const isSuccess = !!action.payload?.data
+    builder.addCase(deleteMultiplePaymentTypeAsync.fulfilled, (state, action) => {
+      const isSuccess = !!action.payload?.data
       state.isLoading = false
-      state.isSuccessMultipleDelete = !!action.payload?.data?._id
-      state.isErrorMultipleDelete = !action.payload?.data?._id
+      state.isSuccessMultipleDelete = isSuccess
+      state.isErrorMultipleDelete = !isSuccess
       state.messageErrorMultipleDelete = action.payload?.message || ''
       state.typeError = action.payload?.typeError || ''
     })
