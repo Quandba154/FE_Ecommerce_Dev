@@ -134,7 +134,7 @@ const MyProfilePage: NextPage<TProps> = () => {
 
         if (data) {
           setIsDisableRole(!data?.role?.permissions?.length)
-          setAvatar(data?.avatar)
+          // setAvatar(data?.avatar)
           reset({
             email: data?.email,
             address: data?.address,
@@ -144,7 +144,7 @@ const MyProfilePage: NextPage<TProps> = () => {
             fullName: toFullName(data?.lastName, data?.middleName, data?.firstName, i18n.language),
           })
           setAvatar(data?.avatar)
-          setUser({ ...data })
+          // setUser({ ...data })
         }
       })
       .catch(() => {
