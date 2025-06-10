@@ -24,19 +24,19 @@ type TCustomSelect = SelectProps & {
 
 const StyleSelect = styled(Select)(({ theme }) => ({
     "& .MuiSelect-select.MuiSelect-outlined.MuiInputBase-input": {
-        padding: "4px 8px 8px 10px !important",
+        padding: "8px 8px 8px 8px !important",
         height: "38px",
         boxSizing: "border-box",
     },
     "legend": {
         display: "none"
     },
-    "svg" : {
-      bottom : "calc(50% - .6em) !important"
+    "svg": {
+        bottom: "calc(50% - .6em) !important"
     },
     ".MuiOutlinedInput-notchedOutline": {
-        top: "-4px !important",
-        bottom: "4px !important"
+        top: "0px !important",
+        bottom: "4px !important",
     }
 }));
 
@@ -66,12 +66,10 @@ const CustomSelect = (props: TCustomSelect) => {
 
     return (
 
-        <Box sx={{ width: "100%", height: "100%", position: "relative" }}>
-            {/* {((Array.isArray(value) && !value.length) || !value) && (
+        <Box sx={{ width: "100%", position: "relative" }}>
+            {((Array.isArray(value) && !value.length) || value === "") && (
                 <CustomPlaceholder>{placeholder}</CustomPlaceholder>
-            )} */}
-
-            <CustomPlaceholder>{placeholder}</CustomPlaceholder>
+            )}
 
             <StyleSelect
                 fullWidth={fullWidth}
@@ -80,6 +78,15 @@ const CustomSelect = (props: TCustomSelect) => {
                 value={value}
                 label={label}
                 onChange={onChange}
+                MenuProps={{
+                    PaperProps: {
+                        sx: {
+                            zIndex: 9999,
+                            maxHeight: 224,
+                            overflowY: 'auto',
+                        },
+                    },
+                }}
                 {...rest}
             >
                 {options.length > 0 ? (

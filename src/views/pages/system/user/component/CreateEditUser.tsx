@@ -1,7 +1,7 @@
 // ** React
 import React, { useEffect, useState } from 'react';
 //
-import { Box, useTheme, Button, Typography, IconButton, Grid, Avatar, InputLabel, FormHelperText, Switch, InputAdornment } from '@mui/material';
+import { Box, useTheme, Button, Typography, IconButton, Grid, Avatar, InputLabel, FormHelperText, Switch, InputAdornment, styled } from '@mui/material';
 import FormControlLabel from '@mui/material/FormControlLabel';
 
 // ** form
@@ -55,6 +55,40 @@ type TDefaultValues = {
     status?: number,
     // city ?: string
 }
+
+// Styled Switch component
+const StyledSwitch = styled(Switch)(({ theme, value }) => ({
+    width: 56, // Overall width of the switch
+    height: 32, // Overall height of the switch
+    padding: '9px', // Padding around the switch for a larger clickable area
+    '& .MuiSwitch-switchBase': {
+        padding: '9px',
+        color: '#fff', // Color of the thumb (circle) when unchecked
+        '&.Mui-checked': {
+            transform: 'translateX(24px)', // Position of the thumb when checked
+            color: '#fff', // Color of the thumb when checked
+            '& + .MuiSwitch-track': {
+                backgroundColor: theme.palette.primary.main, // Track color when checked
+                opacity: 1,
+                border: 'none', // No border when checked for a cleaner look
+            },
+        },
+    },
+    '& .MuiSwitch-thumb': {
+        width: 22, // Size of the thumb
+        height: 22,
+        boxShadow: '0 2px 4px 0 rgba(0,0,0,0.2)', // Shadow for the thumb
+        backgroundColor: '#fff', // Always white thumb for contrast
+    },
+    '& .MuiSwitch-track': {
+        borderRadius: 32 / 2, // Border-radius for the track
+        backgroundColor: theme.palette.error.main, // Track color when unchecked
+        opacity: 1,
+        border: '2px solid',
+        // Border color changes with state based on the passed `value` prop
+        borderColor: Boolean(value) ? theme.palette.primary.main : theme.palette.error.main,
+    },
+}));
 
 
 const CreateEditUser = (props: TCreateEditUser) => {
@@ -314,7 +348,6 @@ const CreateEditUser = (props: TCreateEditUser) => {
                                                                 value={value}
                                                                 options={optionRoles}
                                                                 error={Boolean(errors?.role)}
-                                                            // placeholder={t("enter_your_role")}
                                                             />
                                                             {errors?.role?.message && (
                                                                 <FormHelperText
@@ -332,46 +365,48 @@ const CreateEditUser = (props: TCreateEditUser) => {
                                                     )}
                                                 />
                                             </Grid>
-                                            <Grid item md={6} xs={12}>
-                                                <Controller
-                                                    control={control}
-                                                    rules={{
-                                                        required: true
-                                                    }}
-                                                    render={({ field: { onChange, onBlur, value } }) => (
-                                                        <CustomTextField
-                                                            required
-                                                            fullWidth
-                                                            label='Password'
-                                                            placeholder='Input password'
-                                                            onChange={onChange}
-                                                            onBlur={onBlur}
-                                                            value={value}
-                                                            error={Boolean(errors?.password)}
-                                                            helperText={errors?.password ? errors?.password?.message : ''}
-                                                            type={showPassWord ? 'text' : 'password'}
-                                                            InputProps={{
-                                                                endAdornment: (
-                                                                    <InputAdornment position='end'>
-                                                                        <IconButton
-                                                                            edge='end'
-                                                                            onClick={() => setShowPassWord(!showPassWord)}
-                                                                            aria-label='toggle password visibility'
-                                                                        >
-                                                                            {showPassWord ? (
-                                                                                <Iconfy icon='material-symbols:visibility-outline' />
-                                                                            ) : (
-                                                                                <Iconfy icon='material-symbols:visibility-off-outline-rounded' />
-                                                                            )}
-                                                                        </IconButton>
-                                                                    </InputAdornment>
-                                                                )
-                                                            }}
-                                                        />
-                                                    )}
-                                                    name='password'
-                                                />
-                                            </Grid>
+                                            {!idUser && (
+                                                <Grid item md={6} xs={12}>
+                                                    <Controller
+                                                        control={control}
+                                                        rules={{
+                                                            required: true
+                                                        }}
+                                                        render={({ field: { onChange, onBlur, value } }) => (
+                                                            <CustomTextField
+                                                                required
+                                                                fullWidth
+                                                                label='Password'
+                                                                placeholder='Input password'
+                                                                onChange={onChange}
+                                                                onBlur={onBlur}
+                                                                value={value}
+                                                                error={Boolean(errors?.password)}
+                                                                helperText={errors?.password ? errors?.password?.message : ''}
+                                                                type={showPassWord ? 'text' : 'password'}
+                                                                InputProps={{
+                                                                    endAdornment: (
+                                                                        <InputAdornment position='end'>
+                                                                            <IconButton
+                                                                                edge='end'
+                                                                                onClick={() => setShowPassWord(!showPassWord)}
+                                                                                aria-label='toggle password visibility'
+                                                                            >
+                                                                                {showPassWord ? (
+                                                                                    <Iconfy icon='material-symbols:visibility-outline' />
+                                                                                ) : (
+                                                                                    <Iconfy icon='material-symbols:visibility-off-outline-rounded' />
+                                                                                )}
+                                                                            </IconButton>
+                                                                        </InputAdornment>
+                                                                    )
+                                                                }}
+                                                            />
+                                                        )}
+                                                        name='password'
+                                                    />
+                                                </Grid>
+                                            )}
                                             {idUser && <Grid item md={6} xs={12}>
                                                 <Controller
                                                     control={control}
@@ -379,21 +414,36 @@ const CreateEditUser = (props: TCreateEditUser) => {
                                                     render={({ field: { onChange, onBlur, value } }) => (
                                                         <FormControlLabel
                                                             control={
-                                                                <Switch
-                                                                    sx={{ backgroundColor: "red" }}
+                                                                <StyledSwitch
                                                                     checked={Boolean(value)}
                                                                     onChange={(e) => {
                                                                         onChange(e.target.checked ? 1 : 0);
                                                                     }}
-                                                                // onBlur={onBlur}
+                                                                    value={value}
                                                                 />
                                                             }
-                                                            label={Boolean(value) ? t("Active") : t("Block")}
+                                                            label={
+                                                                <Typography
+                                                                    variant="body1"
+                                                                    sx={{
+                                                                        color: Boolean(value) ? theme.palette.primary.main : theme.palette.error.main,
+                                                                        fontWeight: 600,
+                                                                        fontSize: '1rem',
+                                                                    }}
+                                                                >
+                                                                    {Boolean(value) ? t("Active") : t("Block")}
+                                                                </Typography>
+                                                            }
+                                                            sx={{
+                                                                margin: 0,
+                                                                '& .MuiFormControlLabel-label': {
+                                                                    marginLeft: 2
+                                                                }
+                                                            }}
                                                         />
                                                     )}
                                                 />
                                             </Grid>}
-
                                         </Grid>
                                     </Box>
                                 </Grid>
@@ -477,7 +527,6 @@ const CreateEditUser = (props: TCreateEditUser) => {
                                                     name='city'
                                                 />
                                             </Grid> */}
-
                                             <Grid item md={6} xs={12}>
                                                 <Controller
                                                     control={control}
