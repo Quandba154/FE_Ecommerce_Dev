@@ -377,11 +377,11 @@
 //                                 } ></GridCreate>
 //                         </Box>
 //                     )}
-//                     {selectedRow?.length > && (
+//                     {selectedRow?.length > 0 && (
 //                         <TableHeader
 //                             numRow={selectedRow?.length}
 //                             onClear={() => setSelectedRow([])}
-//                             handAction={handleAction}
+//                             handleAction={handleAction}
 //                             actions={[{ label: t("Xoá"), value: "delete", disabled: !DELETE }]}
 //                         />
 //                     )}
