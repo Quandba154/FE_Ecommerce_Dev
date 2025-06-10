@@ -78,5 +78,7 @@
   "delete-multiple-user-success": "Xoá nhiều người dùng thành công",
   "title_delete_user": "Xác nhận xoá người dùng",
   "title_delete_multiple_user": "Xác nhận xoá những người dùng này",
-  "confirm_delete_multiple_user": "Bạn có chắc xoá những người dùng này không ?"
+  "confirm_delete_multiple_user": "Bạn có chắc xoá những người dùng này không ?",
+  "Blocking" : "Tạm khoá",
+  "Status" : "Trạng thái"
 }

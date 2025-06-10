@@ -67,6 +67,8 @@ import i18n from 'src/configs/i18n'
 import { Chip } from '@mui/material'
 import { getAllRole } from 'src/services/role'
 import CustomSelect from 'src/components/custom-select'
+import { OBJECT_STATUS_USER } from 'src/configs/user'
+import { status } from 'nprogress'
 
 
 
@@ -78,15 +80,16 @@ type TProps = {}
 type TSelectedRow = { id: string, role: { name: string, permission: string[] } }
 
 const ActiveUserStyled = styled(Chip)<ChipProps>(({ theme }) => ({
-    backgroundColor: "#00529C29",
-    color: "#00529c",
+    backgroundColor: "#28c76f29",
+    color: "#3a843f",
     fontSize: "14px",
+    fontWeight: 600,
     padding: "8px 4px"
 }))
 
 const DeactivateUserStyled = styled(Chip)<ChipProps>(({ theme }) => ({
-    backgroundColor: `rgba(${theme.palette.primary.main}, 0.78)`,
-    color: theme.palette.primary.main,
+    backgroundColor: "#da251d29",
+    color: "#da251d",
     fontSize: "14px",
     padding: "8px 4px",
     fontWeight: 600
@@ -124,9 +127,13 @@ const UserListPage: NextPage<TProps> = () => {
 
     const [roleSelected, setRoleSelected] = useState("")
 
+    const [statusSelected, setStatusSelected] = useState("")
+
+
     const [filterBy, setFilterBy] = useState<Record<string, string>>({})
 
 
+    const CONSTANT_STATUS_USER = OBJECT_STATUS_USER()
 
 
 
@@ -362,8 +369,8 @@ const UserListPage: NextPage<TProps> = () => {
     }, [sortBy, searchBy, i18n.language, page, pageSize, filterBy])
 
     useEffect(() => {
-        setFilterBy({ roleId: roleSelected })
-    }, [roleSelected])
+        setFilterBy({ roleId: roleSelected, status: statusSelected })
+    }, [roleSelected, statusSelected])
 
     useEffect(() => {
         fetAllRoles()
@@ -423,6 +430,7 @@ const UserListPage: NextPage<TProps> = () => {
         }
         handleGetListUsers()
     }, [isErrorMultipleDelete, isSuccessMultipleDelete, messageMultipleDelete])
+    console.log("Object.values(CONSTANT_STATUS_USER)", Object.values(CONSTANT_STATUS_USER));
 
     return (
         <>
@@ -461,9 +469,22 @@ const UserListPage: NextPage<TProps> = () => {
                     height: "100% !important", width: "100%",
                 }}>
 
+
                     <Grid container sx={{ height: "100%", width: "100%" }} >
                         {!selectedRow?.length && (
                             <Box sx={{ display: "flex", alignItems: "center", justifyContent: "flex-end", gap: 4, mb: 4, width: "100%" }}>
+                                <Box sx={{ width: "200px" }} >
+
+                                    <CustomSelect
+                                        fullWidth
+                                        onChange={(e: any) => {
+                                            setStatusSelected(String(e.target.value))
+                                        }}
+                                        options={Object.values(CONSTANT_STATUS_USER)}
+                                        value={statusSelected}
+                                        placeholder={t("Status")}
+                                    />
+                                </Box>
                                 <Box sx={{ width: "200px" }} >
                                     <CustomSelect
                                         fullWidth
