@@ -87,6 +87,11 @@ export const VerticalItem = () => {
           path: ROUTE_CONFIG.SETTINGS.PAYMENT_TYPE
         },
         {
+          title: t('Delivery_method'),
+          icon: 'iconamoon:delivery-fast-duotone',
+          path: ROUTE_CONFIG.SETTINGS.DELIVERY_TYPE
+        },
+        {
           title: t('City'),
           icon: 'ph:city-fill',
           path: ROUTE_CONFIG.SETTINGS.CITY

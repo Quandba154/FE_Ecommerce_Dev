@@ -2,7 +2,7 @@ import { createAsyncThunk } from '@reduxjs/toolkit'
 import {
   createProductType,
   deleteMultipleProductType,
-  deleteProductType, 
+  deleteProductType,
   getAllProductTypes,
   updateProductType
 } from 'src/services/product-type'

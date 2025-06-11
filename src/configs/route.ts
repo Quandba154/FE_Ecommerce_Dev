@@ -16,7 +16,8 @@ export const ROUTE_CONFIG = {
   },
   SETTINGS: {
     PAYMENT_TYPE: '/settings/payment-type',
-    CITY : '/settings/city'
+    DELIVERY_TYPE: '/settings/delivery-type',
+    CITY: '/settings/city'
   },
   DASHBOARD: '/dashboard'
 }

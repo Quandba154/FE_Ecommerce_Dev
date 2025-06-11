@@ -4,7 +4,7 @@ import { TParamCreateUser, TParamDeleteMultipleUser, TParamEditUser, TParamGetAl
 
 export const getAllUsers = async (data: { params: TParamGetAllUsers }) => {
   try {
-    const res = await instanceAxios.get(`${API_ENDPOINT.USER.INDEX}`, data)
+    const res = await instanceAxios.get(`${API_ENDPOINT.SYSTEM.USER.INDEX}`, data)
     return res.data
   } catch (error) {
     console.error('Error during login:', error)
@@ -14,7 +14,7 @@ export const getAllUsers = async (data: { params: TParamGetAllUsers }) => {
 
 export const createUser = async (data: TParamCreateUser) => {
   try {
-    const res = await instanceAxios.post(`${API_ENDPOINT.USER.INDEX}`, data)
+    const res = await instanceAxios.post(`${API_ENDPOINT.SYSTEM.USER.INDEX}`, data)
     return res.data
   } catch (error: any) {
     return error?.response?.data
@@ -23,13 +23,13 @@ export const createUser = async (data: TParamCreateUser) => {
 
 export const updateUser = async (data: TParamEditUser) => {
   const { id, ...rests } = data
-  const res = await instanceAxios.put(`${API_ENDPOINT.USER.INDEX}/${id}`, rests)
+  const res = await instanceAxios.put(`${API_ENDPOINT.SYSTEM.USER.INDEX}/${id}`, rests)
   return res.data
 }
 
 export const deleteUser = async (id: string) => {
   try {
-    const res = await instanceAxios.delete(`${API_ENDPOINT.USER.INDEX}/${id}`)
+    const res = await instanceAxios.delete(`${API_ENDPOINT.SYSTEM.USER.INDEX}/${id}`)
     return res.data
   } catch (error: any) {
     return error?.response?.data
@@ -38,7 +38,7 @@ export const deleteUser = async (id: string) => {
 
 export const getDetailsUser = async (id: string) => {
   try {
-    const res = await instanceAxios.get(`${API_ENDPOINT.USER.INDEX}/${id}`)
+    const res = await instanceAxios.get(`${API_ENDPOINT.SYSTEM.USER.INDEX}/${id}`)
     return res.data
   } catch (error: any) {
     return error?.response?.data
@@ -47,7 +47,7 @@ export const getDetailsUser = async (id: string) => {
 
 export const deleteMultipleUser = async (data: TParamDeleteMultipleUser) => {
   try {
-    const res = await instanceAxios.delete(`${API_ENDPOINT.USER.INDEX}/delete-many`, { data })
+    const res = await instanceAxios.delete(`${API_ENDPOINT.SYSTEM.USER.INDEX}/delete-many`, { data })
     if (res?.data?.status === 'Success') {
       return {
         data: []

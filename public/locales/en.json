@@ -79,5 +79,22 @@
   "create_city": "Create City",
   "name": "Name",
   "name-city": "City Name",
-  "enter-name": "Enter city name"
+  "enter-name": "Enter city name",
+  "Delivery_method": "Delivery Method",
+  "Edit_delivery_type": "Edit Delivery Method",
+  "Create_delivery_type": "Create Delivery Method",
+  "name_delivery_type": "Delivery Method Name",
+  "create_delivery_type": "Create Delivery Method",
+  "update_delivery_type": "Update Delivery Method",
+  "create-delivery-type-success": "Delivery method created successfully",
+  "update-delivery-type-success": "Delivery method updated successfully",
+  "Update_delivery_type_error": "Failed to update delivery method",
+  "Create_delivery_type_error": "Failed to create delivery method",
+  "delete-delivery-type-success": "Delivery method deleted successfully",
+  "delete-multiple-delivery-type-success": "Multiple delivery methods deleted successfully",
+  "Delete_multiple_delivery_type_error": "Failed to delete multiple delivery methods",
+  "title_delete_delivery_type": "Delete Delivery Method",
+  "confirm_delete_delivery_type": "Are you sure you want to delete this delivery method?",
+  "title_delete_multiple_delivery_type": "Delete Multiple Delivery Methods",
+  "confirm_delete_multiple_delivery_type": "Are you sure you want to delete the selected delivery methods?"
 }

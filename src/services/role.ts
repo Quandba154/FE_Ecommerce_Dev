@@ -4,7 +4,7 @@ import { TParamEditRole, TParamDeleteRole, TParamCreateRole, TParamGetAllRoles }
 
 export const getAllRole = async (data: { params: TParamGetAllRoles }) => {
   try {
-    const res = await instanceAxios.get(`${API_ENDPOINT.ROLE.INDEX}`, data)
+    const res = await instanceAxios.get(`${API_ENDPOINT.SYSTEM.ROLE.INDEX}`, data)
     return res.data
   } catch (error) {
     console.error('Error during login:', error)
@@ -14,7 +14,7 @@ export const getAllRole = async (data: { params: TParamGetAllRoles }) => {
 
 export const createRole = async (data: TParamCreateRole) => {
   try {
-    const res = await instanceAxios.post(`${API_ENDPOINT.ROLE.INDEX}`, data)
+    const res = await instanceAxios.post(`${API_ENDPOINT.SYSTEM.ROLE.INDEX}`, data)
     return res.data
   } catch (error: any) {
     console.error('Error during login:', error)
@@ -25,7 +25,7 @@ export const createRole = async (data: TParamCreateRole) => {
 export const updateRole = async (data: TParamEditRole) => {
   const { id, ...rests } = data
   try {
-    const res = await instanceAxios.put(`${API_ENDPOINT.ROLE.INDEX}/${id}`, rests)
+    const res = await instanceAxios.put(`${API_ENDPOINT.SYSTEM.ROLE.INDEX}/${id}`, rests)
     return res.data
   } catch (error: any) {
     // console.error('Error during login:', error)
@@ -35,7 +35,7 @@ export const updateRole = async (data: TParamEditRole) => {
 
 export const deleteRole = async (id: string) => {
   try {
-    const res = await instanceAxios.delete(`${API_ENDPOINT.ROLE.INDEX}/${id}`)
+    const res = await instanceAxios.delete(`${API_ENDPOINT.SYSTEM.ROLE.INDEX}/${id}`)
     return res.data
   } catch (error: any) {
     console.error('Error during login:', error)
@@ -45,7 +45,7 @@ export const deleteRole = async (id: string) => {
 
 export const getDetailsRole = async (id: string) => {
   try {
-    const res = await instanceAxios.get(`${API_ENDPOINT.ROLE.INDEX}/${id}`)
+    const res = await instanceAxios.get(`${API_ENDPOINT.SYSTEM.ROLE.INDEX}/${id}`)
     return res.data
   } catch (error: any) {
     console.error('Error during login:', error)
