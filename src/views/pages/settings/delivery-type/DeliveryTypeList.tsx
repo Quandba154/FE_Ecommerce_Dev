@@ -14,16 +14,13 @@ import { GridRowSelectionModel } from '@mui/x-data-grid'
 import * as yup from 'yup'
 
 // ** React
-import { useState, useEffect, useMemo } from 'react'
-
-// ** Icon
-import Iconfy from 'src/components/Icon'
+import { useState, useEffect } from 'react'
 
 // ** Redux_dispatch
 import { useDispatch, useSelector } from 'react-redux'
 import { AppDispatch, RootState } from 'src/stores'
-import { deleteMultipleCityAsync, deleteCityAsync, getAllCityAsync } from 'src/stores/city/action'
-import { resetInitialState } from 'src/stores/city'
+import { deleteDeliveryTypeAsync, getAllDeliveryTypeAsync, deleteMultipleDeliveryTypeAsync } from 'src/stores/delivery-type/action'
+import { resetInitialState } from 'src/stores/delivery-type'
 import { useRouter } from 'next/router'
 
 // ** translation 
@@ -42,7 +39,6 @@ import Spinner from 'src/components/spinner'
 
 // **Service
 
-
 // *Config
 import { PAGE_SIZE_OPTION } from 'src/configs/gridConfig'
 import { OBJECT_TYPE_ERROR_ROLE } from 'src/configs/role'
@@ -57,9 +53,7 @@ import toast from 'react-hot-toast'
 //** Hook */
 import { usePermission } from 'src/hooks/usePermission'
 import TableHeader from 'src/components/table-header'
-import i18n from 'src/configs/i18n'
-import CreateEditCity from './component/CreateEditCity'
-
+import CreateEditDeliveryType from './component/CreateEditDeliveryType'
 
 
 
@@ -72,7 +66,7 @@ type TSelectedRow = { id: string, role: { name: string, permission: string[] } }
 
 
 
-const CityListPage: NextPage<TProps> = () => {
+const DeliveryTypeListPage: NextPage<TProps> = () => {
 
     // ** State
     const [openCreateEdit, setOpenCreateEdit] = useState({
@@ -81,12 +75,12 @@ const CityListPage: NextPage<TProps> = () => {
     })
 
 
-    const [openDeleteCity, setOpenDeleteCity] = useState({
+    const [openDeleteDelivery, setOpenDeleteDelivery] = useState({
         open: false,
         id: ""
     })
 
-    const [openDeleteMultipleCity, setOpenDeleteMultipleCity] = useState(false)
+    const [openDeleteMultipleDelivery, setOpenDeleteMultipleDelivery] = useState(false)
 
     const [sortBy, setSortBy] = useState("created desc")
     const [searchBy, setSearchBy] = useState("")
@@ -97,17 +91,14 @@ const CityListPage: NextPage<TProps> = () => {
 
     const [selectedRow, setSelectedRow] = useState<string[]>([])
 
-    const [filterBy, setFilterBy] = useState<Record<string, string>>({})
-
-
 
     //* Permission
-    const { VIEW, UPDATE, DELETE, CREATE } = usePermission("SETTING.CITY", ["CREATE", "VIEW", "UPDATE", "DELETE"])
+    const { VIEW, UPDATE, DELETE, CREATE } = usePermission("SETTING.DELIVERY_TYPE", ["CREATE", "VIEW", "UPDATE", "DELETE"])
 
     // ** redux
     const dispatch: AppDispatch = useDispatch()
-    const { cities, isSuccessCreateEdit, isErrorCreateEdit, isLoading, messageCreateEdit, isErrorDelete, isSuccessDelete, messageDelete, typeError
-        , isSuccessMultipleDelete, isErrorMultipleDelete, messageMultipleDelete } = useSelector((state: RootState) => state.city)
+    const { deliveryTypes, isSuccessCreateEdit, isErrorCreateEdit, isLoading, messageCreateEdit, isErrorDelete, isSuccessDelete, messageDelete, typeError
+        , isSuccessMultipleDelete, isErrorMultipleDelete, messageMultipleDelete } = useSelector((state: RootState) => state.deliveryType)
 
 
     //** router */
@@ -124,21 +115,21 @@ const CityListPage: NextPage<TProps> = () => {
     const theme = useTheme();
 
     // ** Fetch api
-    const handleGetListCities = () => {
+    const handleGetListDeliveryTypes = () => {
         const query = { params: { limit: pageSize, page, search: searchBy, order: sortBy } }
-        dispatch(getAllCityAsync(query))
+        dispatch(getAllDeliveryTypeAsync(query))
     }
 
 
-    const handleCloseConfirmDeleteCity = () => {
-        setOpenDeleteCity({
+    const handleCloseConfirmDeleteDeliveryType = () => {
+        setOpenDeleteDelivery({
             open: false,
             id: ""
         })
     }
 
-    const handleCloseConfirmDeleteMultipleCity = () => {
-        setOpenDeleteMultipleCity(false)
+    const handleCloseConfirmDeleteMultipleDeliveryType = () => {
+        setOpenDeleteMultipleDelivery(false)
     }
 
     const handleSort = (sort: GridSortModel) => {
@@ -163,27 +154,26 @@ const CityListPage: NextPage<TProps> = () => {
         setPageSize(pageSize)
     }
 
-    const handleDeleteCity = () => {
-        dispatch(deleteCityAsync(openDeleteCity.id))
+    const handleDeleteDelivery = () => {
+        dispatch(deleteDeliveryTypeAsync(openDeleteDelivery.id))
     }
 
-    const handleDeleteMultipleCity = () => {
-        dispatch(deleteMultipleCityAsync({
-            cityIds: selectedRow
+    const handleDeleteMultipleDelivery = () => {
+        dispatch(deleteMultipleDeliveryTypeAsync({
+            deliveryTypeIds: selectedRow
         }))
     }
 
     const handleAction = (action: string) => {
         switch (action) {
             case "delete": {
-                setOpenDeleteMultipleCity(true)
+                setOpenDeleteMultipleDelivery(true)
                 break;
             }
         }
     }
 
     const columns: GridColDef[] = [
-
         {
             field: 'name',
             headerName: t('name'),
@@ -196,13 +186,13 @@ const CityListPage: NextPage<TProps> = () => {
             }
         },
         {
-            field: 'createdAt',
+            field: 'createAt',
             headerName: t('Created_date'),
             minWidth: 180,
             maxWidth: 180,
             renderCell: params => {
                 const { row } = params
-                return <Typography>{formatDate(row?.createdAt, { dateStyle: "short" })}</Typography>
+                return <Typography>{formatDate(row?.createAt , {dateStyle : "short"})}</Typography>
             }
         },
         {
@@ -226,7 +216,7 @@ const CityListPage: NextPage<TProps> = () => {
                         <GridDelete
                             disabled={!DELETE}
                             onClick={() =>
-                                setOpenDeleteCity({
+                                setOpenDeleteDelivery({
                                     open: true,
                                     id: String(params.id)
                                 })
@@ -241,14 +231,14 @@ const CityListPage: NextPage<TProps> = () => {
 
     const PaginationComponent = () => {
         return (
-            <CustomPagination pageSize={pageSize} page={page} rowLength={cities.total} pageSizeOption={PAGE_SIZE_OPTION} onChangePagination={handleOnchangePagination} />
+            <CustomPagination pageSize={pageSize} page={page} rowLength={deliveryTypes.total} pageSizeOption={PAGE_SIZE_OPTION} onChangePagination={handleOnchangePagination} />
         )
     }
 
 
 
     useEffect(() => {
-        handleGetListCities()
+        handleGetListDeliveryTypes()
     }, [sortBy, searchBy, page, pageSize])
 
 
@@ -256,11 +246,11 @@ const CityListPage: NextPage<TProps> = () => {
     useEffect(() => {
         if (isSuccessCreateEdit) {
             if (!openCreateEdit.id) {
-                toast.success(t("create-city-success"))
+                toast.success(t("create-delivery-type-success"))
             } else {
-                toast.success(t("update-city-success"))
+                toast.success(t("update-delivery-type-success"))
             }
-            handleGetListCities()
+            handleGetListDeliveryTypes()
             handleCloseCreateEdit()
             dispatch(resetInitialState())
         } else if (isErrorCreateEdit && messageCreateEdit && typeError) {
@@ -269,42 +259,42 @@ const CityListPage: NextPage<TProps> = () => {
                 toast.error(t(errorConfig))
             } else {
                 if (openCreateEdit.id) {
-                    toast.error(t("Update_city_error"))
+                    toast.error(t("Update_delivery_type_error"))
                 } else {
-                    toast.error(t("Create_city_error"))
+                    toast.error(t("Create_delivery_type_error"))
                 }
             }
             dispatch(resetInitialState())
         }
-        handleGetListCities()
+        handleGetListDeliveryTypes()
     }, [isSuccessCreateEdit, isErrorCreateEdit, messageCreateEdit, typeError])
 
 
     useEffect(() => {
         if (isSuccessDelete) {
-            toast.success(t("delete-city-success"))
-            handleGetListCities()
+            toast.success(t("delete-delivery-type-success"))
+            handleGetListDeliveryTypes()
             dispatch(resetInitialState())
-            handleCloseConfirmDeleteCity()
+            handleCloseConfirmDeleteDeliveryType()
         } else if (isErrorDelete && messageDelete) {
             toast.error(t(messageDelete))
             dispatch(resetInitialState())
         }
-        handleGetListCities()
+        handleGetListDeliveryTypes()
     }, [isErrorDelete, isSuccessDelete, messageDelete])
 
     useEffect(() => {
         if (isSuccessMultipleDelete) {
-            toast.success(t("delete-multiple-city-success"))
-            handleGetListCities()
+            toast.success(t("delete-multiple-delivery-type-success"))
+            handleGetListDeliveryTypes()
             dispatch(resetInitialState())
-            handleCloseConfirmDeleteMultipleCity()
+            handleCloseConfirmDeleteMultipleDeliveryType()
             setSelectedRow([])
         } else if (isErrorMultipleDelete && messageMultipleDelete) {
-            toast.error(t("Delete_multiple_city_error"))
+            toast.error(t("Delete_multiple_delivery_type_error"))
             dispatch(resetInitialState())
         }
-        handleGetListCities()
+        handleGetListDeliveryTypes()
     }, [isErrorMultipleDelete, isSuccessMultipleDelete, messageMultipleDelete])
 
 
@@ -312,22 +302,22 @@ const CityListPage: NextPage<TProps> = () => {
         <>
             {loading && <Spinner></Spinner>}
             <ConfirmationDialog
-                open={openDeleteCity.open}
-                handleClose={handleCloseConfirmDeleteCity}
-                handleCancel={handleCloseConfirmDeleteCity}
-                handleConfirm={handleDeleteCity}
-                title={t("title_delete_city")}
-                description={t("confirm_delete_city")}
+                open={openDeleteDelivery.open}
+                handleClose={handleCloseConfirmDeleteDeliveryType}
+                handleCancel={handleCloseConfirmDeleteDeliveryType}
+                handleConfirm={handleDeleteDelivery}
+                title={t("title_delete_delivery_type")}
+                description={t("confirm_delete_delivery_type")}
             />
             <ConfirmationDialog
-                open={openDeleteMultipleCity}
-                handleClose={handleCloseConfirmDeleteMultipleCity}
-                handleCancel={handleCloseConfirmDeleteMultipleCity}
-                handleConfirm={handleDeleteMultipleCity}
-                title={t("title_delete_multiple_city")}
-                description={t("confirm_delete_multiple_city")}
+                open={openDeleteMultipleDelivery}
+                handleClose={handleCloseConfirmDeleteMultipleDeliveryType}
+                handleCancel={handleCloseConfirmDeleteMultipleDeliveryType}
+                handleConfirm={handleDeleteMultipleDelivery}
+                title={t("title_delete_multiple_delivery_type")}
+                description={t("confirm_delete_multiple_delivery_type")}
             />
-            <CreateEditCity open={openCreateEdit.open} onClose={handleCloseCreateEdit} idCity={openCreateEdit.id} />
+            <CreateEditDeliveryType open={openCreateEdit.open} onClose={handleCloseCreateEdit} idDelivery={openCreateEdit.id} />
             {isLoading && <Spinner />}
             <Box sx={{
                 display: "flex",
@@ -373,7 +363,7 @@ const CityListPage: NextPage<TProps> = () => {
                             />
                         )}
                         <CustomDataGrid
-                            rows={cities?.data ?? []}
+                            rows={deliveryTypes?.data ?? []}
                             columns={columns}
                             sx={{
                                 ".row-selected": {
@@ -406,6 +396,6 @@ const CityListPage: NextPage<TProps> = () => {
     )
 }
 
-export default CityListPage;
+export default DeliveryTypeListPage;
 
 

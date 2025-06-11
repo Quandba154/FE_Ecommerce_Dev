@@ -96,5 +96,22 @@
   "create_city": "Tạo thành phố",
   "name": "Tên",
   "name-city": "Tên thành phố",
-  "enter-name": "Nhập tên thành phố"
+  "enter-name": "Nhập tên thành phố",
+  "Delivery_method": "Phương thức giao hàng",
+  "Edit_delivery_type": "Chỉnh sửa phương thức giao hàng",
+  "Create_delivery_type": "Tạo phương thức giao hàng",
+  "name_delivery_type": "Tên phương thức giao hàng",
+  "create_delivery_type": "Tạo phương thức giao hàng",
+  "update_delivery_type": "Cập nhật phương thức giao hàng",
+  "create-delivery-type-success": "Tạo phương thức giao hàng thành công",
+  "update-delivery-type-success": "Cập nhật phương thức giao hàng thành công",
+  "Update_delivery_type_error": "Cập nhật phương thức giao hàng thất bại",
+  "Create_delivery_type_error": "Tạo phương thức giao hàng thất bại",
+  "delete-delivery-type-success": "Xóa phương thức giao hàng thành công",
+  "delete-multiple-delivery-type-success": "Xóa nhiều phương thức giao hàng thành công",
+  "Delete_multiple_delivery_type_error": "Xóa nhiều phương thức giao hàng thất bại",
+  "title_delete_delivery_type": "Xóa phương thức giao hàng",
+  "confirm_delete_delivery_type": "Bạn có chắc chắn muốn xóa phương thức giao hàng này?",
+  "title_delete_multiple_delivery_type": "Xóa nhiều phương thức giao hàng",
+  "confirm_delete_multiple_delivery_type": "Bạn có chắc chắn muốn xóa các phương thức giao hàng đã chọn?"
 }
