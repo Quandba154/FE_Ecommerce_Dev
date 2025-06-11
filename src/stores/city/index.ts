@@ -3,12 +3,12 @@ import { createSlice } from '@reduxjs/toolkit'
 
 //.** Action
 import {
-  createUserAsync,
-  deleteMultipleUserAsync,
-  deleteUserAsync,
-  getAllUsersAsync,
+  createCityAsync,
+  deleteMultipleCityAsync,
+  deleteCityAsync,
+  getAllCityAsync,
   serviceName,
-  updateUserAsync
+  updateCityAsync
 } from './action'
 
 const initialState = {
@@ -17,13 +17,6 @@ const initialState = {
   isError: false,
   message: '',
   typeError: '',
-
-  // isSuccessUpdateMe: true,
-  // isErrorUpdateMe: false,
-  // messageUpdateMe: '',
-  // isSuccessChangePassword: true,
-  // isErrorChangePassword: false,
-  // messageChangePassword: '',
 
   isSuccessCreateEdit: false,
   isErrorCreateEdit: false,
@@ -36,14 +29,13 @@ const initialState = {
   isSuccessMultipleDelete: false,
   isErrorMultipleDelete: false,
   messageMultipleDelete: '',
-
-  users: {
+  cities: {
     data: [],
     total: 0
   }
 }
 
-export const userSlice = createSlice({
+export const citySlice = createSlice({
   name: serviceName,
   initialState,
   reducers: {
@@ -65,26 +57,27 @@ export const userSlice = createSlice({
     }
   },
   extraReducers: builder => {
-    // **get all users
-    builder.addCase(getAllUsersAsync.pending, (state, action) => {
+    // **get all cities
+    builder.addCase(getAllCityAsync.pending, (state, action) => {
       state.isLoading = true
     })
-    builder.addCase(getAllUsersAsync.fulfilled, (state, action) => {
+    builder.addCase(getAllCityAsync.fulfilled, (state, action) => {
+      console.log('action', { action })
       state.isLoading = false
-      state.users.data = action.payload.data.users || []
-      state.users.total = action.payload.data.totalCount
+      state.cities.data = action.payload.data.cities || []
+      state.cities.total = action.payload.data.totalCount
     })
-    builder.addCase(getAllUsersAsync.rejected, (state, action) => {
+    builder.addCase(getAllCityAsync.rejected, (state, action) => {
       state.isLoading = false
-      state.users.data = []
-      state.users.total = 0
+      state.cities.data = []
+      state.cities.total = 0
     })
 
-    // **create user
-    builder.addCase(createUserAsync.pending, (state, action) => {
+    // **create city
+    builder.addCase(createCityAsync.pending, (state, action) => {
       state.isLoading = true
     })
-    builder.addCase(createUserAsync.fulfilled, (state, action) => {
+    builder.addCase(createCityAsync.fulfilled, (state, action) => {
       state.isLoading = false
       state.isSuccessCreateEdit = !!action.payload?.data?._id
       state.isErrorCreateEdit = !action.payload?.data?._id
@@ -92,11 +85,11 @@ export const userSlice = createSlice({
       state.typeError = action.payload?.typeError
     })
 
-    // **update user
-    builder.addCase(updateUserAsync.pending, (state, action) => {
+    // **update city
+    builder.addCase(updateCityAsync.pending, (state, action) => {
       state.isLoading = true
     })
-    builder.addCase(updateUserAsync.fulfilled, (state, action) => {
+    builder.addCase(updateCityAsync.fulfilled, (state, action) => {
       state.isLoading = false
       state.isSuccessCreateEdit = !!action.payload?.data?._id
       state.isErrorCreateEdit = !action.payload?.data?._id
@@ -104,11 +97,11 @@ export const userSlice = createSlice({
       state.typeError = action.payload?.typeError
     })
 
-    // **delete user
-    builder.addCase(deleteUserAsync.pending, (state, action) => {
+    // **delete city
+    builder.addCase(deleteCityAsync.pending, (state, action) => {
       state.isLoading = true
     })
-    builder.addCase(deleteUserAsync.fulfilled, (state, action) => {
+    builder.addCase(deleteCityAsync.fulfilled, (state, action) => {
       state.isLoading = false
       state.isSuccessDelete = !!action.payload?.data?._id
       state.isErrorDelete = !action.payload?.data?._id
@@ -116,11 +109,11 @@ export const userSlice = createSlice({
       state.typeError = action.payload?.typeError
     })
 
-    // **delete multiple user
-    builder.addCase(deleteMultipleUserAsync.pending, (state, action) => {
+    // **delete multiple city
+    builder.addCase(deleteMultipleCityAsync.pending, (state, action) => {
       state.isLoading = true
     })
-    builder.addCase(deleteMultipleUserAsync.fulfilled, (state, action) => {
+    builder.addCase(deleteMultipleCityAsync.fulfilled, (state, action) => {
       state.isLoading = false
       state.isSuccessMultipleDelete = !!action.payload?.data
       state.isErrorMultipleDelete = !action.payload?.data
@@ -130,5 +123,5 @@ export const userSlice = createSlice({
   }
 })
 
-export const { resetInitialState } = userSlice.actions
-export default userSlice.reducer
+export const { resetInitialState } = citySlice.actions
+export default citySlice.reducer

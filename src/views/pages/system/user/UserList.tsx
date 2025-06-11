@@ -211,7 +211,6 @@ const UserListPage: NextPage<TProps> = () => {
     const handleOnchangePagination = (page: number, pageSize: number) => {
         setPage(page)
         setPageSize(pageSize)
-        // handleGetListUsers()
     }
 
 
@@ -309,11 +308,9 @@ const UserListPage: NextPage<TProps> = () => {
                 return <>
                     {row.status ? (
                         <ActiveUserStyled label={t("Active")}>
-
                         </ActiveUserStyled>
                     ) :
                         <DeactivateUserStyled label={t("Blocking")}>
-
                         </DeactivateUserStyled>
                     }
                 </>
@@ -430,7 +427,6 @@ const UserListPage: NextPage<TProps> = () => {
         }
         handleGetListUsers()
     }, [isErrorMultipleDelete, isSuccessMultipleDelete, messageMultipleDelete])
-    console.log("Object.values(CONSTANT_STATUS_USER)", Object.values(CONSTANT_STATUS_USER));
 
     return (
         <>
@@ -474,7 +470,6 @@ const UserListPage: NextPage<TProps> = () => {
                         {!selectedRow?.length && (
                             <Box sx={{ display: "flex", alignItems: "center", justifyContent: "flex-end", gap: 4, mb: 4, width: "100%" }}>
                                 <Box sx={{ width: "200px" }} >
-
                                     <CustomSelect
                                         fullWidth
                                         onChange={(e: any) => {
@@ -515,7 +510,7 @@ const UserListPage: NextPage<TProps> = () => {
                             <TableHeader
                                 numRow={selectedRow?.length}
                                 onClear={() => setSelectedRow([])}
-                                actions={[{ label: t("Xoá"), value: "delete", disabled: memoDisabledDeleteUser }]}
+                                actions={[{ label: t("Xoá"), value: "delete", disabled: memoDisabledDeleteUser || !DELETE }]}
                                 handleAction={handleAction}
                             />
                         )}
