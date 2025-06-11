@@ -15,7 +15,8 @@ export const ROUTE_CONFIG = {
     MANAGE_REVIEW: '/manager-product/reviews'
   },
   SETTINGS: {
-    PAYMENT_TYPE: '/settings/payment-type'
+    PAYMENT_TYPE: '/settings/payment-type',
+    CITY : '/settings/city'
   },
   DASHBOARD: '/dashboard'
 }

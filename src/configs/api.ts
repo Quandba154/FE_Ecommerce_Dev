@@ -14,6 +14,9 @@ export const API_ENDPOINT = {
   SETTINGS: {
     PAYMENT_TYPE: {
       INDEX: `${BASE_URL}/payment-type`
+    },
+    CITY: {
+      INDEX: `${BASE_URL}/city`
     }
   },
   MANAGE_PRODUCT: {

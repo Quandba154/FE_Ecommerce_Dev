@@ -43,7 +43,6 @@ export const VerticalItem = () => {
         }
       ]
     },
-
     {
       title: t('Manage_product'),
       icon: 'eos-icons:products-outlined',
@@ -81,18 +80,17 @@ export const VerticalItem = () => {
     {
       title: t('Setting'),
       icon: 'ant-design:setting-outlined',
-      // path: '/',
       childrens: [
         {
           title: t('Payment_method'),
           icon: 'streamline:payment-10',
           path: ROUTE_CONFIG.SETTINGS.PAYMENT_TYPE
+        },
+        {
+          title: t('City'),
+          icon: 'ph:city-fill',
+          path: ROUTE_CONFIG.SETTINGS.CITY
         }
-        // {
-        //   title: 'Danh mục sản phẩm',
-        //   icon: 'material-sysbols-light:category-outline',
-        //   path: ROUTE_CONFIG.MANAGE_SYSTEM.PRODUCT.MANAGE_TYPE_PRODUCT
-        // },
         // {
         //   title: 'Danh sách đơn hàng',
         //   icon: 'lets-icons:order-light',
