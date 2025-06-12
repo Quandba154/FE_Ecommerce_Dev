@@ -54,7 +54,7 @@ import { OBJECT_TYPE_ERROR_ROLE } from 'src/configs/role'
 import { PERMISSIONS } from 'src/configs/permission'
 
 // ** Utils
-import { getAllValueOfObject, toFullName } from 'src/utils'
+import { formatFilter, getAllValueOfObject, toFullName } from 'src/utils'
 import { hexToRGBA } from 'src/utils/hex-to-rgba'
 
 // ** Other
@@ -69,6 +69,7 @@ import { getAllRole } from 'src/services/role'
 import CustomSelect from 'src/components/custom-select'
 import { OBJECT_STATUS_USER } from 'src/configs/user'
 import { status } from 'nprogress'
+import { getAllCities } from 'src/services/city'
 
 
 
@@ -124,13 +125,14 @@ const UserListPage: NextPage<TProps> = () => {
     const [selectedRow, setSelectedRow] = useState<TSelectedRow[]>([])
 
     const [optionRoles, setOptionRoles] = useState<{ label: string, value: string }[]>([])
-
-    const [roleSelected, setRoleSelected] = useState("")
-
-    const [statusSelected, setStatusSelected] = useState("")
+    const [optionCities, setOptionCities] = useState<{ label: string, value: string }[]>([])
 
 
-    const [filterBy, setFilterBy] = useState<Record<string, string>>({})
+    const [roleSelected, setRoleSelected] = useState<string[]>([])
+    const [citySelected, setCitySelected] = useState<string[]>([])
+    const [statusSelected, setStatusSelected] = useState<string[]>([])
+
+    const [filterBy, setFilterBy] = useState<Record<string, string[]>>({})
 
 
     const CONSTANT_STATUS_USER = OBJECT_STATUS_USER()
@@ -174,8 +176,21 @@ const UserListPage: NextPage<TProps> = () => {
         })
     };
 
+    const fetAllCities = async () => {
+        setLoading(true)
+        await getAllCities({ params: { limit: -1, page: -1 } }).then((res) => {
+            const data = res?.data.cities
+            if (data) {
+                setOptionCities(data?.map((item: { name: string; _id: string }) => ({ label: item.name, value: item._id })))
+            }
+            setLoading(false)
+        }).catch((e) => {
+            setLoading(false)
+        })
+    };
+
     const handleGetListUsers = () => {
-        const query = { params: { limit: pageSize, page, search: searchBy, order: sortBy, ...filterBy } }
+        const query = { params: { limit: pageSize, page, search: searchBy, order: sortBy, ...formatFilter(filterBy) } }
         dispatch(getAllUsersAsync(query))
     }
 
@@ -294,7 +309,7 @@ const UserListPage: NextPage<TProps> = () => {
             maxWidth: 200,
             renderCell: params => {
                 const { row } = params
-                return <Typography>{row.city}</Typography>
+                return <Typography>{row?.city?.name}</Typography>
             }
         },
         {
@@ -366,11 +381,12 @@ const UserListPage: NextPage<TProps> = () => {
     }, [sortBy, searchBy, i18n.language, page, pageSize, filterBy])
 
     useEffect(() => {
-        setFilterBy({ roleId: roleSelected, status: statusSelected })
-    }, [roleSelected, statusSelected])
+        setFilterBy({ roleId: roleSelected, status: statusSelected, cityId: citySelected })
+    }, [roleSelected, statusSelected, citySelected])
 
     useEffect(() => {
         fetAllRoles()
+        fetAllCities()
     }, [])
 
 
@@ -473,7 +489,7 @@ const UserListPage: NextPage<TProps> = () => {
                                     <CustomSelect
                                         fullWidth
                                         onChange={(e: any) => {
-                                            setStatusSelected(String(e.target.value))
+                                            setStatusSelected(e.target.value as any)
                                         }}
                                         options={Object.values(CONSTANT_STATUS_USER)}
                                         value={statusSelected}
@@ -484,11 +500,24 @@ const UserListPage: NextPage<TProps> = () => {
                                     <CustomSelect
                                         fullWidth
                                         onChange={(e: any) => {
-                                            setRoleSelected(String(e.target.value))
+                                            setCitySelected(e.target.value as string[])
                                         }}
+                                        multiple
+                                        options={Object.values(CONSTANT_STATUS_USER)}
+                                        value={citySelected}
+                                        placeholder={t("City")}
+                                    />
+                                </Box>
+                                <Box sx={{ width: "200px" }} >
+                                    <CustomSelect
+                                        fullWidth
+                                        onChange={(e: any) => {
+                                            setRoleSelected(e.target.value as string[])
+                                        }}
+                                        multiple
                                         options={optionRoles}
                                         value={roleSelected}
-                                        placeholder={t("Select")}
+                                        placeholder={t("Role")}
                                     />
                                 </Box>
                                 <Box sx={{ width: "200px" }}>
