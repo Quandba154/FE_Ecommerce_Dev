@@ -1,5 +1,7 @@
 //** Import React and Next.js */
 import { NextPage } from 'next'
+import { PERMISSIONS } from 'src/configs/permission'
+import PaymentTypeListPage from 'src/views/pages/settings/payment-type/PaymentTypeList'
 
 
 type TProps = {}
@@ -7,7 +9,7 @@ type TProps = {}
 const Index: NextPage<TProps> = () => {
   return (
     <>
-      <h1>User</h1>
+      <PaymentTypeListPage />
     </>
   )
 }
@@ -15,5 +17,6 @@ const Index: NextPage<TProps> = () => {
 export default Index
 
 
-// Register.getLayout = (page: React.ReactNode) => <BlankLayout>{page}</BlankLayout>
-// Register.guestGuard = true
+Index.permission = [PERMISSIONS.SETTING.PAYMENT_TYPE.VIEW]
+
+

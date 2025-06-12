@@ -13,26 +13,29 @@ import {
 
 const initialState = {
   isLoading: false,
-  isSuccess: true,
+  isSuccess: false,
   isError: false,
   message: '',
   typeError: '',
+
   isSuccessCreateEdit: false,
   isErrorCreateEdit: false,
-  messageErrorCreateEdit: '',
+  messageCreateEdit: '',
+
   isSuccessDelete: false,
   isErrorDelete: false,
-  messageErrorDelete: '',
+  messageDelete: '',
+
   isSuccessMultipleDelete: false,
   isErrorMultipleDelete: false,
-  messageErrorMultipleDelete: '',
-  productTypes: {
+  messageMultipleDelete: '',
+  paymentTypes: {
     data: [],
     total: 0
   }
 }
 
-export const productTypeSlice = createSlice({
+export const paymentTypeSlice = createSlice({
   name: serviceName,
   initialState,
   reducers: {
@@ -43,14 +46,14 @@ export const productTypeSlice = createSlice({
       state.message = ''
       state.typeError = ''
       state.isSuccessCreateEdit = false
-      state.isErrorCreateEdit = false
-      state.messageErrorCreateEdit = ''
+      state.isErrorCreateEdit = true
+      state.messageCreateEdit = ''
       state.isSuccessDelete = false
-      state.isErrorDelete = false
-      state.messageErrorDelete = ''
+      state.isErrorDelete = true
+      state.messageDelete = ''
       state.isSuccessMultipleDelete = false
-      state.isErrorMultipleDelete = false
-      state.messageErrorMultipleDelete = ''
+      state.isErrorMultipleDelete = true
+      state.messageMultipleDelete = ''
     }
   },
   extraReducers: builder => {
@@ -60,68 +63,64 @@ export const productTypeSlice = createSlice({
     })
     builder.addCase(getAllPaymentTypeAsync.fulfilled, (state, action) => {
       state.isLoading = false
-      state.productTypes.data = action.payload?.data?.productTypes || []
-      state.productTypes.total = action.payload?.data?.totalCount || 0
+      state.paymentTypes.data = action.payload?.data?.paymentTypes || []
+      state.paymentTypes.total = action.payload?.data?.totalCount || 0
     })
     builder.addCase(getAllPaymentTypeAsync.rejected, state => {
       state.isLoading = false
-      state.productTypes.data = []
-      state.productTypes.total = 0
+      state.paymentTypes.data = []
+      state.paymentTypes.total = 0
     })
 
-    // Create product type
+    // Create payment type
     builder.addCase(createPaymentTypeAsync.pending, state => {
       state.isLoading = true
     })
     builder.addCase(createPaymentTypeAsync.fulfilled, (state, action) => {
-      const isSuccess = !!action.payload?.data?._id
       state.isLoading = false
-      state.isSuccessCreateEdit = isSuccess
-      state.isErrorCreateEdit = !isSuccess
-      state.messageErrorCreateEdit = action.payload?.message || ''
-      state.typeError = action.payload?.typeError || ''
+      state.isSuccessCreateEdit = !!action.payload?.data?._id
+      state.isErrorCreateEdit = !action.payload?.data?._id
+      state.messageCreateEdit = action.payload?.message
+      state.typeError = action.payload?.typeError
     })
 
-    // Update product type
+    // Update payment type
     builder.addCase(updatePaymentTypeAsync.pending, state => {
       state.isLoading = true
     })
     builder.addCase(updatePaymentTypeAsync.fulfilled, (state, action) => {
-      const isSuccess = !!action.payload?.data?._id
       state.isLoading = false
-      state.isSuccessCreateEdit = isSuccess
-      state.isErrorCreateEdit = !isSuccess
-      state.messageErrorCreateEdit = action.payload?.message || ''
-      state.typeError = action.payload?.typeError || ''
+      state.isSuccessCreateEdit = !!action.payload?.data?._id
+      state.isErrorCreateEdit = !action.payload?.data?._id
+      state.messageCreateEdit = action.payload?.message
+      state.typeError = action.payload?.typeError
     })
 
-    // Delete product type
+    // Delete payment type
     builder.addCase(deletePaymentTypeAsync.pending, state => {
       state.isLoading = true
     })
     builder.addCase(deletePaymentTypeAsync.fulfilled, (state, action) => {
-      const isSuccess = !!action.payload?.data?._id
       state.isLoading = false
-      state.isSuccessDelete = isSuccess
-      state.isErrorDelete = !isSuccess
-      state.messageErrorDelete = action.payload?.message || ''
-      state.typeError = action.payload?.typeError || ''
+      state.isSuccessDelete = !!action.payload?.data?._id
+      state.isErrorDelete = !action.payload?.data?._id
+      state.messageDelete = action.payload?.message
+      state.typeError = action.payload?.typeError
     })
 
-    // Delete multiple product types
+    // Delete multiple payment types
     builder.addCase(deleteMultiplePaymentTypeAsync.pending, state => {
       state.isLoading = true
     })
     builder.addCase(deleteMultiplePaymentTypeAsync.fulfilled, (state, action) => {
-      const isSuccess = !!action.payload?.data
       state.isLoading = false
-      state.isSuccessMultipleDelete = isSuccess
-      state.isErrorMultipleDelete = !isSuccess
-      state.messageErrorMultipleDelete = action.payload?.message || ''
-      state.typeError = action.payload?.typeError || ''
+      state.isSuccessMultipleDelete = !!action.payload?.data
+      state.isErrorMultipleDelete = !action.payload?.data
+      state.messageMultipleDelete = action.payload?.message
+      state.typeError = action.payload?.typeError
     })
   }
 })
 
-export const { resetInitialState } = productTypeSlice.actions
-export default productTypeSlice.reducer
+export const { resetInitialState } = paymentTypeSlice.actions
+export default paymentTypeSlice.reducer

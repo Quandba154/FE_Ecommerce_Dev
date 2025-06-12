@@ -7,7 +7,6 @@ import {
   TParamsGetPaymentTypes
 } from 'src/types/payment-type'
 
-
 export const getAllPaymentTypes = async (data: { params: TParamsGetPaymentTypes }) => {
   try {
     const res = await instanceAxios.get(`${API_ENDPOINT.SETTINGS.PAYMENT_TYPE.INDEX}`, data)

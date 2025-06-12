@@ -5,12 +5,14 @@ export type TParamsGetPaymentTypes = {
   order?: string
 }
 export type TParamsCreatePaymentType = {
-  email: string
+  name: string
+  type: string
 }
 
 export type TParamsEditPaymentType = {
   id: string
   name: string
+  type: string
 }
 
 export type TParamsDeletePaymentType = {
