@@ -186,13 +186,23 @@ const DeliveryTypeListPage: NextPage<TProps> = () => {
             }
         },
         {
-            field: 'createAt',
+            field: 'price',
+            headerName: t('Price'),
+            minWidth: 200,
+            maxWidth: 200,
+            renderCell: params => {
+                const { row } = params
+                return <Typography>{row?.price}</Typography>
+            }
+        },
+        {
+            field: 'createdAt',
             headerName: t('Created_date'),
             minWidth: 180,
             maxWidth: 180,
             renderCell: params => {
                 const { row } = params
-                return <Typography>{formatDate(row?.createAt , {dateStyle : "short"})}</Typography>
+                return <Typography>{formatDate(row?.createdAt, { dateStyle: "short" })}</Typography>
             }
         },
         {

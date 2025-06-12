@@ -45,6 +45,7 @@ interface TCreateEditDeliveryType {
 
 type TDefaultValues = {
     name: string
+    price: string
 }
 
 // Styled Switch component
@@ -98,11 +99,15 @@ const CreateEditDeliveryType = (props: TCreateEditDeliveryType) => {
         .object()
         .shape({
             name: yup.string().required('Name is required'),
+            price: yup.string().required('Name is required').test(t("least_value_price"), t("least_1000_in_price"), (value) => {
+                return Number(value) >= 1000
+            })
         })
 
 
     const defaultValues: TDefaultValues = {
-        name: ""
+        name: "",
+        price: ""
     }
 
     const {
@@ -122,10 +127,12 @@ const CreateEditDeliveryType = (props: TCreateEditDeliveryType) => {
                 dispatch(updateDeliveryTypeAsync({
                     id: idDelivery,
                     name: data?.name,
+                    price: data?.price,
                 }))
             } else {
                 dispatch(createDeliveryTypeAsync({
-                    name: data?.name
+                    name: data?.name,
+                    price: data?.price,
                 }))
             }
         }
@@ -139,7 +146,8 @@ const CreateEditDeliveryType = (props: TCreateEditDeliveryType) => {
             const data = res.data
             if (data) {
                 reset({
-                    name: data?.name
+                    name: data?.name,
+                    price: data?.price,
                 })
             }
             setLoading(false)
@@ -168,7 +176,7 @@ const CreateEditDeliveryType = (props: TCreateEditDeliveryType) => {
                     maxWidth={{ md: "50vw", xs: "80vw" }}
                 >
                     <Box sx={{ display: "flex", justifyContent: "center", position: "relative", paddingBottom: "20px" }}>
-                        <Typography variant='h4' sx={{ fontWeight: 600 }}>{idDelivery ? t("Chỉnh sửa city") : t("Tạo city")}</Typography>
+                        <Typography variant='h4' sx={{ fontWeight: 600 }}>{idDelivery ? t("Chỉnh_sửa_delivery") : t("Tạo_delivery")}</Typography>
                         <IconButton sx={{ position: "absolute", top: "-4px", right: "-10px" }} onClick={onClose} >
                             <Iconfi icon="material-symbols-light:close" fontSize={"30px"} />
                         </IconButton>
@@ -176,14 +184,14 @@ const CreateEditDeliveryType = (props: TCreateEditDeliveryType) => {
                     <form onSubmit={handleSubmit(onSubmit)} autoComplete='off' noValidate>
                         <Box sx={{ backgroundColor: theme.palette.background.paper, borderRadius: "15px", py: 5, px: 4 }}  >
                             <Grid container md={12} xs={12} >
-                                <Grid item md={12} xs={12}>
+                                <Grid item md={12} xs={12} mb={2}>
                                     <Controller
                                         control={control}
                                         render={({ field: { onChange, onBlur, value } }) => (
                                             <CustomTextField
                                                 required
                                                 fullWidth
-                                                label={t("name-city")}
+                                                label={t("name_delivery")}
                                                 placeholder={t('enter-name')}
                                                 onChange={onChange}
                                                 onBlur={onBlur}
@@ -195,11 +203,37 @@ const CreateEditDeliveryType = (props: TCreateEditDeliveryType) => {
                                         name='name'
                                     />
                                 </Grid>
+                                <Grid item md={12} xs={12}>
+                                    <Controller
+                                        control={control}
+                                        render={({ field: { onChange, onBlur, value } }) => (
+                                            <CustomTextField
+                                                required
+                                                fullWidth
+                                                label={t("price-delivery_type")}
+                                                placeholder={t('enter_price_delivery_type')}
+                                                onChange={(e) => {
+                                                    const numValue = e.target.value.replace(/\D/g, '');
+                                                    onChange(numValue)
+                                                }}
+                                                inputProps={{
+                                                    inputMode: "numeric",
+                                                    pattern: "[0-9]*",
+                                                }}
+                                                onBlur={onBlur}
+                                                value={value}
+                                                error={Boolean(errors?.price)}
+                                                helperText={errors?.price ? errors?.price?.message : ''}
+                                            />
+                                        )}
+                                        name='price'
+                                    />
+                                </Grid>
                             </Grid>
                         </Box>
                         <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
                             <Button sx={{ color: "white !important", padding: "2px 8px !important", mt: 2, mb: 2, height: "40px", borderRadius: "10px !important", backgroundColor: "gray !important" }} type='submit' variant='contained' >
-                                {!idDelivery ? t("create_city") : t("update_city")}
+                                {!idDelivery ? t("create_delivery") : t("update_delivery")}
                             </Button>
                         </Box>
                     </form >
