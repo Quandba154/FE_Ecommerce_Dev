@@ -35,6 +35,7 @@ import Iconfy from 'src/components/Icon'
 
 //**Other */
 import { convertBase64, separationFullName, toFullName } from 'src/utils';
+import { getAllCities } from 'src/services/city';
 
 
 
@@ -96,6 +97,9 @@ const CreateEditUser = (props: TCreateEditUser) => {
     const [isLoading, setLoading] = useState(false)
     const [avatar, setAvatar] = useState("")
     const [optionRoles, setOptionRoles] = useState<{ label: string, value: string }[]>([])
+    const [optionCities, setOptionCities] = useState<{ label: string, value: string }[]>([])
+
+
     const [showPassWord, setShowPassWord] = useState(false)
 
     const dispatch: AppDispatch = useDispatch();
@@ -228,6 +232,20 @@ const CreateEditUser = (props: TCreateEditUser) => {
         })
     };
 
+    const fetAllCities = async () => {
+        setLoading(true)
+        await getAllCities({ params: { limit: -1, page: -1 } }).then((res) => {
+            const data = res?.data.cities
+            if (data) {
+                setOptionCities(data?.map((item: { name: string; _id: string }) => ({ label: item.name, value: item._id })))
+            }
+            setLoading(false)
+        }).catch((e) => {
+            setLoading(false)
+        })
+    };
+
+
     useEffect(() => {
         if (!open) {
             reset({
@@ -242,6 +260,7 @@ const CreateEditUser = (props: TCreateEditUser) => {
 
     useEffect(() => {
         fetAllRoles()
+        fetAllCities()
     }, [])
 
     return (
@@ -507,7 +526,7 @@ const CreateEditUser = (props: TCreateEditUser) => {
                                                                 onChange={onChange}
                                                                 onBlur={onBlur}
                                                                 value={value}
-                                                                options={[]}
+                                                                options={optionCities}
                                                                 error={Boolean(errors?.role)}
                                                                 placeholder={t("enter_your_city")}
                                                             />

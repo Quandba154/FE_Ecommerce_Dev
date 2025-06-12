@@ -49,6 +49,7 @@ import FallbackSpinner from 'src/components/fall-back'
 import Spinner from 'src/components/spinner'
 import CustomSelect from 'src/components/custom-select'
 import { getAllRole } from 'src/services/role'
+import { getAllCities } from 'src/services/city'
 
 
 type TProps = {}
@@ -71,6 +72,8 @@ const MyProfilePage: NextPage<TProps> = () => {
   const [avatar, setAvatar] = useState("")
   // const [roleId, setRoleId] = useState("")
   const [optionRoles, setOptionRoles] = useState<{ label: string, value: string }[]>([])
+  const [optionCities, setOptionCities] = useState<{ label: string, value: string }[]>([])
+
   const [isDisableRole, setIsDisableRole] = useState(false)
 
 
@@ -166,6 +169,20 @@ const MyProfilePage: NextPage<TProps> = () => {
     })
   };
 
+
+  const fetAllCities = async () => {
+    setLoading(true)
+    await getAllCities({ params: { limit: -1, page: -1 } }).then((res) => {
+      const data = res?.data.cities
+      if (data) {
+        setOptionCities(data?.map((item: { name: string; _id: string }) => ({ label: item.name, value: item._id })))
+      }
+      setLoading(false)
+    }).catch((e) => {
+      setLoading(false)
+    })
+  };
+
   useEffect(() => {
     fetchGetAuthMe();
   }, [i18n.language])
@@ -184,6 +201,7 @@ const MyProfilePage: NextPage<TProps> = () => {
 
   useEffect(() => {
     fetAllRoles()
+    fetAllCities()
   }, [])
 
   const onSubmit = (data: any) => {
@@ -375,7 +393,7 @@ const MyProfilePage: NextPage<TProps> = () => {
                           onChange={onChange}
                           onBlur={onBlur}
                           value={value}
-                          options={[]}
+                          options={optionCities}
                           error={Boolean(errors?.role)}
                           placeholder={t("enter_your_city")}
                         />

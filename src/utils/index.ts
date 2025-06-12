@@ -77,3 +77,15 @@ export const formatDate = (
   if (!value) return value
   return new Intl.DateTimeFormat('vi-VN', formatting).format(new Date(value))
 }
+
+export const formatFilter = (filter: any) => {
+  const result: Record<string, string> = {}
+  Object.keys(filter)?.forEach((key: string) => {
+    if (Array.isArray(filter[key]) && filter[key]?.length > 0) {
+      result[key] = filter[key].join('|')
+    } else if (filter[key]) {
+      result[key] = filter[key]
+    }
+  })
+  return result
+}
